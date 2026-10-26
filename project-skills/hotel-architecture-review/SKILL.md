@@ -1,44 +1,41 @@
 ---
 name: "hotel-architecture-review"
-description: "Review Hotel Kong Arthur project changes against the assignment, architecture, API, analytics, Docker, documentation, and contribution requirements."
-compatibility: "Use in the Hotel Kong Arthur project workspace."
+description: "Gennemgå projektændringer i forhold til opgaven, arkitekturen, API'et, analyserne, Docker, dokumentationen og bidragskravene."
+compatibility: "Bruges i arbejdsområdet for Hotel Kong Arthur-projektet."
 metadata:
   author: "project-team"
 ---
 
-# Hotel Kong Arthur architecture review
+# Gennemgang af Hotel Kong Arthurs arkitektur
 
-Use this skill when reviewing a feature, a pull request, the project structure, or the final Converge status.
+Brug denne vejledning, når du gennemgår en funktion, projektets struktur eller den afsluttende status.
 
-## Source of truth
+## Projektets kilder
 
-- Read the assignment PDF and SWA follow-up questions in the project root when their details are relevant.
-- Read the current Spec Kit constitution, feature specification, plan, and tasks before evaluating implementation.
-- Treat confirmed decisions in those artifacts as the current project contract. Call out conflicts between assignment requirements and project artifacts.
+- Læs opgave-PDF'en og de supplerende SWA-spørgsmål, når de indeholder relevante oplysninger.
+- Læs de aktuelle grundprincipper, specifikationer, planer og opgaver fra Spec Kit, før du vurderer løsningen.
+- Brug bekræftede beslutninger i dokumenterne som projektets gældende aftaler. Beskriv, hvis projektmaterialet er i konflikt med opgavekravene.
 
-## Review requirements
+## Krav, der skal kontrolleres
 
-- Keep the backend in three clear layers: presentation/API, business logic, and data access.
-- Expose REST endpoints using JSON and maintain an OpenAPI contract with Swagger UI available in Docker.
-- Use MySQL and make the complete prototype start with one `docker compose up` command.
-- Provide a browser interface that creates, edits, and deletes bookings through the backend API.
-- Support current data updates through the API; CSV samples must not be the only source of truth.
-- Cover guest countries, hotel revenue by room type and season, revenue by country, highest-revenue room types and countries, annual hotel revenue, and one additional KPI.
-- Support occupancy and customer-satisfaction KPIs when suitable source data and definitions are available.
-- Cover Helene Christine's annual bar sales, revenue per drink, and cocktail-versus-coffee share.
-- Maintain `README.md` with an architecture diagram, `CONTRIBUTE.md`, and the API contract.
-- Keep user stories small and valuable, and verify their acceptance criteria during Converge.
+- Backend skal have tre tydelige lag: præsentation/API, forretningslogik og dataadgang.
+- REST API'et skal bruge JSON. OpenAPI-kontrakten skal passe til løsningen, og Swagger UI skal være tilgængelig i Docker.
+- Brug MySQL, og sørg for at hele prototypen kan startes med én `docker compose up`-kommando.
+- Brugerfladen i browseren skal oprette, redigere og slette bookinger gennem API'et.
+- Aktuelle data skal kunne ændres gennem API'et. CSV-filer må ikke være eneste datakilde.
+- Dashboardet skal vise gæsternes lande, hotellets omsætning fordelt på værelsestype, sæson og land, de bedst indtjenende værelsestyper og lande, årets samlede omsætning og mindst ét ekstra nøgletal.
+- Belægning og gæstetilfredshed skal med, hvis der er data og klare definitioner nok til at beregne dem.
+- Barens analyser skal vise Helene Christines årlige salg, omsætning pr. drik og fordelingen mellem cocktails og kaffe.
+- `README.md` skal have et arkitekturdiagram. Projektet skal også have `CONTRIBUTE.md` og API-kontrakten.
+- Brugerhistorierne skal være små og værdifulde, og deres acceptkriterier skal kontrolleres i den afsluttende gennemgang.
 
-## Review procedure
+## Sådan gennemføres en gennemgang
 
-1. Identify the changed behavior and the user story or task it supports.
-2. Trace a representative request through the browser, API/presentation layer, business logic, data access, and MySQL where applicable.
-3. Check that each responsibility belongs in the intended layer and that OpenAPI matches the endpoint behavior.
-4. Check where KPI calculations live and whether Tableau can obtain the required current data from the API.
-5. Compare the change with its acceptance criteria and the relevant Docker, README, and contribution requirements.
-6. Record findings with file paths and concrete evidence. Mark each requirement implemented, incomplete, or unresolved; add follow-up tasks for gaps.
-7. Explain architecture tradeoffs in plain language so the group can present and defend them.
+1. Find ud af, hvad der er ændret, og hvilken brugerhistorie eller opgave ændringen løser.
+2. Følg en typisk anmodning gennem browseren, API-/præsentationslaget, forretningslogikken, dataadgangen og MySQL, hvor det er relevant.
+3. Kontrollér, at hvert lag har det rigtige ansvar, og at OpenAPI beskriver API'ets faktiske opførsel.
+4. Find ud af, hvor nøgletallene beregnes, og om Tableau kan hente de aktuelle data gennem API'et.
+5. Sammenhold ændringen med acceptkriterierne og kravene til Docker, README og bidragsvejledning.
+6. Beskriv fund med filstier og konkrete eksempler. Angiv for hvert krav, om det er opfyldt, mangler eller stadig skal afklares. Opret opgaver for mangler.
+7. Forklar arkitekturens fordele og ulemper i et sprog, gruppen kan bruge til at præsentere løsningen.
 
-## Git contribution guidance
-
-- Each group member must make commits for their own contribution.
