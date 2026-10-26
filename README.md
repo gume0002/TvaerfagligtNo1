@@ -6,6 +6,10 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 Projektet er stadig på planlægningsstadiet. Der er endnu ikke skrevet en kørende applikation, API, database eller Tableau-forbindelse. Diagrammet og gennemgangen nedenfor viser den arkitektur, vi skal arbejde hen imod.
 
+## Opgavebeskrivelse
+
+De to opgave-PDF'er ligger i [`opgavebeskrivelse/`](opgavebeskrivelse/): [Hotel Kong Arthur-opgaven](opgavebeskrivelse/E26%20Tv%C3%A6rfaglig%20Opgave%20Hotel%20Kong%20Arthur.pdf) og [de supplerende spørgsmål](opgavebeskrivelse/Till%C3%A6gssp%C3%B8rgsm%C3%A5l_swa.pdf).
+
 ## Sådan hænger systemet sammen
 
 ```mermaid

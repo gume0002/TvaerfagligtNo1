@@ -12,7 +12,7 @@ Brug denne vejledning, når du gennemgår en funktion, projektets struktur eller
 
 ## Projektets kilder
 
-- Læs opgave-PDF'en og de supplerende SWA-spørgsmål, når de indeholder relevante oplysninger.
+- Læs opgave-PDF'en og de supplerende SWA-spørgsmål i `opgavebeskrivelse/`, når de indeholder relevante oplysninger.
 - Læs de aktuelle grundprincipper, specifikationer, planer og opgaver fra Spec Kit, før du vurderer løsningen.
 - Brug bekræftede beslutninger i dokumenterne som projektets gældende aftaler. Beskriv, hvis projektmaterialet er i konflikt med opgavekravene.
 
