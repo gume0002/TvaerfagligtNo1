@@ -47,6 +47,12 @@ De endelige adresser, felter, svar og statuskoder skal beskrives i OpenAPI-kontr
 
 Før tallene kan beregnes, skal gruppen beslutte blandt andet sæsonernes datoer, belægningsformlen, rapporteringsåret og hvilke indtægter der tæller med. Opgavens værelsespriser er estimater og må ikke fremstilles som faktiske bookingindtægter.
 
+## Medfølgende eksempeldata
+
+De oprindelige datafiler ligger i [`data/raw/`](data/raw/). Hoteldataene findes både som CSV og Excel med 1.000 gæsteposter. Barens Excel-fil indeholder 20 cocktails og 10 kaffetyper med priser og solgte enheder. Filerne er reference- og eksempeldata; de er ikke en database eller en mekanisme til at opdatere aktuelle data.
+
+Filerne er bevaret uændret. Hotel-CSV'en indeholder 54 erstatningstegn (`�`) i navne, og Excel-udgaven har en ekstra værdi (`5379`) i celle E1002 ud over de 1.000 poster. Kontrollér og afklar disse værdier, før dataene indlæses eller bruges til analyser.
+
 ## Start af systemet
 
 Målet er, at hele systemet kan startes fra projektmappen med:
