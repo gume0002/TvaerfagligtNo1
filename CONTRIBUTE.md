@@ -2,7 +2,7 @@
 
 ## Start med projektgrundlaget
 
-Læs [Spec Kit-overblikket](specs/README.md), [constitution](.specify/memory/constitution.md), [Specify](specs/004-hotelsystem/spec.md) og [Clarify](specs/004-hotelsystem/clarify.md). Projektets aktuelle fase er overgangen fra Clarify til Plan.
+Læs [Spec Kit-overblikket](specs/README.md), [constitution](.specify/memory/constitution.md), [Specify](specs/004-hotelsystem/spec.md) og [Clarify](specs/004-hotelsystem/clarify.md) og [Plan](specs/004-hotelsystem/plan.md). Projektets aktuelle fase er gennemgang af Plan med åbne Tableau-afklaringer.
 
 Følg Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge. Plan vælges før implementering, Tasks organiseres efter brugerhistorier, og OpenAPI-kontrakten skrives og godkendes før endpoints implementeres. Krav og acceptkriterier vedligeholdes i spec.md; afklaringer og begrundelser dokumenteres i clarify.md.
 
@@ -16,7 +16,7 @@ Dokumentation skrives på dansk. Kode, endpoints, JSON-felter og databasenavne s
 
 Følg [hotel-architecture-review](project-skills/hotel-architecture-review/SKILL.md) ved arkitektur- og acceptgennemgang. En booking skal følge browser → REST/JSON API → forretningslogik → dataadgang → MySQL. SQL hører til i dataadgangen; domæneregler og officielle nøgletal hører til i logiklaget. Tableau bruger API’et.
 
-Kontrollér dokumentationsændringer med `git diff --check` og kontrollér berørte links. Der findes endnu ingen applikation eller testkommando; Plan skal fastlægge én testkommando, som senere dokumenteres her. Når funktioner implementeres, skal tests kontrollere regler, beregninger, kontrakt og relevante acceptkriterier. Converge dokumenterer bevis og status for hvert kriterium; mangler bliver til nye Tasks.
+Kontrollér dokumentationsændringer med `git diff --check` og kontrollér berørte links. Der findes endnu ingen kørende applikation eller testopsætning. Plan vælger `docker compose --profile test run --build --rm test` som kommende fælles testkommando; den kan først køres, når Compose og runner er implementeret. Når funktioner implementeres, skal tests kontrollere regler, beregninger, kontrakt og relevante acceptkriterier. Converge dokumenterer bevis og status for hvert kriterium; mangler bliver til nye Tasks.
 
 ## Ejerskab
 

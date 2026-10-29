@@ -2,7 +2,7 @@
 
 **Specifikationsmappe:** `specs/004-hotelsystem/`
 **Oprettet:** 26. oktober 2026 · **Opdateret:** 29. oktober 2026  
-**Status:** Specify og Clarify gennemgået; klar til Plan med de dokumenterede fortolkningsrisici og gruppens gennemgang. Ingen funktioner er implementeret.
+**Status:** Specify og Clarify gennemgået; [Plan](plan.md) er udarbejdet til gruppens gennemgang med åbne Tableau- og fortolkningsrisici. Ingen funktioner er implementeret.
 
 ## Formål og grundlag
 
@@ -12,7 +12,7 @@ Grundlaget er opgave-PDF'erne i `opgavebeskrivelse/`, `.specify/memory/constitut
 
 ## Omfang
 
-Prototypen omfatter bookingoversigt og booking-CRUD, registrering, rettelse og aflysning af barsalg, hotel- og baranalyser, automatisk opdatering, førstegangsindlæsning samt dokumentation. MySQL er den aktuelle datakilde. Backend har præsentation/API, forretningslogik og dataadgang; hvert lag kalder kun laget lige under sig. Klienter bruger REST/JSON, og de officielle regler og nøgletal ligger i forretningslogikken.
+Prototypen omfatter bookingoversigt og booking-CRUD, registrering, rettelse og aflysning af barsalg, hotel- og baranalyser med manuel datakilde-refresh i Tableau, førstegangsindlæsning samt dokumentation. MySQL er den aktuelle datakilde. Backend har præsentation/API, forretningslogik og dataadgang; hvert lag kalder kun laget lige under sig. Klienter bruger REST/JSON, og de officielle regler og nøgletal ligger i forretningslogikken.
 
 Login, betaling, fakturering, refundering, fysisk værelsestildeling, rengøring, dynamisk prisoptimering og integration til et rigtigt hotelbookingsystem er uden for prototypen. Tableau er en ekstern klient uden for Docker og læser udelukkende gennem API'et.
 
@@ -26,7 +26,7 @@ Login, betaling, fakturering, refundering, fysisk værelsestildeling, rengøring
 - Bookingoversigten understøtter navnesøgning og filtrering efter opholdsdato.
 - Sletning bevarer bookingen som aflyst og frigiver kapacitet. Aflyste bookinger indgår ikke i belægning eller omsætning.
 - Barsalg registreres med drik, antal, salgspris, salgsdato og medarbejder og kan rettes eller aflyses. Aflyste salg bevares, men tæller ikke i analyserne.
-- Nye barsalg skal fremgå automatisk i Tableau senest fem sekunder efter gemning. Den tekniske gennemførlighed er endnu ikke bekræftet.
+- Interviewets oprindelige mål var automatisk Tableau-opdatering inden fem sekunder. Brugeren har efterfølgende accepteret manuel refresh i Tableau; den gældende regel står under Analyser og filtre og i US10.
 - Baren viser cocktail/kaffe-fordeling både efter antal og efter omsætning.
 - Rapporteringsåret er et valgbart kalenderår. Bookingomsætning fordeles efter overnatningsdato: ankomst tæller med, afrejse tæller ikke. Den 30. december til 2. januar giver to nætter i det gamle år og én i det nye.
 
@@ -60,7 +60,7 @@ Login, betaling, fakturering, refundering, fysisk værelsestildeling, rengøring
 - Ekstra nøgletal er gennemsnitlig pris pr. booket værelsesnat (ADR): bookingomsætning divideret med bookede værelsesnætter på samme grundlag. Belægning og ADR vises særskilt for passerede og kommende nætter samt samlet, så prognose og historik ikke blandes skjult.
 - Baranalyser filtreres på kalenderår og medarbejder, med Helene Christine valgt som standard. Årets samlede salg vises både i DKK og antal. Omsætning pr. drik samt begge kategoriandele bruger præcis samme udvalg. Kategoriandelene er henholdsvis kategoriens antal / samlet antal og kategoriens omsætning / samlet omsætning gange 100.
 - Ved nul nævner vises »Intet datagrundlag« for forholdstal; summer vises som 0. Procenter afrundes til to decimaler, og mindre afrundingsafvigelser fra 100 % accepteres. Gæstetilfredshed vises som »Intet datagrundlag« og får ingen opdigtet score, da ingen vurderinger foreligger. Indsamling af tilfredshed ligger uden for prototypen.
-- Bookingændringer samt oprettelser, rettelser og aflysninger af barsalg skal automatisk slå igennem i de relevante åbne dashboardvisninger inden fem sekunder efter gemning under normal lokal drift. Sidste vellykkede opdatering vises; forbindelsesfejl markeres tydeligt, og gamle tal vises ikke som aktuelle. Tableau-gennemførligheden skal afprøves i Plan; kravet er ikke allerede opfyldt.
+- Bookingændringer samt oprettelser, rettelser og aflysninger af barsalg skal fremgå i relevante Tableau-visninger, når brugeren gennemfører manuel refresh af datakilden inde i Tableau. Refresh skal hente nye data gennem API’et og opdatere udtrækket; genvisning af et gammelt udtræk er utilstrækkelig. Tidspunktet for datagrundlaget vises tydeligt. Ved fejlet refresh gives en forståelig fejl, og sidste vellykkede datatidspunkt bevares; eksisterende tal vises som et tidligere snapshot. Der kræves ikke automatisk opdatering eller en femsekundersgrænse. Den konkrete Tableau Public-refresh skal stadig afprøves.
 
 ## Brugerhistorier og acceptkriterier
 
@@ -161,12 +161,12 @@ Som hotelledelse ønsker jeg at se Helene Christines salg og salgsmiks, så jeg 
 
 ### US10 – Aktuelle data i dashboardet (P1)
 
-Som hotelledelse ønsker jeg automatisk opdaterede analyser, så jeg kan følge ændringer uden manuel genindlæsning.
+Som hotelledelse ønsker jeg at kunne hente aktuelle analyser ved at trykke refresh i Tableau, så jeg kan se gemte ændringer uden at genimportere råfiler.
 
-**Værdi og selvstændig prøve:** En gemt ændring måles fra bekræftet gemning til synlig ændring i et åbent Tableau-dashboard.
+**Værdi og selvstændig prøve:** En gemt ændring bliver synlig i det åbne Tableau-dashboard efter manuel datakilde-refresh, og tallene svarer til API’et for samme filtre.
 
-1. Ved oprettelse, rettelse eller aflysning af booking eller barsalg er relevante tal opdateret inden fem sekunder under normal lokal drift.
-2. En afvist ændring påvirker ikke dashboardet. Når datakilden ikke kan nås, viser dashboardet fejl og tidspunkt for sidste vellykkede opdatering.
+1. Efter oprettelse, rettelse eller aflysning af booking eller barsalg, når brugeren gennemfører datakilde-refresh inde i Tableau, viser relevante visninger de opdaterede API-tal for samme filtre. Der kræves ikke ny filimport eller manuel genopbygning af dashboardet.
+2. En afvist ændring påvirker ikke tallene efter refresh. Hvis API’et ikke kan nås under refresh, får brugeren en forståelig fejl; gamle tal beholder sidste vellykkede datatidspunkt og er tydeligt et snapshot frem for aktuelle tal.
 3. Dashboardet får alle analysedata via REST/JSON API'et og har ingen direkte MySQL- eller råfilforbindelse eller egne forretningsregler.
 
 ### US11 – Start og bevar prototype (P1)
@@ -189,7 +189,7 @@ Som gruppemedlem ønsker jeg at starte prototypen med én kommando, så den kan 
 | FR-004 | Lever bookingomsætning pr. år, sæson, type og land, gæsteophold og ranglister | US7 |
 | FR-005 | Lever belægningsgrad og ADR med dokumenterede nævnere og særskilt historik/prognose | US8 |
 | FR-006 | Lever årligt barsalg, omsætning pr. drik og begge kategoriandele for valgt medarbejder | US9 |
-| FR-007 | Opdater Tableau automatisk inden fem sekunder og synliggør fejl/aktualitet | US10 |
+| FR-007 | Hent opdaterede API-tal ved manuel datakilde-refresh i Tableau og synliggør snapshot-tidspunkt samt fejl ved refresh | US10 |
 | FR-008 | Gem aktuelle data i MySQL; indlæs startdata kun ved tom database og bevar ændringer | US11 |
 | FR-009 | Lever OpenAPI før endpoints implementeres og Swagger UI i Docker; kontrakt og adfærd skal stemme | US1–US11 |
 | FR-010 | Saml regler og beregninger i logiklaget; SQL kun i dataadgang; ingen klientgenveje | US1–US11 |
@@ -235,7 +235,7 @@ Filerne er undersøgt direkte den 29. oktober 2026. Originalerne ændres ikke.
 
 - **SC-001:** En testperson kan oprette en gyldig booking i browseren på højst to minutter og finde, rette og aflyse den uden at bruge Swagger eller databasen.
 - **SC-002:** Alle kontrollerede eksempler i US1–US9 giver de beskrevne beløb, antal og procenter; ugyldige skrivninger ændrer ingen data.
-- **SC-003:** Ti gentagelser for hver af oprettelse, rettelse og aflysning på både booking og barsalg opdaterer et åbent relevant Tableau-dashboard inden fem sekunder pr. gemning i lokal demoopsætning med 1.000 bookinger og 1.000 barsalg. Målingen starter ved bekræftet gemning og slutter ved synligt korrekt resultat. Afvigelser rapporteres som ikke opfyldt.
+- **SC-003:** Ti gentagelser for hver af oprettelse, rettelse og aflysning på både booking og barsalg gennemføres i lokal demoopsætning med 1.000 bookinger og 1.000 barsalg. Efter hver bekræftet gemning gennemfører brugeren datakilde-refresh i Tableau; ved vellykket afslutning skal dashboardet svare til API’ets forventede resultat for samme filtre. Registrér forventet/faktisk værdi, datatidspunkt og refresh-resultat. En særskilt prøve med afbrudt API skal give fejl uden falsk nyt datatidspunkt. Ingen femsekundersgrænse gælder.
 - **SC-004:** To samtidige forsøg på sidste ledige enhed kan ikke medføre overbooking; dette kontrolleres gentagne gange med en automatisk integrationstest.
 - **SC-005:** Prototypens Docker-tjenester starter fra en frisk kopi med `docker compose up` uden andre lokale installationer end Docker. Dette omfatter ikke Tableau-klienten; dens adgang, opsætning og forbindelse dokumenteres og demonstreres særskilt. Oprettede og rettede poster overlever stop/start uden genimport eller dubletter.
 - **SC-006:** API, frontend og Tableau viser ens tal for samme data og filtre. Automatisk testkommando dækker regler, nøgletal og kontraktens centrale forløb; Converge angiver bevis og status for hvert acceptkriterium.

@@ -15,6 +15,6 @@
 - [x] Specifikationen vælger ingen sprog, frameworks eller teknisk Tableau-løsning.
 - [x] Videre kontrol i Clarify og teknisk afprøvning i Plan er angivet.
 
-**Resultat ved afslutning af Specify:** Specify var klar til Clarify. Ingen acceptkriterier for den kommende applikation er endnu verificeret som implementeret. Tableau-opdatering inden fem sekunder er en udestående teknisk gennemførlighedsrisiko; konkret demokapacitet og importmapping fastlægges i Plan.
+**Resultat ved afslutning af Specify:** Specify var klar til Clarify. Ingen acceptkriterier for den kommende applikation er endnu verificeret som implementeret. Det daværende femsekunderskrav er siden erstattet af brugerens accept af manuel Tableau-refresh (se Clarify); den konkrete forbindelse er fortsat uafprøvet; konkret demokapacitet og importmapping fastlægges i Plan.
 
 Clarify og den efterfølgende kontrol mod opgave-PDF’erne findes i [clarify.md](../clarify.md). Denne fil er kvalitetschecklisten til Specify.
