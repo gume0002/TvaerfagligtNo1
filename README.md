@@ -6,6 +6,19 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 Projektet er stadig på planlægningsstadiet. Der er endnu ikke skrevet en kørende applikation, API, database eller Tableau-forbindelse. Diagrammet og gennemgangen nedenfor viser den arkitektur, vi skal arbejde hen imod.
 
+## Projektets dokumenter
+
+Følg [Spec Kit-overblikket](specs/README.md) i opgavens rækkefølge:
+
+**Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge**
+
+- [Constitution](.specify/memory/constitution.md): principper og faste krav.
+- [Specify](specs/004-hotelsystem/spec.md): gældende funktioner, regler og acceptkriterier.
+- [Clarify](specs/004-hotelsystem/clarify.md): afklaringer, begrundelser og åbne punkter.
+- [CONTRIBUTE](CONTRIBUTE.md): bidrag, review og verifikation.
+
+Plan er næste fase. De tidligere dokumentationsopgaver ligger igen direkte under `specs/` i mapperne 001, 002 og 003; de er beskrevet i [overblikket](specs/README.md).
+
 ## Opgavebeskrivelse
 
 De to opgave-PDF'er ligger i [`opgavebeskrivelse/`](opgavebeskrivelse/): [Hotel Kong Arthur-opgaven](opgavebeskrivelse/E26%20Tv%C3%A6rfaglig%20Opgave%20Hotel%20Kong%20Arthur.pdf) og [de supplerende spørgsmål](opgavebeskrivelse/Till%C3%A6gssp%C3%B8rgsm%C3%A5l_swa.pdf).
@@ -14,18 +27,23 @@ De to opgave-PDF'er ligger i [`opgavebeskrivelse/`](opgavebeskrivelse/): [Hotel 
 
 ```mermaid
 flowchart LR
-  Medarbejder[Hotelmedarbejder] --> Browser[Booking i browseren]
-  Browser -->|REST og JSON| API[API og præsentationslag]
-  API --> Logik[Forretningslogik]
-  Logik --> Data[Dataadgang]
-  Data -->|SQL| DB[(MySQL)]
-  DB --> Data
-  Data --> Logik
-  Logik --> API
-  API --> Browser
-  Swagger[Swagger UI] -->|viser OpenAPI-kontrakten| API
-  Tableau[Tableau-dashboard] -->|henter analyser via REST og JSON| API
-  CSV[Eksempeldata fra CSV] -.->|eventuel første indlæsning| DB
+  Medarbejder[Hotelmedarbejder] --> Browser[Browser]
+  Browser --> Frontend[Bookingfrontend]
+  Browser --> Swagger[Swagger UI]
+  Tableau[Tableau-dashboard] -->|REST / JSON| API
+  Hotel[Hotellets bookingsystem - fremtidig klient] -.->|REST / JSON| API
+  subgraph Docker[Planlagte tjenester i Docker Compose]
+    Frontend -->|REST / JSON| API
+    Swagger -->|API-kald| API
+    Kontrakt[OpenAPI-kontrakt] -->|vises i| Swagger
+    subgraph Backend[Backend med tre lag]
+      API[1. REST / API] --> Logik[2. Forretningslogik]
+      Logik --> Data[3. Dataadgang]
+    end
+    Data -->|SQL| DB[(MySQL)]
+    DB --- Volume[Navngivet volume]
+  end
+  Startdata[Startdata: kataloger og mærkede demodata] -.->|kun første opstart| Logik
 ```
 
 Bookingløsningen bruger API'et til at oprette, rette, vise og slette bookinger. API'et modtager og sender JSON. Forretningslogikken håndterer regler og beregninger, mens dataadgangen læser og skriver i MySQL. Tableau skal hente aktuelle tal gennem API'et; CSV-filer kan bruges som startdata, men ikke som eneste måde at opdatere systemet på.
@@ -49,7 +67,7 @@ De endelige adresser, felter, svar og statuskoder skal beskrives i OpenAPI-kontr
 
 **Helene Christine:** årets samlede salg, omsætning pr. drik og fordelingen mellem cocktails og kaffe.
 
-Specify er færdig i [`specs/004-hotelsystem/spec.md`](specs/004-hotelsystem/spec.md) og klar til Clarify. Den definerer et valgbart kalenderår, sæsoner, natbaseret bookingomsætning, særskilt passeret og forventet omsætning, belægning og ADR. Barens fordeling vises både efter antal og omsætning. Opgavens værelsespriser er estimater og må ikke fremstilles som faktiske bookingindtægter. Gæstetilfredshed har endnu intet datagrundlag.
+Specify er færdig i [`specs/004-hotelsystem/spec.md`](specs/004-hotelsystem/spec.md) med tilhørende afklaringer i [`clarify.md`](specs/004-hotelsystem/clarify.md). Næste trin er Plan med åbne fortolkningsrisici om kundetilfredshed og Tableau uden for Docker. Specifikationen definerer et valgbart kalenderår, sæsoner, natbaseret bookingomsætning, særskilt passeret og forventet omsætning, belægning og ADR. Barens fordeling vises både efter antal og omsætning. Opgavens værelsespriser er estimater og må ikke fremstilles som faktiske bookingindtægter. Gæstetilfredshed har endnu intet datagrundlag.
 
 ## Medfølgende eksempeldata
 
@@ -73,13 +91,13 @@ Vi følger Spec Kit-forløbet: grundprincipper, specifikation, afklaringer, plan
 
 Gruppen skal gennemgå og godkende de foreløbige grundprincipper i `.specify/memory/constitution.md`. Alle i gruppen skal kunne forklare den kode og dokumentation, de afleverer, også når AI har været brugt som hjælp.
 
-Afleveringen skal også indeholde `CONTRIBUTE.md` og OpenAPI-kontrakten. De mangler endnu og skal tilføjes, efterhånden som løsningen bliver bygget.
+Arbejdsgangen er beskrevet i [CONTRIBUTE.md](CONTRIBUTE.md). OpenAPI-kontrakten mangler endnu og skal udarbejdes i Plan, før endpoints implementeres.
 
 ## Næste trin
 
 Specify beskriver bookingfelter, salgsregler, analyser og acceptkriterier. Supplerende valg truffet ved færdiggørelsen er markeret i specifikationen. [Kvalitetskontrollen](specs/004-hotelsystem/checklists/requirements.md) beskriver dokumentationsstatus; funktionerne er endnu ikke implementeret.
 
-Clarify skal kontrollere valgene samlet. Derefter skal Plan fastlægge teknologier, datamodel, OpenAPI-kontrakt, præcis demokapacitet, importmapping og Docker-opsætning. Tableau-forbindelsen skal afprøves mod kravet om automatisk opdatering inden fem sekunder.
+Clarify har kontrolleret valgene samlet og dokumenteret afklaringerne i [clarify.md](specs/004-hotelsystem/clarify.md). Plan skal nu fastlægge teknologier, datamodel, OpenAPI-kontrakt, præcis demokapacitet, importmapping og Docker-opsætning. Tableau-forbindelsen skal afprøves mod projektets mål om automatisk opdatering inden fem sekunder; opgaven angiver ingen bestemt tidsgrænse. Clarify peger desuden på behov for afstemning med underviseren om manglende tilfredshedsberegning og fortolkningen af Tableau som ekstern klient uden for Docker. Disse punkter er endnu ikke dokumenteret accepteret.
 
 Hoteldataene mangler opholdsdatoer og gæsteantal, mens barfilen mangler salgsdato og medarbejder. Udaterede referenceposter må derfor ikke præsenteres som faktiske kalenderårsdata. Specifikationen kræver særskilt mærkede demodata til de daterede demonstrationsforløb.
 
