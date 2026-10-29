@@ -16,9 +16,10 @@ Følg [Spec Kit-overblikket](specs/README.md) i opgavens rækkefølge:
 - [Specify](specs/004-hotelsystem/spec.md): gældende funktioner, regler og acceptkriterier.
 - [Clarify](specs/004-hotelsystem/clarify.md): afklaringer, begrundelser og åbne punkter.
 - [Plan](specs/004-hotelsystem/plan.md): teknologier, lagdeling, datamodel, API-design, opstart og verifikation.
+- [Tasks](specs/004-hotelsystem/tasks.md): første udførelsesudkast grupperet efter brugerhistorier, med afhængigheder og acceptkontroller.
 - [CONTRIBUTE](CONTRIBUTE.md): bidrag, review og verifikation.
 
-Plan er udarbejdet til gennemgang; Tableau-afprøvningen er fortsat åben. De tidligere dokumentationsopgaver ligger igen direkte under `specs/` i mapperne 001, 002 og 003; de er beskrevet i [overblikket](specs/README.md).
+Plan og Tasks er udarbejdet til gruppens gennemgang; Tableau-afprøvningen og OpenAPI-kontrakten er fortsat åbne. De tidligere dokumentationsopgaver ligger igen direkte under `specs/` i mapperne 001, 002 og 003; de er beskrevet i [overblikket](specs/README.md).
 
 ## Opgavebeskrivelse
 
@@ -92,11 +93,11 @@ Vi følger Spec Kit-forløbet: grundprincipper, specifikation, afklaringer, plan
 
 Gruppen skal gennemgå og godkende de foreløbige grundprincipper i `.specify/memory/constitution.md`. Alle i gruppen skal kunne forklare den kode og dokumentation, de afleverer, også når AI har været brugt som hjælp.
 
-Arbejdsgangen er beskrevet i [CONTRIBUTE.md](CONTRIBUTE.md). OpenAPI-kontrakten mangler endnu og skal udarbejdes som designleverance efter Plan, før endpoints implementeres.
+Arbejdsgangen er beskrevet i [CONTRIBUTE.md](CONTRIBUTE.md). Tasks er udarbejdet som et første backlog; OpenAPI-kontrakten mangler endnu og skal skrives og gennemgås før endpoints implementeres.
 
 ## Næste trin
 
-Specify beskriver bookingfelter, salgsregler, analyser og acceptkriterier. Supplerende valg truffet ved færdiggørelsen er markeret i specifikationen. [Kvalitetskontrollen](specs/004-hotelsystem/checklists/requirements.md) beskriver dokumentationsstatus; funktionerne er endnu ikke implementeret.
+Specify beskriver bookingfelter, salgsregler, analyser og acceptkriterier. Supplerende valg truffet ved færdiggørelsen er markeret i specifikationen. [Kvalitetskontrollen](specs/004-hotelsystem/checklists/requirements.md) beskriver dokumentationsstatus; funktionerne er endnu ikke implementeret. Det første [task-udkast](specs/004-hotelsystem/tasks.md) gør implementeringsrækkefølgen konkret og fremhæver Tableau-afprøvningen og OpenAPI-kontrakten som tidlige designporte.
 
 Clarify har kontrolleret valgene samlet og dokumenteret afklaringerne i [clarify.md](specs/004-hotelsystem/clarify.md). [Plan](specs/004-hotelsystem/plan.md) fastlægger nu teknologier, datamodel, API-design, præcis demokapacitet, importmapping, Docker-opstart og teststrategi. Den fulde OpenAPI-kontrakt skal stadig udarbejdes og godkendes før endpointkode. Tableau-forbindelsen skal afprøves med manuel datakilde-refresh, som brugeren har accepteret. Efter refresh skal visningerne svare til API’ets aktuelle data og vise snapshot-tidspunktet. Clarify peger desuden på behov for afstemning med underviseren om manglende tilfredshedsberegning og fortolkningen af Tableau som ekstern klient uden for Docker. Disse punkter er endnu ikke dokumenteret accepteret.
 

@@ -8,7 +8,7 @@ Opgaven angiver rækkefølgen **Constitution → Specify → Clarify → Plan �
 | Specify | [spec.md](004-hotelsystem/spec.md) | Funktioner, brugere, domæneregler, krav, brugerhistorier og acceptkriterier. Dette er den gældende kravbeskrivelse. |
 | Clarify | [clarify.md](004-hotelsystem/clarify.md) | Afklaringer, begrundelser, kontrol mod opgaven og åbne punkter. Ændrede krav er indarbejdet i spec.md. |
 | Plan | [plan.md](004-hotelsystem/plan.md) | Teknisk plan udarbejdet til gennemgang; Tableau Public er bekræftet; manuel refresh er accepteret; praktisk afprøvning og fortolkningsrisici er åbne. |
-| Tasks | `004-hotelsystem/tasks.md` | Oprettes efter Plan; konkrete opgaver pr. brugerhistorie med afhængigheder. |
+| Tasks | [tasks.md](004-hotelsystem/tasks.md) | Første udførelsesudkast er udarbejdet efter Plan; opgaverne er grupperet efter brugerhistorie og viser designporte og afhængigheder. |
 | Implement | Applikationskode, kontrakt og Docker-tjenester | Udføres ud fra Tasks; endnu ikke implementeret. |
 | Converge | `004-hotelsystem/converge.md` | Oprettes ved gennemgang af implementeringen; bevis og status pr. acceptkriterium samt mangler til Tasks. |
 
@@ -26,7 +26,7 @@ Deres planer, opgaver og Converge-resultater vedrører de enkelte dokumentations
 
 ## Næste trin
 
-Læs constitution, spec, clarify og [plan](004-hotelsystem/plan.md) i den rækkefølge. Gennemgå de tekniske valg, udfør den tidlige integrationsprøve med den accepterede manuelle datakilde-refresh i Tableau Public. Tasks udarbejdes efter plangennemgangen med de åbne afhængigheder synlige. OpenAPI-kontrakten skal skrives og godkendes før endpointimplementering.
+Læs constitution, spec, clarify og [plan](004-hotelsystem/plan.md) i den rækkefølge. Gennemgå Plan og task-udkastet med gruppen. Udfør den tidlige prøve af manuel datakilde-refresh i Tableau Public, og skriv/gennemgå OpenAPI-kontrakten før endpointimplementering. Task-udkastet markerer disse som designporte og skal justeres, hvis Tableau-prøven ændrer integrationsdesignet.
 
 Ved brug af de medfølgende Spec Kit-scripts kan den aktive mappe angives eksplicit fra projektroden:
 
