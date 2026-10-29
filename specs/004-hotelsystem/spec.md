@@ -1,8 +1,8 @@
 # Specifikation: Hotelsystem
 
-**Branch:** `specify`  
+**Specifikationsmappe:** `specs/004-hotelsystem/`
 **Oprettet:** 26. oktober 2026 · **Opdateret:** 29. oktober 2026  
-**Status:** Specify færdig; klar til Clarify og gruppens gennemgang. Ingen funktioner er implementeret.
+**Status:** Specify og Clarify gennemgået; klar til Plan med de dokumenterede fortolkningsrisici og gruppens gennemgang. Ingen funktioner er implementeret.
 
 ## Formål og grundlag
 
@@ -136,8 +136,9 @@ Som hotelledelse ønsker jeg at se omsætning og gæsternes lande i Tableau, så
 2. Dashboardet viser samlet bookingomsætning, passeret og forventet del, fordeling pr. type/sæson/land samt bedst indtjenende typer og lande. Ranglister har tydelige beløb og håndterer lighed.
 3. En booking med to gæster og tre nætter giver to registrerede gæsteophold på landet, tre værelsesnætter og tre gange natprisen; gæster tælles ikke én gang pr. nat.
 4. År, sæson, land og type kan kombineres; API-tal og visning svarer til samme udvalg. Aflyste bookinger udelades.
+5. Omsætning kan vises pr. værelsestype opdelt på sæson, ikke kun som to separate totaler. Et ophold 28. februar–2. marts 2026 til 1.000 DKK pr. nat giver for samme type 1.000 DKK i lavsæson og 1.000 DKK i mellemsæson. Et sæsonfilter skal give samme beløb i API og Tableau.
 
-### US8 – Belægning og ekstra nøgletal (P2)
+### US8 – Belægning og ekstra nøgletal (P1)
 
 Som hotelledelse ønsker jeg at se belægning og gennemsnitlig værelsespris, så jeg kan vurdere kapacitetsudnyttelse sammen med omsætning.
 
@@ -156,6 +157,7 @@ Som hotelledelse ønsker jeg at se Helene Christines salg og salgsmiks, så jeg 
 1. Med tre cocktails til 100 DKK og to kaffer til 50 DKK i samme år vises 400 DKK, fem drikke, 300/100 DKK pr. drik/kategori, antalandele 60/40 % og omsætningsandele 75/25 %.
 2. Salg fra andre år eller medarbejdere tæller ikke med i Helene Christines valgte år. Medarbejderfilter kan ændres; standard er Helene Christine.
 3. Aflyste salg udelades. Uden salg vises 0 DKK og 0 enheder samt »Intet datagrundlag« for andele, uden division med nul.
+4. Startkataloget indeholder de 20 cocktails og 10 kaffetyper fra barfilen. Omsætning vises pr. navngiven drik; kategorisummer alene opfylder ikke dette kriterium.
 
 ### US10 – Aktuelle data i dashboardet (P1)
 
@@ -235,19 +237,10 @@ Filerne er undersøgt direkte den 29. oktober 2026. Originalerne ændres ikke.
 - **SC-002:** Alle kontrollerede eksempler i US1–US9 giver de beskrevne beløb, antal og procenter; ugyldige skrivninger ændrer ingen data.
 - **SC-003:** Ti gentagelser for hver af oprettelse, rettelse og aflysning på både booking og barsalg opdaterer et åbent relevant Tableau-dashboard inden fem sekunder pr. gemning i lokal demoopsætning med 1.000 bookinger og 1.000 barsalg. Målingen starter ved bekræftet gemning og slutter ved synligt korrekt resultat. Afvigelser rapporteres som ikke opfyldt.
 - **SC-004:** To samtidige forsøg på sidste ledige enhed kan ikke medføre overbooking; dette kontrolleres gentagne gange med en automatisk integrationstest.
-- **SC-005:** En frisk kopi starter med `docker compose up` uden andre lokale installationer end Docker. Oprettede og rettede poster overlever stop/start uden genimport eller dubletter.
+- **SC-005:** Prototypens Docker-tjenester starter fra en frisk kopi med `docker compose up` uden andre lokale installationer end Docker. Dette omfatter ikke Tableau-klienten; dens adgang, opsætning og forbindelse dokumenteres og demonstreres særskilt. Oprettede og rettede poster overlever stop/start uden genimport eller dubletter.
 - **SC-006:** API, frontend og Tableau viser ens tal for samme data og filtre. Automatisk testkommando dækker regler, nøgletal og kontraktens centrale forløb; Converge angiver bevis og status for hvert acceptkriterium.
 - **SC-007:** Alle påkrævede hotel- og barvisninger, README-arkitekturdiagram, CONTRIBUTE og Swagger UI kan demonstreres ved aflevering. Manglende grundlag fremgår tydeligt, herunder tilfredshed og udaterede rådata.
 
-## Kontrol af Specify og overgang til Clarify
+## Afklaringer
 
-Specify indeholder nu roller, afgrænsning, prioriterede historier, acceptkriterier, krav, entiteter, datakvalitet og målbare succeskriterier. Dette er dokumentationskontrol, ikke bevis for fungerende kode. Der findes endnu ingen browser/API/MySQL-kæde, kontrakt eller Tableau-forbindelse at funktionsteste.
-
-Følgende skal kontrolleres i Clarify uden at gentage interviewet unødigt:
-
-1. Gennemgå de supplerende domænevalg samlet for indbyrdes modstrid og sammenhold med opgaven og constitution, især datobaseret omsætning, logisk DELETE, demodata og manglende tilfredshed.
-2. Fasthold den ærlige adskillelse mellem udaterede referenceposter og daterede driftsdata. Indhent kun en anden fortolkning af `Price`, hvis en kilde faktisk dokumenterer den.
-3. Overfør Tableau-femsekunderskravet til en teknisk afprøvning i Plan. Det må ikke stiltiende erstattes med manuel opdatering eller erklæres opfyldt. Hvis afprøvningen viser konflikt, skal et ændret krav beskrives eksplicit.
-4. Overfør præcis demokapacitet, datamodel, endpointkontrakt, Tableau-forbindelse, fejl ved gentagne skrivninger og teststrategi til Plan. Der er ingen udestående interviewspørgsmål, som forhindrer Clarify.
-
-Ved den senere afsluttende gennemgang følges en booking fra browser gennem API, logik og dataadgang til MySQL. Kontrakten sammenholdes med faktisk adfærd, og Tableau kontrolleres mod API'et. Fund skal have filstier og konkrete eksempler. Ingen person tilskrives bidrag, som vedkommende ikke har udført.
+Clarify findes i [clarify.md](clarify.md). Dokumentet indeholder afklaringerne, sammenholdet med opgavebeskrivelsen, de åbne fortolkningsrisici, overdragelsen til Plan og kvalitetskontrollen. De afklaringer, som ændrede krav og acceptkriterier, er indarbejdet ovenfor.
