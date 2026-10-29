@@ -49,7 +49,7 @@ De endelige adresser, felter, svar og statuskoder skal beskrives i OpenAPI-kontr
 
 **Helene Christine:** årets samlede salg, omsætning pr. drik og fordelingen mellem cocktails og kaffe.
 
-Før tallene kan beregnes, skal gruppen beslutte blandt andet sæsonernes datoer, belægningsformlen, rapporteringsåret og hvilke indtægter der tæller med. Opgavens værelsespriser er estimater og må ikke fremstilles som faktiske bookingindtægter.
+Specify er færdig i [`specs/004-hotelsystem/spec.md`](specs/004-hotelsystem/spec.md) og klar til Clarify. Den definerer et valgbart kalenderår, sæsoner, natbaseret bookingomsætning, særskilt passeret og forventet omsætning, belægning og ADR. Barens fordeling vises både efter antal og omsætning. Opgavens værelsespriser er estimater og må ikke fremstilles som faktiske bookingindtægter. Gæstetilfredshed har endnu intet datagrundlag.
 
 ## Medfølgende eksempeldata
 
@@ -75,13 +75,12 @@ Gruppen skal gennemgå og godkende de foreløbige grundprincipper i `.specify/me
 
 Afleveringen skal også indeholde `CONTRIBUTE.md` og OpenAPI-kontrakten. De mangler endnu og skal tilføjes, efterhånden som løsningen bliver bygget.
 
-## Beslutninger, der mangler
+## Næste trin
 
-- Hvilke felter en booking har, og hvilke API-adresser brugerfladen skal kalde.
-- Hvordan sæsoner, belægning, rapporteringsår og omsætning defineres.
-- Hvor værelsespriser og barens salgsdata kommer fra.
-- Hvilket ekstra nøgletal hotellet skal have.
-- Hvordan Tableau henter og opdaterer tal fra API'et.
-- Hvilke Docker-tjenester der skal bruges, og hvordan databasen startes og gemmer data.
+Specify beskriver bookingfelter, salgsregler, analyser og acceptkriterier. Supplerende valg truffet ved færdiggørelsen er markeret i specifikationen. [Kvalitetskontrollen](specs/004-hotelsystem/checklists/requirements.md) beskriver dokumentationsstatus; funktionerne er endnu ikke implementeret.
+
+Clarify skal kontrollere valgene samlet. Derefter skal Plan fastlægge teknologier, datamodel, OpenAPI-kontrakt, præcis demokapacitet, importmapping og Docker-opsætning. Tableau-forbindelsen skal afprøves mod kravet om automatisk opdatering inden fem sekunder.
+
+Hoteldataene mangler opholdsdatoer og gæsteantal, mens barfilen mangler salgsdato og medarbejder. Udaterede referenceposter må derfor ikke præsenteres som faktiske kalenderårsdata. Specifikationen kræver særskilt mærkede demodata til de daterede demonstrationsforløb.
 
 Spec Kit-værktøjet i `.specify/` stammer fra [GitHub Spec Kit](https://github.com/github/spec-kit). Licensen følger med i `.specify/LICENSE.spec-kit`.
