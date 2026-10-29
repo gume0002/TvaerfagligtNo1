@@ -2,7 +2,7 @@
 
 ## Start med projektgrundlaget
 
-Læs [Spec Kit-overblikket](specs/README.md), [constitution](.specify/memory/constitution.md), [Specify](specs/004-hotelsystem/spec.md) og [Clarify](specs/004-hotelsystem/clarify.md) og [Plan](specs/004-hotelsystem/plan.md). Projektets aktuelle fase er gennemgang af Plan med åbne Tableau-afklaringer.
+Læs [Spec Kit-overblikket](specs/README.md), [constitution](.specify/memory/constitution.md), [Specify](specs/004-hotelsystem/spec.md), [Clarify](specs/004-hotelsystem/clarify.md), [Plan](specs/004-hotelsystem/plan.md) og [task-udkastet](specs/004-hotelsystem/tasks.md). Task-udkastet er klar til gruppens gennemgang; Tableau-forbindelsen er endnu ikke afprøvet.
 
 Følg Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge. Plan vælges før implementering, Tasks organiseres efter brugerhistorier, og OpenAPI-kontrakten skrives og godkendes før endpoints implementeres. Krav og acceptkriterier vedligeholdes i spec.md; afklaringer og begrundelser dokumenteres i clarify.md.
 
