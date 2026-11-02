@@ -113,6 +113,29 @@ class TestHotel:
         expect(page.locator("#hotel-revenue")).to_have_text("0,00 DKK")
 
 
+    def test_edited_booking_gives_new_figures(self, context, catalog):
+        created = book(context, catalog)
+        page = open_page(context)
+        expect(page.locator("#hotel-revenue")).to_have_text("3.000,00 DKK")
+        payload = {key: created[key] for key in ("guestName", "countryId", "roomTypeId", "arrival", "departure", "guestCount")}
+        response = context.request.put(f"/api/bookings/{created['id']}", data=json.dumps(payload | {"nightlyRate": "2000.00"}),
+                                       headers={"Content-Type": "application/json"})
+        assert response.status == 200, response.text()
+        page.reload()
+        expect(page.locator("#hotel-revenue")).to_have_text("6.000,00 DKK")
+
+    def test_year_and_room_type_filters_fetch_new_figures(self, context, catalog):
+        book(context, catalog)
+        book(context, catalog, roomTypeId=catalog.double, nightlyRate="500.00")
+        page = open_page(context)
+        page.get_by_label("Værelsestype", exact=True).select_option(label="Double Room")
+        expect(page.locator("#hotel-revenue")).to_have_text("1.500,00 DKK")
+        page.get_by_label("Værelsestype", exact=True).select_option(label="Alle")
+        expect(page.locator("#hotel-revenue")).to_have_text("4.500,00 DKK")
+        page.get_by_label("År", exact=True).select_option(str(YEAR - 1))
+        expect(page.locator("#hotel-revenue")).to_have_text("0,00 DKK")
+
+
 class TestBar:
     def test_us9_1_figures_and_shares(self, context, bar_sales):
         page = open_page(context)
@@ -125,6 +148,27 @@ class TestBar:
         expect(shares).to_contain_text("Kaffe 25,00 %")
         expect(page.locator("#chart-drinks")).to_contain_text("Negroni")
         expect(page.locator("#bar-employee")).to_have_text("Helene Christine")
+
+    def test_new_and_cancelled_sale_give_new_figures(self, context, bar_sales):
+        page = open_page(context)
+        expect(page.locator("#bar-revenue")).to_have_text("400,00 DKK")
+        catalogs = context.request.get("/api/catalogs").json()
+        negroni = next(item["id"] for item in catalogs["drinks"] if item["name"] == "Negroni")
+        sale = sell(context, negroni, catalogs["employees"][0]["id"], 1, "100.00")
+        page.reload()
+        expect(page.locator("#bar-revenue")).to_have_text("500,00 DKK")
+        assert context.request.delete(f"/api/bar-sales/{sale['id']}").status == 204
+        page.reload()
+        expect(page.locator("#bar-revenue")).to_have_text("400,00 DKK")
+
+    def test_employee_filter_fetches_that_employees_figures(self, context, empty_database, bar_sales):
+        with empty_database.begin() as connection:
+            connection.execute(text("INSERT INTO employees (code, name) VALUES ('anden', 'Anden Bartender')"))
+        page = open_page(context)
+        expect(page.locator("#bar-revenue")).to_have_text("400,00 DKK")
+        page.get_by_label("Medarbejder (bar)", exact=True).select_option(label="Anden Bartender")
+        expect(page.locator("#bar-employee")).to_have_text("Anden Bartender")
+        expect(page.locator("#bar-revenue")).to_have_text("0,00 DKK")
 
     def test_drinks_without_sales_are_shown(self, context, empty_database, catalog):
         with empty_database.begin() as connection:
