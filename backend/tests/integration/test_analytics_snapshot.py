@@ -1,4 +1,4 @@
-"""T012: MySQL snapshot spans repositories and does not change write isolation."""
+"""T012: database snapshot spans repositories and does not change write isolation."""
 from decimal import Decimal
 
 from sqlalchemy import text
@@ -22,7 +22,7 @@ def test_consistent_snapshot_across_concurrent_commits(catalog, engine, uow_fact
     with uow_factory() as reader:
         assert reader.catalogs.get_all().drinks[0].suggested_unit_price == Decimal('999.00')
     with engine.connect() as connection:
-        assert connection.scalar(text('SELECT @@transaction_isolation')) == 'READ-COMMITTED'
+        assert connection.scalar(text('SHOW transaction_isolation')) == 'read committed'
 
 
 def test_both_analyses_read_rows_from_their_catalog_snapshot(settings, frozen_clock, catalog, uow_factory, engine):

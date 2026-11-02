@@ -20,7 +20,7 @@ class Settings:
         origins = os.environ.get("CORS_ORIGINS", "")
         return cls(
             database_host=os.environ["DATABASE_HOST"],
-            database_port=int(os.environ.get("DATABASE_PORT", "3306")),
+            database_port=int(os.environ.get("DATABASE_PORT", "5432")),
             database_name=os.environ["DATABASE_NAME"],
             database_user=os.environ["DATABASE_USER"],
             database_password=os.environ["DATABASE_PASSWORD"],

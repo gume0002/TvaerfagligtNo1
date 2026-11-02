@@ -1,7 +1,7 @@
 """The interface the business layer needs from data access.
 
 Services receive a unit-of-work factory when the application starts, so they
-never import SQLAlchemy or know that the database is MySQL.
+never import SQLAlchemy or know that the database is PostgreSQL.
 """
 
 from collections.abc import Callable

@@ -35,7 +35,7 @@ class Clock:
     """Current time. Tests replace it with a frozen clock."""
 
     def now_utc(self) -> datetime:
-        """Current UTC time without tzinfo and microseconds, as stored in MySQL."""
+        """Current UTC time without tzinfo and microseconds, as stored in the database."""
         return datetime.now(timezone.utc).replace(tzinfo=None, microsecond=0)
 
     def business_date(self) -> date:

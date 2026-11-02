@@ -1,4 +1,4 @@
-"""US1-US4 through HTTP, the three layers and real MySQL.
+"""US1-US4 through HTTP, the three layers and real PostgreSQL.
 
 Every response is also compared with the OpenAPI contract.
 """
@@ -240,6 +240,11 @@ class TestUS2Search:
         assert search(client, name="100%")["total"] == 1
         assert search(client, name="a_b")["total"] == 1
 
+    def test_name_search_ignores_case_for_danish_letters(self, client, body):
+        created = create(client, body(guestName="Ærøskøbing Åse"))
+        assert [item["id"] for item in search(client, name="ærøskøbing åse")["items"]] == [created["id"]]
+        assert [item["id"] for item in search(client, name="ÆRØ")["items"]] == [created["id"]]
+
     def test_date_interval_shows_stays_with_at_least_one_common_night(self, client, body):
         ends_on_start = create(client, body(guestName="Slut", arrival="2026-06-08", departure="2026-06-10"))
         starts_on_end = create(client, body(guestName="Start", arrival="2026-06-12", departure="2026-06-14"))
@@ -449,7 +454,7 @@ class TestErrors:
             response = client.get(COLLECTION)
         assert_matches_contract(response, "GET", COLLECTION)
         assert response.status_code == 503
-        assert "pymysql" not in response.text.lower()
+        assert "psycopg" not in response.text.lower()
         assert "sql" not in response.text.lower()
 
     def test_unknown_path_and_method_use_the_shared_format(self, client):

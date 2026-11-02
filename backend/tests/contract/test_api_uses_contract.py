@@ -74,4 +74,4 @@ def test_startup_order_is_database_then_init_then_backend():
     services = yaml.safe_load((REPO_ROOT / "compose.yaml").read_text(encoding="utf-8"))["services"]
     assert services["init"]["depends_on"]["db"]["condition"] == "service_healthy"
     assert services["backend"]["depends_on"]["init"]["condition"] == "service_completed_successfully"
-    assert services["db"]["volumes"] == ["mysql_data:/var/lib/mysql"]
+    assert services["db"]["volumes"] == ["postgres_data:/var/lib/postgresql/data"]

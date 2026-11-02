@@ -1,4 +1,4 @@
-"""SC-004: simultaneous requests against real MySQL with independent connections."""
+"""SC-004: simultaneous requests against real PostgreSQL with independent connections."""
 
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
@@ -6,7 +6,8 @@ from decimal import Decimal
 from threading import Barrier
 
 import pytest
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
+from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 
 from app.business.booking_service import BookingService
@@ -163,3 +164,21 @@ def test_lock_conflicts_are_retried_three_times_and_then_reported(frozen_clock):
     with pytest.raises(TemporarilyUnavailable):
         service.cancel(1)
     assert len(attempts) == 3
+
+
+def test_real_lock_timeout_can_be_retried(catalog, uow_factory, session_factory):
+    """PostgreSQL's own error code must reach the retry rule."""
+    with session_factory() as holder:
+        holder.execute(text("SELECT id FROM room_types WHERE id = :id FOR UPDATE"), {"id": catalog.tiny})
+        with pytest.raises(RetryableTransactionError):
+            with uow_factory() as uow:
+                uow._session.execute(text("SET LOCAL lock_timeout = '100ms'"))
+                uow.catalogs.lock_room_type(catalog.tiny)
+        holder.rollback()
+
+
+def test_violated_constraint_is_not_reported_as_temporary(catalog, uow_factory):
+    """A bug must surface as an error, not as a temporary problem the client should retry."""
+    with pytest.raises(DBAPIError, match="ck_room_types_room_count"):
+        with uow_factory() as uow:
+            uow._session.execute(text("UPDATE room_types SET room_count = -1"))

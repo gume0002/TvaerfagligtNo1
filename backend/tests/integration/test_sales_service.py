@@ -1,4 +1,4 @@
-"""T033: sale creation through business and MySQL."""
+"""T033: sale creation through business and PostgreSQL."""
 from datetime import date
 from decimal import Decimal
 
