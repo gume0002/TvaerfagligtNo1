@@ -79,8 +79,8 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 
 - [x] T033 Implementér salgsregler i `backend/app/business/sale_service.py`: positivt heltal, kendt drik/medarbejder, positiv pris med højst to decimaler, salgsdato højst dags dato og fastfrosset salgspris.
 - [x] T034 Implementér `GET /api/catalogs` gennem alle tre lag for lande, værelsestyper, sæsonpriser, medarbejdere og drikke samt `POST /api/bar-sales` i `backend/app/api/catalogs.py` og `sales.py` efter OpenAPI.
-- [ ] T035 Byg registreringsformular og salgsoversigt i `frontend/`; hent drikke og medarbejdere fra API'et.
-- [ ] T036 Dæk US5-kriterierne med business-, MySQL-, kontrakt- og browserkontroller.
+- [ ] T035 Byg registreringsformular og salgsoversigt i `frontend/`; hent drikke og medarbejdere fra API'et. **Delvist:** Formularen er kontrolleret i browser; oversigten afventer T038.
+- [ ] T036 Dæk US5-kriterierne med business-, MySQL-, kontrakt- og browserkontroller. **Delvist:** Oprettelse, fejl og fastfrosset pris er kontrolleret; genlæsning og fuldt browserforløb følger T038–T040.
 
 ## Fase 7 – US6: Ret eller aflys barsalg (P2)
 

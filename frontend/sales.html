@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hotel Kong Arthur – Barsalg</title><link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="page-header"><h1>Hotel Kong Arthur</h1><p>Barsalg</p><nav><a href="/">Bookinger</a></nav></header>
+<main>
+<section class="panel">
+<h2 id="sale-title">Registrér barsalg</h2>
+<div id="sale-message" role="status" class="message" hidden></div>
+<form id="sale-form" novalidate>
+  <div class="field"><label for="drinkId">Drik</label><select id="drinkId" name="drinkId"></select><p data-error-for="drinkId" class="field-error"></p></div>
+  <div class="field"><label for="employeeId">Medarbejder</label><select id="employeeId" name="employeeId"></select><p data-error-for="employeeId" class="field-error"></p></div>
+  <div class="field"><label for="quantity">Antal</label><input id="quantity" name="quantity" type="number" step="1"><p data-error-for="quantity" class="field-error"></p></div>
+  <div class="field"><label for="unitPrice">Enhedspris (DKK)</label><input id="unitPrice" name="unitPrice" inputmode="decimal"><p data-error-for="unitPrice" class="field-error"></p></div>
+  <div class="field"><label for="saleDate">Salgsdato</label><input id="saleDate" name="saleDate" type="date"><p data-error-for="saleDate" class="field-error"></p></div>
+  <div class="actions wide"><button id="sale-save" class="primary">Registrér salg</button></div>
+</form>
+</section>
+<section class="panel"><h2>Salgsoversigt</h2>
+<div id="sale-search-message" role="alert" class="message error" hidden></div>
+<p id="sale-count" aria-live="polite"></p>
+<div class="table-wrap"><table><thead><tr><th>Nr.</th><th>Drik</th><th>Medarbejder</th><th>Dato</th><th>Antal</th><th>Pris</th><th>Beløb</th><th>Status</th><th>Handlinger</th></tr></thead><tbody id="sale-rows"></tbody></table></div>
+<p id="sale-empty" hidden>Ingen salg matcher søgningen.</p>
+<div class="pagination"><button id="sale-previous">Forrige</button><button id="sale-next">Næste</button></div>
+</section></main><script type="module" src="js/sales.js"></script>
+</body></html>
