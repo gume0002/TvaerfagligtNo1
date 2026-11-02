@@ -4,11 +4,11 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 ## Hvor langt er vi?
 
-Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem API'et. Hotel- og baranalyser beregnes i backendens forretningslogik fra aktuelle MySQL-data. Milepæl 3 er implementeret; [kontrol og afgrænsning](specs/004-hotelsystem/milestone-3.md) beskriver det faktisk afprøvede.
+Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem API'et. Hotel- og baranalyser beregnes i backendens forretningslogik fra aktuelle MySQL-data. Tableau-dashboardet er bygget og bruger backendens OData-feed. [Milepæl 3-kontrollen](specs/004-hotelsystem/milestone-3.md) beskriver den afgrænsede kontrol af backendfunktionerne; den samlede afleveringsgennemgang mangler stadig.
 
 **Tableau:** Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) henter sine tal fra API'ets OData-feed og er kontrolleret mod API'et for flere filtervalg. Se [vejledningen](tableau/README.md).
 
-**Mangler endnu:** Refresh-prøverne mod det rigtige system (T054, T055), underviserafklaringen om kundetilfredshed og Tableau uden for Docker, testpersonens prøve og den afsluttende Converge.
+**Mangler endnu:** Afklar med underviseren, om manglende tilfredshedsdata og Tableau uden for Docker accepteres (T001). T002 er delvist udført; refresh efter fixture-rettelse og aflysning mangler. T054 mangler refresh-prøver for barsalg og fejlet API-forbindelse mod det rigtige system. T055's 60 refresh-prøver mangler. Den samlede testkørsel, den manuelle bookingprøve, acceptkriteriegennemgangen, Converge, gruppens review og præsentationsforberedelsen står også åbne (T062–T068). Se [tasklisten](specs/004-hotelsystem/tasks.md) for status.
 
 ## Start systemet
 
@@ -110,7 +110,7 @@ Går svaret tabt, og medarbejderen gemmer igen, genbruges samme nøgle. Så bliv
 
 ## Tal, systemet skal kunne vise
 
-Resultaterne leveres gennem REST API'et. Tableau-visningerne er endnu ikke bygget.
+Resultaterne leveres gennem REST API'et. Tableau-dashboardet er bygget; dets funktioner og de gennemførte og manglende refresh-prøver er beskrevet i [Tableau-vejledningen](tableau/README.md).
 
 **Hotellet:** gæsternes lande, omsætning fordelt på værelsestype, sæson og land, de værelsestyper og lande der giver størst omsætning, årets samlede omsætning samt belægning og ADR. Gæstetilfredshed har intet datagrundlag og vises som »Intet datagrundlag«.
 

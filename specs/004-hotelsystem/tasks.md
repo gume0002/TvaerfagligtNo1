@@ -128,7 +128,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 
 - [x] T052 Implementér den API-læseprojektion, som T002 og den godkendte kontrakt har vist virker i Tableau Public (OData V4 hvis afprøvningen lykkes), i `backend/app/api/`; fladgør færdigberegnede resultater fra samme analytics-service uden SQL eller egne Tableau-regler.
 - [x] T053 Implementér feedmetadata, datatyper, filtre og paginering, så de følger `openapi.yaml` og den dokumenterede Tableau Public-afprøvning.
-- [ ] T054 Afprøv fuld indlæsning/manuel refresh i Tableau efter oprettelse, rettelse og aflysning af booking og salg; kontrollér API-paritet for samme filtre, snapshot-tidspunkt og fejl ved utilgængeligt API. Dokumentér forløb og begrænsninger i `tableau/README.md`.
+- [ ] T054 Afprøv fuld indlæsning/manuel refresh i Tableau efter oprettelse, rettelse og aflysning af booking og salg; kontrollér API-paritet for samme filtre, snapshot-tidspunkt og fejl ved utilgængeligt API. Dokumentér forløb og begrænsninger i `tableau/README.md`. **Delvist:** Bookingens oprettelse, rettelse og aflysning er afprøvet mod systemet. Barsalg og fejlet API-forbindelse mod systemet mangler; se `tableau/README.md`.
 - [ ] T055 Gennemfør og registrér SC-003-kontrolarket med 1.000 bookinger og 1.000 salg: ti oprettelser, ti rettelser og ti aflysninger for hver ressourcetype, hver fulgt af Tableau-refresh og sammenligning med API. Registrér også afbrudt API; ingen femsekundersmåling kræves.
 
 ## Fase 12 – US11: Start og bevar prototype (P1)

@@ -1,6 +1,8 @@
 # Prompt til Milepæl 4: Tableau og aflevering
 
-Kopiér teksten nedenfor til den næste implementeringssession, når Milepæl 3 er gennemgået og merged. Prompten er en arbejdsinstruks baseret på de vedtagne dokumenter, ikke en ny kravspecifikation.
+**Status:** Dette er en gemt arbejdsinstruks fra før Milepæl 4. Milepæl 4 er siden merged til `main`; brug den aktuelle [taskliste](tasks.md) som statuskilde. Prompten bevares som historik/reference og er ikke i sig selv et ubesvaret krav eller en aktuel opgave.
+
+Kopiér kun teksten nedenfor til en ny implementeringssession, hvis gruppen bevidst genåbner dette arbejde. Prompten er en arbejdsinstruks baseret på de vedtagne dokumenter, ikke en ny kravspecifikation.
 
 ---
 

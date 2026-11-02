@@ -2,7 +2,7 @@
 
 ## Start med projektgrundlaget
 
-Læs [Spec Kit-overblikket](specs/README.md), [constitution](.specify/memory/constitution.md), [Specify](specs/004-hotelsystem/spec.md), [Clarify](specs/004-hotelsystem/clarify.md), [Plan](specs/004-hotelsystem/plan.md) og [task-udkastet](specs/004-hotelsystem/tasks.md). Task-udkastet er klar til gruppens gennemgang; Tableau-forbindelsen er endnu ikke afprøvet.
+Læs [Spec Kit-overblikket](specs/README.md), [constitution](.specify/memory/constitution.md), [Specify](specs/004-hotelsystem/spec.md), [Clarify](specs/004-hotelsystem/clarify.md), [Plan](specs/004-hotelsystem/plan.md) og den aktuelle [taskliste](specs/004-hotelsystem/tasks.md). Tableau-forbindelsen og dashboardet er delvist afprøvet; resterende prøver og åbne afklaringer står i tasklisten og [Tableau-vejledningen](tableau/README.md).
 
 Følg Constitution → Specify → Clarify → Plan → Tasks → Implement → Converge. Plan vælges før implementering, Tasks organiseres efter brugerhistorier, og OpenAPI-kontrakten skrives og godkendes før endpoints implementeres. Krav og acceptkriterier vedligeholdes i spec.md; afklaringer og begrundelser dokumenteres i clarify.md.
 
@@ -46,7 +46,7 @@ docker compose --profile test run --rm -e PYTHONPATH=/workspace/backend test pyt
 
 Prøven bruger Chromium i testcontaineren og `host.docker.internal:8080/8081` til demoen på Docker Desktop. `DEMO_URL` og `SWAGGER_URL` kan overskrives med `-e`, hvis værten er en anden. Den opretter en navngivet prøvebooking og et salg, kontrollerer analysernes ændringer og Swagger UI, og aflyser sine egne poster i `finally`. De bevares i historikken; der slettes ingen eksisterende data eller volumes. Kør den uden samtidige demoændringer, da den sammenligner totaler før/efter.
 
-Læs [Milepæl 3-kontrollen](specs/004-hotelsystem/milestone-3.md) før review. T047/T050 er kun færdige på API-siden. T001/T002, Tableau, testpersonens prøve og gruppens Converge/review er ikke godkendt af disse tests.
+Læs [Milepæl 3-kontrollen](specs/004-hotelsystem/milestone-3.md) som en afgrænset historisk kontrol af backendændringerne. Den dækker ikke senere Tableau-arbejde eller den samlede aflevering. Aktuel status for Tableau, resterende prøver og Converge står i [README](README.md) og [tasklisten](specs/004-hotelsystem/tasks.md).
 
 ## Ejerskab
 

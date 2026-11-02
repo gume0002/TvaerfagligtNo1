@@ -4,7 +4,9 @@
 
 **Branch:** `Plan`
 
-**Status:** Teknisk plan udarbejdet til gruppens gennemgang. Tableau Public er bekræftet af gruppen. En praktisk integrationsprøve, den konkrete manuelle refresh i Public og de to fortolkningsrisici fra Clarify er åbne. Brugeren har accepteret manuel datakilde-refresh. Planen er ikke bevis for implementeret forbindelse eller gennemført acceptprøve.
+**Status ved planens udarbejdelse:** Teknisk plan udarbejdet til gruppens gennemgang. På det tidspunkt var Tableau Public bekræftet af gruppen, manuel refresh accepteret af brugeren, og integrationsprøver samt de to fortolkningsrisici åbne. Planen er et dateret designgrundlag, ikke en aktuel statusrapport. Siden er Tableau-dashboardet og OData-feedet implementeret og delvist afprøvet. Aktuel status og resterende prøver står i [tasklisten](tasks.md) og [Tableau-vejledningen](../../tableau/README.md).
+
+Statusnoter og designforslag længere nede beskriver planlægningsfasen den 29. oktober 2026, medmindre de er tydeligt opdateret. Brug dem som historik for beslutningerne; brug ikke de gamle fremtidsformuleringer som aktuel projektstatus.
 
 **Grundlag:** [Specify](spec.md), [Clarify](clarify.md), [constitution](../../.specify/memory/constitution.md), begge opgave-PDF’er i `opgavebeskrivelse/`, Spec Kits planskabelon og [hotel-architecture-review](../../project-skills/hotel-architecture-review/SKILL.md).
 
@@ -309,7 +311,7 @@ Den 29. oktober 2026 er projektets spec, clarify, constitution, planskabelon, ar
 - [x] Tableau Public er bekræftet af gruppen; præcis version kontrolleres under afprøvning.
 - [x] Brugeren har accepteret manuel datakilde-refresh; US10, FR-007 og SC-003 er opdateret.
 - [ ] Tableau-forbindelse, filtre, manuel datakilde-refresh og fejlvisning er afprøvet praktisk.
-- [ ] Den fulde OpenAPI-kontrakt er skrevet, valideret og gennemgået før endpointimplementering.
+- [x] Den fulde OpenAPI-kontrakt er skrevet, valideret og gennemgået før endpointimplementering (T003–T004).
 - [ ] Fortolkningsrisiciene fra Clarify er afstemt med underviser.
 
 **Resultat:** Planens dokumentationsdel er udarbejdet. De åbne punkter kræver opfølgning; planen må ikke omtales som et færdigafprøvet teknisk grundlag for Tableau-delen.
