@@ -4,7 +4,31 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 ## Hvor langt er vi?
 
-Projektet er stadig på planlægningsstadiet. Der er endnu ikke skrevet en kørende applikation, API, database eller Tableau-forbindelse. Diagrammet og gennemgangen nedenfor viser den arkitektur, vi skal arbejde hen imod.
+Bookingdelen er bygget og kan køres: bookinger kan oprettes, findes, rettes og slettes i browseren gennem API'et, og data gemmes i MySQL.
+
+**Mangler endnu:** barsalg, analyser og Tableau-dashboard. Kontrakten beskriver allerede endpoints til barsalg og analyser, men de svarer endnu ikke. Tableau-prøven er ikke afsluttet, og kontrakten mangler Tableaus læsefeed.
+
+## Start systemet
+
+Systemet kræver kun Docker. Kør dette fra projektmappen:
+
+```sh
+docker compose up
+```
+
+| Adresse | Indhold |
+|---|---|
+| <http://localhost:8080> | Bookingfrontend |
+| <http://localhost:8080/api/health> | API'ets driftsstatus |
+| <http://localhost:8081> | Swagger UI med OpenAPI-kontrakten |
+
+| Handling | Kommando | Data |
+|---|---|---|
+| Stop | `Ctrl+C` eller `docker compose stop` | Bevares |
+| Stop og fjern containere | `docker compose down` | Bevares |
+| **Nulstil alt** | `docker compose down -v` | **Slettes**, og startdata indlæses igen ved næste start |
+
+Hvis et andet program bruger port 8080 eller 8081, kan adresserne ramme det program i stedet for hotelsystemet, også selv om alle containere starter uden fejl. Stop det andet program før en demo.
 
 ## Projektets dokumenter
 
@@ -16,12 +40,12 @@ Følg [Spec Kit-overblikket](specs/README.md) i opgavens rækkefølge:
 - [Specify](specs/004-hotelsystem/spec.md): gældende funktioner, regler og acceptkriterier.
 - [Clarify](specs/004-hotelsystem/clarify.md): afklaringer, begrundelser og åbne punkter.
 - [Plan](specs/004-hotelsystem/plan.md): teknologier, lagdeling, datamodel, API-design, opstart og verifikation.
-- [Tasks](specs/004-hotelsystem/tasks.md): første udførelsesudkast grupperet efter brugerhistorier, med afhængigheder og acceptkontroller.
-- [OpenAPI-kontrakt](specs/004-hotelsystem/contracts/openapi.yaml): udkast til REST API'et, som gruppen skal godkende før endpoints implementeres.
+- [Tasks](specs/004-hotelsystem/tasks.md): opgaver grupperet efter brugerhistorier, med status og afhængigheder.
+- [OpenAPI-kontrakt](specs/004-hotelsystem/contracts/openapi.yaml): API'ets kontrakt, som også vises i Swagger UI.
 - [Tableau-afprøvning](tableau/README.md): fixture og vejledning til prøven af OData i Tableau Public.
-- [CONTRIBUTE](CONTRIBUTE.md): bidrag, review og verifikation.
+- [CONTRIBUTE](CONTRIBUTE.md): bidrag, review, tests og verifikation.
 
-Plan og Tasks er udarbejdet til gruppens gennemgang. Tableau-prøven er ikke udført, og OpenAPI-kontrakten er ikke godkendt og mangler Tableaus læsefeed. De tidligere dokumentationsopgaver ligger igen direkte under `specs/` i mapperne 001, 002 og 003; de er beskrevet i [overblikket](specs/README.md).
+De tidligere dokumentationsopgaver ligger direkte under `specs/` i mapperne 001, 002 og 003; de er beskrevet i [overblikket](specs/README.md).
 
 ## Opgavebeskrivelse
 
@@ -29,80 +53,91 @@ De to opgave-PDF'er ligger i [`opgavebeskrivelse/`](opgavebeskrivelse/): [Hotel 
 
 ## Sådan hænger systemet sammen
 
+Stiplede linjer er endnu ikke implementeret.
+
 ```mermaid
 flowchart LR
   Medarbejder[Hotelmedarbejder] --> Browser[Browser]
-  Browser --> Frontend[Bookingfrontend]
-  Browser --> Swagger[Swagger UI]
-  Tableau[Tableau-dashboard] -->|REST / JSON| API
-  Hotel[Hotellets bookingsystem - fremtidig klient] -.->|REST / JSON| API
-  subgraph Docker[Planlagte tjenester i Docker Compose]
-    Frontend -->|REST / JSON| API
-    Swagger -->|API-kald| API
-    Kontrakt[OpenAPI-kontrakt] -->|vises i| Swagger
+  Browser -->|localhost:8080| Nginx
+  Browser -->|localhost:8081| Swagger
+  Tableau[Tableau Public - ekstern klient] -.->|API, form afhænger af T002| Nginx
+  Hotel[Hotellets bookingsystem - fremtidig klient] -.->|REST / JSON| Nginx
+  subgraph Docker[Docker Compose]
+    Nginx[Nginx: frontend og proxy til /api/]
+    Swagger[Swagger UI]
+    Kontrakt[OpenAPI-kontrakt] -->|monteret read-only| Swagger
+    Swagger -->|REST / JSON| Nginx
+    Nginx -->|REST / JSON| API
     subgraph Backend[Backend med tre lag]
-      API[1. REST / API] --> Logik[2. Forretningslogik]
-      Logik --> Data[3. Dataadgang]
+      API[1. API: backend/app/api] --> Logik[2. Forretningslogik: backend/app/business]
+      Logik --> Data[3. Dataadgang: backend/app/data_access]
     end
-    Data -->|SQL| DB[(MySQL)]
-    DB --- Volume[Navngivet volume]
+    Data -->|SQL| DB[(MySQL 8.4)]
+    DB --- Volume[Navngivet volume: mysql_data]
+    Init[Init: migrationer og startdata] --> DB
   end
-  Startdata[Startdata: kataloger og mærkede demodata] -.->|kun første opstart| Logik
+  Raadata[data/raw] -->|kun første opstart| Init
 ```
 
-Bookingløsningen bruger API'et til at oprette, rette, vise og slette bookinger. API'et modtager og sender JSON. Forretningslogikken håndterer regler og beregninger, mens dataadgangen læser og skriver i MySQL. Tableau skal hente aktuelle tal gennem API'et; CSV-filer kan bruges som startdata, men ikke som eneste måde at opdatere systemet på.
+| Tjeneste | Rolle |
+|---|---|
+| `db` | MySQL. Kan kun nås internt, og data ligger i `mysql_data`. |
+| `init` | Engangsjob, der kører migrationer og indlæser startdata, når databasen er klar. |
+| `backend` | FastAPI med de tre lag. Starter først, når `init` er færdig. |
+| `frontend` | Nginx, der serverer browserfronten og sender `/api/` videre til backend. |
+| `swagger` | Swagger UI, der viser den versionerede kontrakt. |
 
-Plan vælger Python/FastAPI, SQLAlchemy/PyMySQL, MySQL 8.4 og en HTML/CSS/JavaScript-frontend med Nginx. Swagger UI viser den versionerede OpenAPI-kontrakt i Docker. De konkrete tjenester er beskrevet i Plan. Gruppen har Tableau Public; OData V4 undersøges til API-baserede udtræk. Brugeren har accepteret manuel datakilde-refresh inde i Tableau; det tidligere femsekunderskrav er erstattet. Den konkrete refresh-forbindelse er endnu ikke afprøvet.
+Tjenesterne finder hinanden ved navn på Docker-netværket, fx `db` og `backend`. Kun `frontend` og `swagger` kan nås udefra, og kun fra din egen maskine.
+
+Plan beskriver, hvorfor netop Python/FastAPI, SQLAlchemy/PyMySQL, MySQL og en HTML/CSS/JavaScript-frontend med Nginx er valgt. Gruppen har Tableau Public; OData V4 undersøges til API-baserede udtræk, og manuel refresh inde i Tableau er accepteret.
 
 ## Eksempel: en ny booking
 
-1. En medarbejder udfylder bookingformularen i browseren.
-2. Browseren sender oplysningerne som JSON til API'et.
-3. API-laget kontrollerer formatet og sender anmodningen videre.
-4. Forretningslogikken kontrollerer bookingreglerne, for eksempel datoer, kapacitet og ledige værelser.
-5. Dataadgangen gemmer bookingen i MySQL.
-6. API'et svarer med resultatet, og browseren viser den gemte booking.
+1. En medarbejder udfylder formularen. `frontend/js/app.js` laver en idempotensnøgle og sender JSON til `POST /api/bookings`.
+2. Nginx sender forespørgslen videre til backend.
+3. `backend/app/api/bookings.py` kontrollerer formatet og oversætter JSON til et domæneobjekt.
+4. `backend/app/business/booking_service.py` kontrollerer felterne, åbner en transaktion og låser værelsestypen gennem dataadgangen.
+5. Servicen kontrollerer gæsteantal og ledig kapacitet for hver nat. Afvises bookingen, rulles alt tilbage, og brugeren får en JSON-fejl med en forståelig besked.
+6. `backend/app/data_access/repositories.py` gemmer bookingen og idempotensresultatet i MySQL i samme transaktion.
+7. API'et svarer `201` med bookingen og en `Location`-header, og browseren viser den i listen.
 
-De endelige adresser, felter, svar og statuskoder skal beskrives i OpenAPI-kontrakten. Tableau skal læse analysetal fra API'et og må ikke hente dem direkte fra databasen.
+Går svaret tabt, og medarbejderen gemmer igen, genbruges samme nøgle. Så bliver der ikke oprettet en dobbelt booking.
 
 ## Tal, systemet skal kunne vise
 
-**Hotellet:** gæsternes lande, omsætning fordelt på værelsestype, sæson og land, de værelsestyper og lande der giver størst omsætning, årets samlede omsætning samt mindst ét ekstra nøgletal. Belægning og gæstetilfredshed indgår, hvis datagrundlaget gør det muligt at beregne dem på en meningsfuld måde.
+Disse visninger er endnu ikke bygget.
 
-**Helene Christine:** årets samlede salg, omsætning pr. drik og fordelingen mellem cocktails og kaffe.
+**Hotellet:** gæsternes lande, omsætning fordelt på værelsestype, sæson og land, de værelsestyper og lande der giver størst omsætning, årets samlede omsætning samt belægning og ADR. Gæstetilfredshed har intet datagrundlag og vises som »Intet datagrundlag«.
 
-Specify er færdig i [`specs/004-hotelsystem/spec.md`](specs/004-hotelsystem/spec.md) med tilhørende afklaringer i [`clarify.md`](specs/004-hotelsystem/clarify.md). Den tekniske [Plan](specs/004-hotelsystem/plan.md) er udarbejdet med åbne fortolkningsrisici om kundetilfredshed og Tableau uden for Docker. Specifikationen definerer et valgbart kalenderår, sæsoner, natbaseret bookingomsætning, særskilt passeret og forventet omsætning, belægning og ADR. Barens fordeling vises både efter antal og omsætning. Opgavens værelsespriser er estimater og må ikke fremstilles som faktiske bookingindtægter. Gæstetilfredshed har endnu intet datagrundlag.
+**Helene Christine:** årets samlede salg, omsætning pr. drik og fordelingen mellem cocktails og kaffe, både efter antal og omsætning.
 
-## Medfølgende eksempeldata
+Specifikationen definerer et valgbart kalenderår, sæsoner, natbaseret bookingomsætning og særskilt passeret og forventet omsætning. Opgavens værelsespriser er estimater og må ikke fremstilles som faktiske bookingindtægter.
 
-De oprindelige datafiler ligger i [`data/raw/`](data/raw/). Hoteldataene findes både som CSV og Excel med 1.000 gæsteposter. Barens Excel-fil indeholder 20 cocktails og 10 kaffetyper med priser og solgte enheder. Filerne er reference- og eksempeldata; de er ikke en database eller en mekanisme til at opdatere aktuelle data.
+## Data
 
-Filerne er bevaret uændret. Hotel-CSV'en indeholder 54 erstatningstegn (`�`) i navne, og Excel-udgaven har en ekstra værdi (`5379`) i celle E1002 ud over de 1.000 poster. Kontrollér og afklar disse værdier, før dataene indlæses eller bruges til analyser.
+De oprindelige datafiler ligger uændret i [`data/raw/`](data/raw/). Ved første start på en tom database sker dette i én transaktion:
 
-## Start af systemet
+- **Kataloger:** 20 lande, 8 værelsestyper med i alt 214 værelser og 30 drikke (20 cocktails og 10 kaffetyper).
+- **Referenceposter:** 1.000 hotelposter og 30 drikke gemmes uændret og adskilt fra bookinger. De indgår ikke som aktuelle data, fordi de mangler datoer.
+- **Demodata:** 24 bookinger og 12 barsalg, der er reproducerbare og mærket »Demodata«.
+- **Importrapport:** Tabellen `import_reports` viser, hvad der er udeladt. Det gælder den løse værdi `5379` i celle E1002 og CSV-filen, som ikke importeres, fordi den indeholder de samme poster som Excel-filen og 54 erstatningstegn (`�`) i navne.
 
-Målet er, at hele systemet kan startes fra projektmappen med:
+Ved senere starter genindlæses intet, og ændringer bevares. Indeholder databasen data uden en fuldført markør, stopper `init` med en fejl i stedet for at overskrive noget.
+
+Antal værelser, gæstegrænser og vejledende priser pr. type er konstruerede demodata, ikke hotellets faktiske fordeling.
+
+## Kendte begrænsninger
+
+- **Ingen adgangskontrol:** Alle, der kan nå API'et, kan læse og ændre data. Det er et bevidst valg for prototypen og den største mangel før produktion.
+- **Lande:** Kataloget indeholder kun de 20 lande fra hoteldataene. Danmark er ikke med.
+- **Én backend og én database:** Ændringer på samme værelsestype venter på hinanden, og systemet har ingen høj tilgængelighed.
+
+## Tests og bidrag
 
 ```sh
-docker compose up
+docker compose --profile test run --build --rm test
 ```
 
-Docker Compose-filen og tjenesterne er endnu ikke lavet. Plan beskriver database-healthcheck, migration/seed før backendstart, navngivet volume og Swagger UI med monteret kontrakt.
-
-## Arbejdsgang og bidrag
-
-Vi følger Spec Kit-forløbet: grundprincipper, specifikation, afklaringer, plan, opgaver, implementering og til sidst en gennemgang af, hvad der virker, og hvad der mangler. Hver brugerhistorie skal have acceptkriterier, som kontrolleres i den afsluttende gennemgang.
-
-Gruppen skal gennemgå og godkende de foreløbige grundprincipper i `.specify/memory/constitution.md`. Alle i gruppen skal kunne forklare den kode og dokumentation, de afleverer, også når AI har været brugt som hjælp.
-
-Arbejdsgangen er beskrevet i [CONTRIBUTE.md](CONTRIBUTE.md). Tasks er udarbejdet som et første backlog; OpenAPI-kontrakten foreligger som udkast og skal gennemgås og godkendes før endpoints implementeres.
-
-## Næste trin
-
-Specify beskriver bookingfelter, salgsregler, analyser og acceptkriterier. Supplerende valg truffet ved færdiggørelsen er markeret i specifikationen. [Kvalitetskontrollen](specs/004-hotelsystem/checklists/requirements.md) beskriver dokumentationsstatus; funktionerne er endnu ikke implementeret. Det første [task-udkast](specs/004-hotelsystem/tasks.md) gør implementeringsrækkefølgen konkret og fremhæver Tableau-afprøvningen og OpenAPI-kontrakten som tidlige designporte.
-
-Clarify har kontrolleret valgene samlet og dokumenteret afklaringerne i [clarify.md](specs/004-hotelsystem/clarify.md). [Plan](specs/004-hotelsystem/plan.md) fastlægger nu teknologier, datamodel, API-design, præcis demokapacitet, importmapping, Docker-opstart og teststrategi. OpenAPI-kontrakten foreligger som udkast uden Tableaus læsefeed og skal godkendes før endpointkode. Tableau-forbindelsen skal afprøves med manuel datakilde-refresh, som brugeren har accepteret. Efter refresh skal visningerne svare til API’ets aktuelle data og vise snapshot-tidspunktet. Clarify peger desuden på behov for afstemning med underviseren om manglende tilfredshedsberegning og fortolkningen af Tableau som ekstern klient uden for Docker. Disse punkter er endnu ikke dokumenteret accepteret.
-
-Hoteldataene mangler opholdsdatoer og gæsteantal, mens barfilen mangler salgsdato og medarbejder. Udaterede referenceposter må derfor ikke præsenteres som faktiske kalenderårsdata. Specifikationen kræver særskilt mærkede demodata til de daterede demonstrationsforløb.
+Kommandoen bruger sin egen database og rører ikke demoens data. Arbejdsgangen er beskrevet i [CONTRIBUTE.md](CONTRIBUTE.md). Alle i gruppen skal kunne forklare den kode og dokumentation, de afleverer, også når AI har været brugt som hjælp.
 
 Spec Kit-værktøjet i `.specify/` stammer fra [GitHub Spec Kit](https://github.com/github/spec-kit). Licensen følger med i `.specify/LICENSE.spec-kit`.

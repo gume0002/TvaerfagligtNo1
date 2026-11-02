@@ -1,7 +1,7 @@
 # Tasks: Hotelsystem
 
 **Grundlag:** `spec.md`, `clarify.md`, `plan.md` og `.specify/memory/constitution.md`<br>
-**Status:** Første task-udkast udarbejdet 29. oktober 2026. Ingen tasks er implementeret.<br>
+**Status:** Afkrydsede tasks er implementeret og kontrolleret. Delvist færdige tasks er ikke afkrydset og har en note.<br>
 **Prioritering:** P1 er nødvendig for prototype og aflevering; P2 er vigtig, men kan følge efter kerneforløbene.
 
 Tasks er grupperet efter brugerhistorier og kan spores til acceptkriterierne i `spec.md`. Afkryds først en task, når den beskrevne leverance findes og dens kontrol er udført. Filstierne følger målstrukturen i `plan.md`.
@@ -12,65 +12,65 @@ Disse opgaver skal udføres før de afhængige dele af implementeringen. Tableau
 
 - [ ] T001 Gennemgå Plan med gruppen, og afklar om nødvendigt med underviseren, hvordan manglende tilfredshedsdata og Tableau som ekstern klient påvirker afleveringskravet. Registrér svar og resterende risiko i `specs/004-hotelsystem/clarify.md`; brugerens accept af manuel refresh må ikke fremstilles som underviserens accept.
 - [ ] T002 Afprøv den lokale Tableau Public-version med OData V4-fixture: registrér version, connector, metadata, Decimal/null/tidsstempelfelter, filtrering og manuel refresh; gem trin og resultat i `tableau/README.md`. Hvis OData ikke virker, afprøv og dokumentér en anden API-baseret vej eller revidér integrationsdesignet med gruppen/underviseren før dashboardintegration. CSV-import og direkte databaseadgang opfylder ikke kravet.
-- [ ] T003 Skriv den fulde OpenAPI 3.0.3-kontrakt i `specs/004-hotelsystem/contracts/openapi.yaml` ud fra Plan og den afprøvede Tableau-feedform. Beskriv schemas, eksempler, filtre, pagination, idempotens, statuskoder, JSON-fejl, analysefelter og eventuelle OData-metadata. Gennemgå kontrakten før endpointkode påbegyndes.
-- [ ] T004 Tilføj en kontraktkontrol, der validerer `openapi.yaml` og sikrer, at Swagger UI og backend bruger den versionsstyrede kontrakt frem for et konkurrerende automatisk schema.
+- [ ] T003 Skriv den fulde OpenAPI 3.0.3-kontrakt i `specs/004-hotelsystem/contracts/openapi.yaml` ud fra Plan og den afprøvede Tableau-feedform. Beskriv schemas, eksempler, filtre, pagination, idempotens, statuskoder, JSON-fejl, analysefelter og eventuelle OData-metadata. Gennemgå kontrakten før endpointkode påbegyndes. **Delvist:** REST-delen er godkendt ved merge af PR #7. Tableaus læsefeed mangler, til T002 er afsluttet.
+- [x] T004 Tilføj en kontraktkontrol, der validerer `openapi.yaml` og sikrer, at Swagger UI og backend bruger den versionsstyrede kontrakt frem for et konkurrerende automatisk schema.
 
 ## Fase 1 – Fælles projektfundament
 
 Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når opgaverne kan udføres i forskellige filer uden at afhænge af hinandens ændringer.
 
-- [ ] T005 Opret målstrukturen fra `plan.md`: `backend/app/{api,business,data_access}`, `backend/migrations`, `backend/tests/{unit,integration,contract}`, `frontend/`, `tests/browser/` og `tableau/`.
-- [ ] T006 [P] Lås kompatible Python- og backendafhængigheder i `backend/requirements.lock`, inklusive FastAPI, Pydantic, SQLAlchemy, PyMySQL, Alembic og testværktøjer.
-- [ ] T007 [P] Opret `backend/Dockerfile` og backendens konfiguration fra miljøvariabler; hold hemmeligheder ude af versionsstyring.
-- [ ] T008 Opret `compose.yaml` med MySQL 8.4, healthcheck, navngivet `mysql_data`-volume og interne netværksnavne. Verificér at den tomme Compose-konfiguration kan starte databasen.
-- [ ] T009 Opret fælles backend-opstart i `backend/app/main.py` med dependency wiring, readiness/health og ensartet JSON-fejlformat med request-id; API-laget må ikke indeholde SQL eller domæneregler.
-- [ ] T010 Implementér laggrænser og en automatisk arkitekturkontrol i `backend/tests/`, så API kun kalder business, business kun kalder dataadgang, og SQLAlchemy/SQL ikke bruges uden for dataadgang.
-- [ ] T011 Opret Alembic-konfiguration og første MySQL-skema i `backend/migrations/` og `backend/app/data_access/orm_models.py` for værelsestyper, lande, drikke, medarbejdere, bookinger, barsalg, referenceposter, seedmarkør og importlog.
-- [ ] T012 Implementér repositories og Unit of Work i `backend/app/data_access/repositories.py` og `unit_of_work.py`, herunder transaktioner, snapshots til analyser, låsning af kapacitet og idempotensnøgler.
-- [ ] T013 Implementér domæneobjekter og fælles validering i `backend/app/business/models.py`; brug Decimal for beløb og hotellets lokale dato/tid efter Plan.
-- [ ] T014 Opret testprofilen `test-db` og `test` i `compose.yaml` samt samlet kommando `docker compose --profile test run --build --rm test`; tests må aldrig bruge demoens volume.
-- [ ] T015 Tilføj den kontraktstyrede Swagger UI-container og API-konfiguration i `compose.yaml`; offentliggør frontend på `localhost:8080` og Swagger UI på `localhost:8081` som beskrevet i Plan.
+- [x] T005 Opret målstrukturen fra `plan.md`: `backend/app/{api,business,data_access}`, `backend/migrations`, `backend/tests/{unit,integration,contract}`, `frontend/`, `tests/browser/` og `tableau/`.
+- [x] T006 [P] Lås kompatible Python- og backendafhængigheder i `backend/requirements.lock`, inklusive FastAPI, Pydantic, SQLAlchemy, PyMySQL, Alembic og testværktøjer.
+- [x] T007 [P] Opret `backend/Dockerfile` og backendens konfiguration fra miljøvariabler; hold hemmeligheder ude af versionsstyring.
+- [x] T008 Opret `compose.yaml` med MySQL 8.4, healthcheck, navngivet `mysql_data`-volume og interne netværksnavne. Verificér at den tomme Compose-konfiguration kan starte databasen.
+- [x] T009 Opret fælles backend-opstart i `backend/app/main.py` med dependency wiring, readiness/health og ensartet JSON-fejlformat med request-id; API-laget må ikke indeholde SQL eller domæneregler.
+- [x] T010 Implementér laggrænser og en automatisk arkitekturkontrol i `backend/tests/`, så API kun kalder business, business kun kalder dataadgang, og SQLAlchemy/SQL ikke bruges uden for dataadgang.
+- [x] T011 Opret Alembic-konfiguration og første MySQL-skema i `backend/migrations/` og `backend/app/data_access/orm_models.py` for værelsestyper, lande, drikke, medarbejdere, bookinger, barsalg, referenceposter, seedmarkør og importlog.
+- [ ] T012 Implementér repositories og Unit of Work i `backend/app/data_access/repositories.py` og `unit_of_work.py`, herunder transaktioner, snapshots til analyser, låsning af kapacitet og idempotensnøgler. **Delvist:** Transaktioner, låsning og idempotens er færdige. Læsesnapshots til analyser følger med T041–T043.
+- [x] T013 Implementér domæneobjekter og fælles validering i `backend/app/business/models.py`; brug Decimal for beløb og hotellets lokale dato/tid efter Plan.
+- [x] T014 Opret testprofilen `test-db` og `test` i `compose.yaml` samt samlet kommando `docker compose --profile test run --build --rm test`; tests må aldrig bruge demoens volume.
+- [x] T015 Tilføj den kontraktstyrede Swagger UI-container og API-konfiguration i `compose.yaml`; offentliggør frontend på `localhost:8080` og Swagger UI på `localhost:8081` som beskrevet i Plan.
 
 ## Fase 2 – US1: Opret booking (P1)
 
 **Mål:** En receptionist kan oprette et gyldigt ophold, og backend afviser ugyldige eller kapacitetsoverskridende bookinger.<br>
 **Selvstændig kontrol:** Opret og genlæs en booking; afvis ugyldig kapacitet/pris/dato og samtidige forsøg på sidste enhed.
 
-- [ ] T016 Implementér bookingoprettelse og natlig kapacitetsvalidering i `backend/app/business/booking_service.py`, inklusive intervallet `[arrival, departure)` og gæsteantal pr. værelsestype.
-- [ ] T017 Implementér `POST /api/bookings` i `backend/app/api/bookings.py` efter OpenAPI: valider strukturelt input, kald businesslaget, returnér 201/Location og ensartede fejl.
-- [ ] T018 Implementér idempotent og atomisk bookingoprettelse i `backend/app/data_access/`, så to samtidige forespørgsler ikke kan reservere den sidste enhed.
-- [ ] T019 Byg bookingformular og oprettelsesflow i `frontend/index.html` og `frontend/js/`; kald kun REST API'et, hent valgmuligheder fra katalog-API'et, vis valideringsfejl og bekræftelse. UI'et kan bygges mod fixtures, men end-to-end-kontrol afhænger af T034 og T057.
-- [ ] T020 Dæk US1-kriterierne i `backend/tests/unit/`, `backend/tests/integration/` og `tests/browser/`, inklusive afrejse/ankomst samme dag og samtidighed mod MySQL.
+- [x] T016 Implementér bookingoprettelse og natlig kapacitetsvalidering i `backend/app/business/booking_service.py`, inklusive intervallet `[arrival, departure)` og gæsteantal pr. værelsestype.
+- [x] T017 Implementér `POST /api/bookings` i `backend/app/api/bookings.py` efter OpenAPI: valider strukturelt input, kald businesslaget, returnér 201/Location og ensartede fejl.
+- [x] T018 Implementér idempotent og atomisk bookingoprettelse i `backend/app/data_access/`, så to samtidige forespørgsler ikke kan reservere den sidste enhed.
+- [x] T019 Byg bookingformular og oprettelsesflow i `frontend/index.html` og `frontend/js/`; kald kun REST API'et, hent valgmuligheder fra katalog-API'et, vis valideringsfejl og bekræftelse. UI'et kan bygges mod fixtures, men end-to-end-kontrol afhænger af T034 og T057.
+- [x] T020 Dæk US1-kriterierne i `backend/tests/unit/`, `backend/tests/integration/` og `tests/browser/`, inklusive afrejse/ankomst samme dag og samtidighed mod MySQL.
 
 ## Fase 3 – US2: Find booking (P1)
 
 **Mål:** Receptionisten kan finde aktive bookinger med navne- og datofiltre og vælge historik.<br>
 **Selvstændig kontrol:** Kombinér søgning og datointerval, og kontrollér tomt resultat samt aflyste poster.
 
-- [ ] T021 Implementér søgning, overlap på mindst én nat, statusfilter og pagination i `backend/app/business/booking_service.py` og bookingrepository.
-- [ ] T022 Implementér `GET /api/bookings` og `GET /api/bookings/{id}` efter kontrakten i `backend/app/api/bookings.py`, inklusive synlighed af aflyste poster.
-- [ ] T023 Byg bookingliste, navnesøgning, datofilter, historikfilter og tom tilstand i `frontend/`.
-- [ ] T024 Dæk US2-kriterierne med API- og browserkontroller i `backend/tests/` og `tests/browser/`.
+- [x] T021 Implementér søgning, overlap på mindst én nat, statusfilter og pagination i `backend/app/business/booking_service.py` og bookingrepository.
+- [x] T022 Implementér `GET /api/bookings` og `GET /api/bookings/{id}` efter kontrakten i `backend/app/api/bookings.py`, inklusive synlighed af aflyste poster.
+- [x] T023 Byg bookingliste, navnesøgning, datofilter, historikfilter og tom tilstand i `frontend/`.
+- [x] T024 Dæk US2-kriterierne med API- og browserkontroller i `backend/tests/` og `tests/browser/`.
 
 ## Fase 4 – US3: Ret booking (P1)
 
 **Mål:** Receptionisten kan rette alle bookingfelter uden at miste den eksisterende booking ved ugyldig ændring.<br>
 **Selvstændig kontrol:** Ret en booking; afvis ændring der giver overbooking; kontrollér at tidligere værdier og pris består.
 
-- [ ] T025 Implementér fuld bookingrettelse i `backend/app/business/booking_service.py`; udelad den aktuelle booking fra kapacitetstælling og bevar aftalt natpris, medmindre den ændres eksplicit.
-- [ ] T026 Implementér `PUT /api/bookings/{id}` i `backend/app/api/bookings.py` med atomisk opdatering og kontraktens 400/404/409-fejl.
-- [ ] T027 Tilføj redigering i bookinglisten/formularen i `frontend/`, og vis fejl uden at overskrive formularens gemte værdier.
-- [ ] T028 Dæk US3-kriterierne i unit-, MySQL-integration-, kontrakt- og browserkontroller.
+- [x] T025 Implementér fuld bookingrettelse i `backend/app/business/booking_service.py`; udelad den aktuelle booking fra kapacitetstælling og bevar aftalt natpris, medmindre den ændres eksplicit.
+- [x] T026 Implementér `PUT /api/bookings/{id}` i `backend/app/api/bookings.py` med atomisk opdatering og kontraktens 400/404/409-fejl.
+- [x] T027 Tilføj redigering i bookinglisten/formularen i `frontend/`, og vis fejl uden at overskrive formularens gemte værdier.
+- [x] T028 Dæk US3-kriterierne i unit-, MySQL-integration-, kontrakt- og browserkontroller.
 
 ## Fase 5 – US4: Slet booking (P1)
 
 **Mål:** DELETE aflyser en booking, bevarer historikken og frigiver kapacitet.<br>
 **Selvstændig kontrol:** Aflys, find i historik, genbrug kapaciteten, og gentag DELETE.
 
-- [ ] T029 Implementér idempotent logisk aflysning i `backend/app/business/booking_service.py`; aflyste bookinger udelades fra aktive opslag og analyser.
-- [ ] T030 Implementér `DELETE /api/bookings/{id}` i `backend/app/api/bookings.py` med kontraktens 204/404-adfærd.
-- [ ] T031 Tilføj bekræftet aflysning og opdatering af aktive/historiske visninger i `frontend/`.
-- [ ] T032 Dæk US4-kriterierne, inklusive frigivet kapacitet, ingen analysebidrag og gentaget sletning.
+- [ ] T029 Implementér idempotent logisk aflysning i `backend/app/business/booking_service.py`; aflyste bookinger udelades fra aktive opslag og analyser. **Delvist:** Aflysning er færdig for aktive opslag. Udeladelse af analyser kan først kontrolleres med T041–T043.
+- [x] T030 Implementér `DELETE /api/bookings/{id}` i `backend/app/api/bookings.py` med kontraktens 204/404-adfærd.
+- [x] T031 Tilføj bekræftet aflysning og opdatering af aktive/historiske visninger i `frontend/`.
+- [ ] T032 Dæk US4-kriterierne, inklusive frigivet kapacitet, ingen analysebidrag og gentaget sletning. **Delvist:** Frigivet kapacitet og gentaget sletning er dækket. Ingen analysebidrag kan først testes med T045.
 
 ## Fase 6 – US5: Registrer barsalg (P1)
 
@@ -78,7 +78,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Selvstændig kontrol:** Registrér tre cocktails til 100 DKK og kontrollér tre enheder/300 DKK; afvis fremtidig dato og ugyldige felter.
 
 - [ ] T033 Implementér salgsregler i `backend/app/business/sale_service.py`: positivt heltal, kendt drik/medarbejder, positiv pris med højst to decimaler, salgsdato højst dags dato og fastfrosset salgspris.
-- [ ] T034 Implementér `GET /api/catalogs` gennem alle tre lag for lande, værelsestyper, sæsonpriser, medarbejdere og drikke samt `POST /api/bar-sales` i `backend/app/api/catalogs.py` og `sales.py` efter OpenAPI.
+- [ ] T034 Implementér `GET /api/catalogs` gennem alle tre lag for lande, værelsestyper, sæsonpriser, medarbejdere og drikke samt `POST /api/bar-sales` i `backend/app/api/catalogs.py` og `sales.py` efter OpenAPI. **Delvist:** `GET /api/catalogs` er færdig. `POST /api/bar-sales` mangler.
 - [ ] T035 Byg registreringsformular og salgsoversigt i `frontend/`; hent drikke og medarbejdere fra API'et.
 - [ ] T036 Dæk US5-kriterierne med business-, MySQL-, kontrakt- og browserkontroller.
 
@@ -136,12 +136,12 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Mål:** Frisk kopi starter med én kommando, starter data én gang og bevarer ændringer ved genstart.<br>
 **Selvstændig kontrol:** Følg README fra ren checkout, opret data, stop/start og kontrollér data samt Swagger UI.
 
-- [ ] T056 Implementér katalogindlæsning og historisk rådataimport i `backend/app/business/` og `backend/app/data_access/`: bevar originalfiler, importér ikke CSV og Excel dobbelt, udelad ekstra celle E1002, rapportér de 54 erstatningstegn og ukendte værdier, og brug ikke udaterede summer som kalenderårsdata.
-- [ ] T057 Implementér deterministiske, mærkede `demo-v1`-data med fast seed, kapacitetsfordeling på 214 værelser og engangskørsel gennem migrations-/init-tjenesten; gentagelse må ikke skabe dubletter eller overskrive eksisterende data.
-- [ ] T058 Opret `frontend/Dockerfile`, `frontend/nginx.conf` og statiske frontendfiler, så browseren serverer UI'et og videresender `/api/` til backend.
-- [ ] T059 Færdiggør afhængigheder og readiness i `compose.yaml`: MySQL healthcheck → init/migration/seed → backend; tilføj frontend/Nginx og Swagger UI. Begræns publicerede porte til localhost.
-- [ ] T060 Opdatér `README.md` med faktisk arkitekturdiagram, start/stop/nulstilling, lokale adresser, data/seed, Tableau-forbindelse, kendte begrænsninger samt links til OpenAPI-kontrakten og Swagger UI; opdatér `CONTRIBUTE.md` med faktisk testkommando og reviewflow.
-- [ ] T061 Verificér SC-005 fra frisk checkout med `docker compose up`, genstart med vedvarende data, seedens afbruds-/gentagelsesforløb og Swagger UI på den dokumenterede kontrakt.
+- [x] T056 Implementér katalogindlæsning og historisk rådataimport i `backend/app/business/` og `backend/app/data_access/`: bevar originalfiler, importér ikke CSV og Excel dobbelt, udelad ekstra celle E1002, rapportér de 54 erstatningstegn og ukendte værdier, og brug ikke udaterede summer som kalenderårsdata.
+- [x] T057 Implementér deterministiske, mærkede `demo-v1`-data med fast seed, kapacitetsfordeling på 214 værelser og engangskørsel gennem migrations-/init-tjenesten; gentagelse må ikke skabe dubletter eller overskrive eksisterende data.
+- [x] T058 Opret `frontend/Dockerfile`, `frontend/nginx.conf` og statiske frontendfiler, så browseren serverer UI'et og videresender `/api/` til backend.
+- [x] T059 Færdiggør afhængigheder og readiness i `compose.yaml`: MySQL healthcheck → init/migration/seed → backend; tilføj frontend/Nginx og Swagger UI. Begræns publicerede porte til localhost.
+- [x] T060 Opdatér `README.md` med faktisk arkitekturdiagram, start/stop/nulstilling, lokale adresser, data/seed, Tableau-forbindelse, kendte begrænsninger samt links til OpenAPI-kontrakten og Swagger UI; opdatér `CONTRIBUTE.md` med faktisk testkommando og reviewflow.
+- [x] T061 Verificér SC-005 fra frisk checkout med `docker compose up`, genstart med vedvarende data, seedens afbruds-/gentagelsesforløb og Swagger UI på den dokumenterede kontrakt.
 
 ## Fase 13 – Afsluttende kvalitet og Converge
 
