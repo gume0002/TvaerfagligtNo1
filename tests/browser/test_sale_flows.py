@@ -94,3 +94,15 @@ def test_lost_response_reuses_key(page):
     page.get_by_role('button', name='Registrér salg').click()
     expect(page.locator('#sale-message')).to_contain_text('er oprettet')
     expect(page.locator('#sale-rows tr')).to_have_count(1)
+
+
+def test_edit_brings_the_form_into_view(page):
+    page.set_viewport_size({'width': 1000, 'height': 500})
+    for _ in range(8):
+        fill_sale(page)
+        page.get_by_role('button', name='Registrér salg').click()
+        expect(page.locator('#sale-message')).to_contain_text('er oprettet')
+    page.locator('#sale-rows tr').last.get_by_role('button', name='Ret').click()
+    expect(page.locator('#sale-title')).to_contain_text('Ret salg')
+    expect(page.locator('#quantity')).to_be_in_viewport()
+    expect(page.locator('#quantity')).to_be_focused()
