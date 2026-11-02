@@ -1,6 +1,6 @@
 # Tableau-afprøvning (T002)
 
-**Status:** Ikke afprøvet i Tableau. Fixturen er kun kontrolleret med automatiske tests og `curl`. T002 er først færdig, når resultatskemaet nederst er udfyldt.
+**Status:** Forbindelse, datatyper, pagination, manuel refresh og fejlet refresh er afprøvet i Tableau Public mod fixturen. Filtre og beløb som tekst mangler, og T002 er først færdig, når resultatskemaet nederst er udfyldt.
 
 Prøven skal vise, om Tableau Public kan hente data fra et OData V4-API og hente nye tal ved manuel refresh. Den afgør, om vi kan bygge videre på OData-sporet fra [Plan, afsnit 7](../specs/004-hotelsystem/plan.md).
 
@@ -30,10 +30,10 @@ curl -s http://localhost:8090/api/odata/
 
 1. Åbn Tableau Public, og notér versionen under **Tableau Public → About**.
 2. Vælg **OData** under **Connect → To a Server**. Du finder den muligvis under **More...**. Hvis OData ikke findes, er det et vigtigt resultat: Notér det, og stop prøven.
-3. Skriv `http://localhost:8090/api/odata/` som server, og vælg ingen godkendelse.
-4. Vælg tabellen `HotelKpis`. Gentag derefter med `RoomTypeSeasonRevenue` og `BarCategoryShares` som separate datakilder.
+3. Skriv `localhost:8090/api/odata/` som server **uden** `http://`, og vælg ingen godkendelse. Med `http://` foran gør Tableau adressen til `https://http://...`, og forbindelsen fejler.
+4. Træk tabellen `HotelKpis` ind, og klik på et ark. Først da hentes rækkerne, for der er ingen **Update Now**. Se dem med **Data → [datakilde] → View Data...**. Gentag med `RoomTypeSeasonRevenue` og `BarCategoryShares` som separate datakilder via **Data → New Data Source**.
 
-Tableau opretter et udtræk. Menunavnene her er forventede og ikke afprøvet, så ret dem, hvis jeres version viser noget andet.
+Tableau opretter et udtræk.
 
 ## Trin 2: Kontrollér data og datatyper
 
@@ -72,7 +72,7 @@ Denne prøve afgør, om dashboardets filtre kan bygges på færdigberegnede ræk
 
 ## Trin 4: Manuel refresh
 
-Lav en tabel over `BarCategoryShares` med `category`, `quantity`, `revenue`, `quantitySharePercent`, `revenueSharePercent` og `generatedAt`. Skift tilstand i en anden terminal, og gennemfør datakilde-refresh inde i Tableau efter hvert skift, fx **Data → BarCategoryShares → Refresh** eller **Data → BarCategoryShares → Extract → Refresh**. Notér, hvilken menu der virker.
+Lav en tabel over `BarCategoryShares` med `category`, `quantity`, `revenue`, `quantitySharePercent`, `revenueSharePercent` og `generatedAt`. Skift tilstand i en anden terminal, og gennemfør datakilde-refresh inde i Tableau efter hvert skift med **Data → [datakilde] → Refresh**.
 
 Første tilstand er `start`. Du behøver ikke sætte den, når fixturen lige er startet.
 
@@ -114,21 +114,21 @@ Udfyldes af den, der gennemfører prøven. Skriv kun det, der faktisk er observe
 
 | Punkt | Resultat |
 |---|---|
-| Dato og udført af | |
-| Tableau Public-version og styresystem | |
-| OData-connector findes, og forbindelsen virker | |
-| Metadata og tabeller indlæses | |
-| Alle tre rækker hentes (`@odata.nextLink`) | |
-| Decimal som JSON-tal | |
+| Dato og udført af | 2. november 2026, gennemført af et gruppemedlem med AI-vejledning |
+| Tableau Public-version og styresystem | 2026.3.0 (Apple silicon) på macOS, version læst fra appens filer |
+| OData-connector findes, og forbindelsen virker | Ja, over `http` med adressen uden `http://`. Med `http://` foran fejler den med fejlkode 7C19CF64 |
+| Metadata og tabeller indlæses | Ja, alle tre tabeller |
+| Alle tre rækker hentes (`@odata.nextLink`) | Ja, 3 rækker. Loggen viser `HotelKpis` og derefter `HotelKpis?$skip=2` |
+| Decimal som JSON-tal | Ja, felterne er tal, fx `Adr` 1,000.00 |
 | Decimal som tekst | |
-| `null` vises som tom værdi | |
-| `generatedAt` genkendes som tidsstempel | |
+| `null` vises som tom værdi | Ja, vises som `Null` og ikke som 0 |
+| `generatedAt` genkendes som tidsstempel | Ja, men vises i UTC uden tidszone, fx 12.38.48 mens klokken var 13.38 i Danmark |
 | Filtrering med `filterKey` virker | |
 | Filtrering sender nye forespørgsler | |
-| Menuhandling for manuel refresh | |
-| Refresh efter `create`, `update` og `cancel` giver de forventede tal | |
-| `generatedAt` bliver nyere ved refresh | |
-| Fejlbesked og tal ved stoppet fixture | |
+| Menuhandling for manuel refresh | **Data → [datakilde] → Refresh** |
+| Refresh efter `create`, `update` og `cancel` giver de forventede tal | `create` er afprøvet: `Quantity` gik fra 3 og 2 til 3 og 4, og loggen viser et nyt kald. Før refresh viste Tableau stadig de gamle tal. `update` og `cancel` er ikke afprøvet |
+| `generatedAt` bliver nyere ved refresh | Ja, fra 12.40.48 til 12.42.22 |
+| Fejlbesked og tal ved stoppet fixture | "There was a problem connecting to the data source", fejlkode 7C19CF64. Tal og `generatedAt` bevares (3 og 4, 12.42.22) |
 | Forespørgsler i terminalen, som fejlede | |
 | Samlet vurdering: kan OData bruges? | |
 
