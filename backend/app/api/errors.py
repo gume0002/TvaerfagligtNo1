@@ -62,9 +62,11 @@ def _error_response(
 
 def _transport_field_error(error: dict) -> FieldError:
     location = [str(part) for part in error["loc"] if part not in ("body", "query", "path", "header")]
+    # An empty form field arrives as "", which means the same as a missing one.
+    is_empty = error.get("input") == ""
     return FieldError(
         field=".".join(location) or "body",
-        message=TRANSPORT_MESSAGES.get(error["type"], "Værdien er ugyldig."),
+        message=TRANSPORT_MESSAGES["missing"] if is_empty else TRANSPORT_MESSAGES.get(error["type"], "Værdien er ugyldig."),
     )
 
 

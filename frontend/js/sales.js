@@ -50,6 +50,8 @@ function renderRow(sale) {
       document.querySelector('#sale-title').textContent = `Ret salg nr. ${sale.id}`;
       save.textContent = 'Gem salg';
       document.querySelector('#sale-cancel-edit').hidden = false;
+      form.scrollIntoView({block: 'center'});
+      form.elements.quantity.focus();
     });
     const remove = document.createElement('button');
     remove.textContent = 'Aflys';

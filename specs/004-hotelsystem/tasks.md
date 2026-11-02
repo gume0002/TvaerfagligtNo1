@@ -10,8 +10,8 @@ Tasks er grupperet efter brugerhistorier og kan spores til acceptkriterierne i `
 
 Disse opgaver skal udføres før de afhængige dele af implementeringen. Tableau-resultatet kan ændre integrationsdesignet; det må ikke antages at virke på forhånd.
 
-- [ ] T001 Gennemgå Plan med gruppen, og afklar om nødvendigt med underviseren, hvordan manglende tilfredshedsdata og Tableau som ekstern klient påvirker afleveringskravet. Registrér svar og resterende risiko i `specs/004-hotelsystem/clarify.md`; brugerens accept af manuel refresh må ikke fremstilles som underviserens accept.
-- [ ] T002 Afprøv den lokale Tableau Public-version med OData V4-fixture: registrér version, connector, metadata, Decimal/null/tidsstempelfelter, filtrering og manuel refresh; gem trin og resultat i `tableau/README.md`. Hvis OData ikke virker, afprøv og dokumentér en anden API-baseret vej eller revidér integrationsdesignet med gruppen/underviseren før dashboardintegration. CSV-import og direkte databaseadgang opfylder ikke kravet. **Delvist:** Forbindelse, datatyper, pagination, filtre, oprettelse med refresh og fejlet refresh er observeret i Tableau Public 2026.3. Rettelse og aflysning med refresh mangler og dækkes af T054. Resultater står i `tableau/README.md`.
+- [x] T001 Gennemgå Plan med gruppen, og afklar om nødvendigt med underviseren, hvordan manglende tilfredshedsdata og Tableau som ekstern klient påvirker afleveringskravet. Registrér svar og resterende risiko i `specs/004-hotelsystem/clarify.md`; brugerens accept af manuel refresh må ikke fremstilles som underviserens accept. **Resultat:** Gruppen har besluttet ikke at spørge underviseren. De to fortolkningsrisici består, se `clarify.md`.
+- [x] T002 Afprøv den lokale Tableau Public-version med OData V4-fixture: registrér version, connector, metadata, Decimal/null/tidsstempelfelter, filtrering og manuel refresh; gem trin og resultat i `tableau/README.md`. Hvis OData ikke virker, afprøv og dokumentér en anden API-baseret vej eller revidér integrationsdesignet med gruppen/underviseren før dashboardintegration. CSV-import og direkte databaseadgang opfylder ikke kravet. **Resultat:** OData og manuel refresh virker i Tableau Public 2026.3. Resultater står i `tableau/README.md`.
 - [x] T003 Skriv den fulde OpenAPI 3.0.3-kontrakt i `specs/004-hotelsystem/contracts/openapi.yaml` ud fra Plan og den afprøvede Tableau-feedform. Beskriv schemas, eksempler, filtre, pagination, idempotens, statuskoder, JSON-fejl, analysefelter og eventuelle OData-metadata. Gennemgå kontrakten før endpointkode påbegyndes.
 - [x] T004 Tilføj en kontraktkontrol, der validerer `openapi.yaml` og sikrer, at Swagger UI og backend bruger den versionsstyrede kontrakt frem for et konkurrerende automatisk schema.
 
@@ -128,8 +128,8 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 
 - [x] T052 Implementér den API-læseprojektion, som T002 og den godkendte kontrakt har vist virker i Tableau Public (OData V4 hvis afprøvningen lykkes), i `backend/app/api/`; fladgør færdigberegnede resultater fra samme analytics-service uden SQL eller egne Tableau-regler.
 - [x] T053 Implementér feedmetadata, datatyper, filtre og paginering, så de følger `openapi.yaml` og den dokumenterede Tableau Public-afprøvning.
-- [ ] T054 Afprøv fuld indlæsning/manuel refresh i Tableau efter oprettelse, rettelse og aflysning af booking og salg; kontrollér API-paritet for samme filtre, snapshot-tidspunkt og fejl ved utilgængeligt API. Dokumentér forløb og begrænsninger i `tableau/README.md`. **Delvist:** Bookingens oprettelse, rettelse og aflysning er afprøvet mod systemet. Barsalg og fejlet API-forbindelse mod systemet mangler; se `tableau/README.md`.
-- [ ] T055 Gennemfør og registrér SC-003-kontrolarket med 1.000 bookinger og 1.000 salg: ti oprettelser, ti rettelser og ti aflysninger for hver ressourcetype, hver fulgt af Tableau-refresh og sammenligning med API. Registrér også afbrudt API; ingen femsekundersmåling kræves.
+- [x] T054 Afprøv fuld indlæsning/manuel refresh i Tableau efter oprettelse, rettelse og aflysning af booking og salg; kontrollér API-paritet for samme filtre, snapshot-tidspunkt og fejl ved utilgængeligt API. Dokumentér forløb og begrænsninger i `tableau/README.md`.
+- [ ] T055 Gennemfør og registrér SC-003-kontrolarket med 1.000 bookinger og 1.000 salg: ti oprettelser, ti rettelser og ti aflysninger for hver ressourcetype, hver fulgt af Tableau-refresh og sammenligning med API. Registrér også afbrudt API; ingen femsekundersmåling kræves. **Delvist:** Gruppen har valgt en stikprøve på 12 runder, se `clarify.md`. Alle 12 er udført og stemmer, se `tableau/sc003-kontrolark.md`. SC-003 er derfor kun delvist opfyldt.
 
 ## Fase 12 – US11: Start og bevar prototype (P1)
 
@@ -145,13 +145,16 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 
 ## Fase 13 – Afsluttende kvalitet og Converge
 
-- [ ] T062 Kør den samlede testkommando fra en isoleret testdatabase; kontrollér unit-, integration-, kontrakt-, arkitektur- og browsertests samt fejlretninger.
+- [x] T062 Kør den samlede testkommando fra en isoleret testdatabase; kontrollér unit-, integration-, kontrakt-, arkitektur- og browsertests samt fejlretninger.
 - [ ] T063 Gennemfør den manuelle to-minutters bookingprøve for SC-001 uden Swagger eller databaseværktøjer.
-- [ ] T064 Kontrollér alle user story-acceptkriterier, FR-001–FR-012 og SC-001–SC-007 mod faktisk løsning; følg browser → API → business → dataadgang → MySQL for booking og analyse, og kontrollér Tableau/API-paritet.
-- [ ] T065 Opret `specs/004-hotelsystem/converge.md` med status og konkret bevis/filsti for hvert acceptkriterium; angiv mangler som nye tasks, ikke som opfyldte krav.
-- [ ] T066 Kontrollér `README.md`, `CONTRIBUTE.md`, OpenAPI/Swagger, arkitekturdiagram, filhenvisninger og `git diff --check`; beskriv kun faktisk udført arbejde og tilskriv ikke gruppemedlemmers bidrag til hinanden.
+- [x] T064 Kontrollér alle user story-acceptkriterier, FR-001–FR-012 og SC-001–SC-007 mod faktisk løsning; følg browser → API → business → dataadgang → MySQL for booking og analyse, og kontrollér Tableau/API-paritet.
+- [x] T065 Opret `specs/004-hotelsystem/converge.md` med status og konkret bevis/filsti for hvert acceptkriterium; angiv mangler som nye tasks, ikke som opfyldte krav.
+- [x] T066 Kontrollér `README.md`, `CONTRIBUTE.md`, OpenAPI/Swagger, arkitekturdiagram, filhenvisninger og `git diff --check`; beskriv kun faktisk udført arbejde og tilskriv ikke gruppemedlemmers bidrag til hinanden.
 - [ ] T067 Sørg for, at ændringer leveres gennem branches og pull requests med et andet gruppemedlems review, og at hvert gruppemedlems faktiske bidrag kan dokumenteres med egne commits; fordel ikke arbejde eller tilskriv bidrag uden aftale.
 - [ ] T068 Forbered og øv den 10-minutters projektpræsentation samt 10 minutters spørgsmål/feedback inden gruppens fremlæggelse fredag 6. november; brug fungerende demo og Converge-resultater som bevis, og aftal taleroller samt eventuel notetagning/feedbackrolle.
+- [ ] T069 Afprøv dropdown for medarbejder, andre år, kombinerede hotelfiltre og salg uden data i Tableau (US7.4, US9.2, US9.3).
+- [ ] T070 Afprøv i Tableau, at en afvist ændring ikke ændrer tallene efter refresh (US10.2).
+- [ ] T071 Åbn `tableau/hotel-and-bar.twbx` på et andet gruppemedlems maskine, og gennemfør refresh.
 
 ## Afhængigheder og leveringsrækkefølge
 

@@ -6,9 +6,11 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem API'et. Hotel- og baranalyser beregnes i backendens forretningslogik fra aktuelle MySQL-data. Tableau-dashboardet er bygget og bruger backendens OData-feed. [Milepæl 3-kontrollen](specs/004-hotelsystem/milestone-3.md) beskriver den afgrænsede kontrol af backendfunktionerne; den samlede afleveringsgennemgang mangler stadig.
 
-**Tableau:** Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) henter sine tal fra API'ets OData-feed og er kontrolleret mod API'et for flere filtervalg. Se [vejledningen](tableau/README.md).
+**Tableau:** Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) virker. Det henter sine tal fra API'ets OData-feed, tallene stemmer med API'et for flere filtervalg, og manuel refresh er afprøvet efter oprettelse, rettelse og aflysning af både bookinger og barsalg, også når API'et er nede. Se [vejledningen](tableau/README.md).
 
-**Mangler endnu:** Afklar med underviseren, om manglende tilfredshedsdata og Tableau uden for Docker accepteres (T001). T002 er delvist udført; refresh efter fixture-rettelse og aflysning mangler. T054 mangler refresh-prøver for barsalg og fejlet API-forbindelse mod det rigtige system. T055's 60 refresh-prøver mangler. Den samlede testkørsel, den manuelle bookingprøve, acceptkriteriegennemgangen, Converge, gruppens review og præsentationsforberedelsen står også åbne (T062–T068). Se [tasklisten](specs/004-hotelsystem/tasks.md) for status.
+**Åbne fortolkningsrisici:** Manglende kundetilfredshedsdata og Tableau uden for Docker er gruppens egne valg og er ikke afstemt med underviseren.
+
+**Mangler endnu:** Gruppen har kørt en stikprøve på 12 refresh-runder i stedet for de 60 (T055), så SC-003 kun er delvist opfyldt; se [kontrolarket](tableau/sc003-kontrolark.md). Testpersonens prøve, gruppens review og præsentationen står åbne (T063, T067, T068), og enkelte Tableau-prøver mangler (T069–T071). Status for hvert krav står i [Converge](specs/004-hotelsystem/converge.md). Se [tasklisten](specs/004-hotelsystem/tasks.md) for status.
 
 ## Start systemet
 
@@ -48,6 +50,7 @@ Følg [Spec Kit-overblikket](specs/README.md) i opgavens rækkefølge:
 - [Tasks](specs/004-hotelsystem/tasks.md): opgaver grupperet efter brugerhistorier, med status og afhængigheder.
 - [OpenAPI-kontrakt](specs/004-hotelsystem/contracts/openapi.yaml): API'ets kontrakt, som også vises i Swagger UI.
 - [Tableau-afprøvning](tableau/README.md): fixture og vejledning til prøven af OData i Tableau Public.
+- [Converge](specs/004-hotelsystem/converge.md): status og bevis for hvert krav.
 - [CONTRIBUTE](CONTRIBUTE.md): bidrag, review, tests og verifikation.
 
 De tidligere dokumentationsopgaver ligger direkte under `specs/` i mapperne 001, 002 og 003; de er beskrevet i [overblikket](specs/README.md).

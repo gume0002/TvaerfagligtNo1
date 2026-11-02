@@ -1,6 +1,6 @@
 # Tableau-dashboard
 
-**Status:** Dashboardet virker med demodata. Tallene for hotellet er sammenlignet med API'et for flere filtervalg, og tallene for baren for standardvalget. Refresh mod det rigtige system er afprøvet for bookinger, men ikke for barsalg (T054), og de 60 prøver i T055 er ikke udført.
+**Status:** Dashboardet virker med demodata. Tallene for hotellet er sammenlignet med API'et for flere filtervalg, og tallene for baren for standardvalget. Refresh mod det rigtige system er afprøvet for bookinger og barsalg, også når API'et er nede (T054). En stikprøve på 12 runder med 1.000 bookinger og 1.000 salg er også udført og stemmer, se [kontrolarket](sc003-kontrolark.md) (T055).
 
 ## Åbn dashboardet
 
@@ -36,7 +36,17 @@ Prøven er udført 2. november 2026 i Tableau Public 2026.3 med det færdige das
 
 Før refresh viste Tableau de gamle tal. Hver datakilde skal opdateres for sig, så en visning viser gamle tal, indtil dens egen datakilde er opdateret. API'et var tilbage på 128.250,00 og 63 nætter efter aflysningen, og bookingen er bevaret som aflyst.
 
-**Mangler:** barsalg og fejlet refresh mod det rigtige system. T054 er derfor ikke afkrydset.
+**Barsalg:** Tallene er sammenlignet med `GET /api/analytics/bar` for Helene Christine i 2026.
+
+| Ændring i browseren | Tableau efter refresh | Datagrundlag (UTC) |
+|---|---|---|
+| Oprettelse: 2 Mojito til 100 DKK | 26 drikke, 1.863,47 DKK, Mojito 200,00 og cocktail 50,00 / 69,22 % | 14.51.10 |
+| Rettelse: antal til 1 | 25 drikke, 1.763,47 DKK, Mojito 100,00 og cocktail 48,00 / 67,47 % | 14.53.59 |
+| Aflysning | 24 drikke, 1.663,47 DKK, Mojito 0,00 og cocktail 45,83 / 65,52 % | 14.54.52 |
+
+**Fejlet refresh:** Med backend stoppet viste Tableau "There was a problem connecting to the data source" med `502 Bad Gateway` og fejlkode 7C19CF64. Tallene og tidspunktet var uændrede bagefter (24 drikke, 1.663,47 DKK og 14.57.22), så et gammelt udtræk ligner ikke nye data. Refresh virkede igen, da backend var startet.
+
+**Begrænsning:** En aflyst post bevares i historikken. Prøven er udført med demodata, ikke med de 1.000 bookinger og 1.000 salg i T055.
 
 ## Byg dashboardet igen
 
