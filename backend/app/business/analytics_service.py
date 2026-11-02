@@ -132,4 +132,5 @@ class AnalyticsService:
             'totals': period_totals(selected, available_dates, room_count, today),
             'occupancyScope': 'country_contribution' if country_id is not None else 'hotel',
             **hotel_groups(selected),
+            'satisfaction': {'status': 'no_data'},
         }

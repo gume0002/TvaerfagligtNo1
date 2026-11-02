@@ -67,10 +67,10 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Mål:** DELETE aflyser en booking, bevarer historikken og frigiver kapacitet.<br>
 **Selvstændig kontrol:** Aflys, find i historik, genbrug kapaciteten, og gentag DELETE.
 
-- [ ] T029 Implementér idempotent logisk aflysning i `backend/app/business/booking_service.py`; aflyste bookinger udelades fra aktive opslag og analyser. **Delvist:** Aflysning er færdig for aktive opslag. Udeladelse af analyser kan først kontrolleres med T041–T043.
+- [x] T029 Implementér idempotent logisk aflysning i `backend/app/business/booking_service.py`; aflyste bookinger udelades fra aktive opslag og analyser.
 - [x] T030 Implementér `DELETE /api/bookings/{id}` i `backend/app/api/bookings.py` med kontraktens 204/404-adfærd.
 - [x] T031 Tilføj bekræftet aflysning og opdatering af aktive/historiske visninger i `frontend/`.
-- [ ] T032 Dæk US4-kriterierne, inklusive frigivet kapacitet, ingen analysebidrag og gentaget sletning. **Delvist:** Frigivet kapacitet og gentaget sletning er dækket. Ingen analysebidrag kan først testes med T045.
+- [x] T032 Dæk US4-kriterierne, inklusive frigivet kapacitet, ingen analysebidrag og gentaget sletning.
 
 ## Fase 6 – US5: Registrer barsalg (P1)
 
@@ -99,9 +99,9 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 
 - [x] T041 Implementér hotelomsætning i `backend/app/business/analytics_service.py` pr. overnatningsnat, kalenderår, sæson, værelsestype og land; adskil passeret, forventet og samlet omsætning.
 - [x] T042 Implementér gæsteophold pr. land, omsætning pr. type/sæson/land samt filtrerede ranglister med delte førstepladser i businesslaget.
-- [ ] T043 Implementér `GET /api/analytics/hotel` i `backend/app/api/analytics.py` efter OpenAPI; alle grupper og summer skal komme fra samme datagrundlag og filtre. **Delvist:** Transport er klargjort; endpointet tilsluttes og kontraktkontrolleres med T046–T047, som leverer kontraktens obligatoriske nøgletalsfelter.
+- [x] T043 Implementér `GET /api/analytics/hotel` i `backend/app/api/analytics.py` efter OpenAPI; alle grupper og summer skal komme fra samme datagrundlag og filtre.
 - [ ] T044 Byg Tableau hotelvisninger for gæstelande, omsætning pr. type og sæson, lande, topindtjening og årstotal i `tableau/`; layout kan udvikles mod fixture, men forbind først til det godkendte API-feed efter T052–T053. Vis filtre, demo-markering og snapshot-tidspunkt.
-- [ ] T045 Dæk US7 med håndberegnelige tests for årsskifte, sæsoner, skuddag, land/type/år-filtre, ranglistelighed og udeladelse af aflyste bookinger. **Delvist:** Business-eksempler er testet; fuld API-kontrol følger T047.
+- [x] T045 Dæk US7 med håndberegnelige tests for årsskifte, sæsoner, skuddag, land/type/år-filtre, ranglistelighed og udeladelse af aflyste bookinger.
 
 ## Fase 9 – US8: Belægning og ekstra nøgletal (P1)
 
@@ -109,8 +109,8 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Selvstændig kontrol:** To værelser over to nætter med én booking på begge nætter giver 50 % belægning og 1.000 DKK ADR.
 
 - [x] T046 Beregn tilgængelige/bookede værelsesnætter, belægningsgrad og ADR i `backend/app/business/analytics_service.py`, opdelt på passeret/forventet/samlet og med landefilterets nævnerregel.
-- [ ] T047 Tilføj nøgletal, nulgrundlag og `no_data`-status for tilfredshed til `GET /api/analytics/hotel` og Tableauvisningen; ingen opdigtet tilfredshedsscore. Tableauvisningen forbindes til API-feedet efter T052–T053.
-- [ ] T048 Dæk US8 med tests for nulgrundlag, skudår, landefilter, kapacitetsnævner og historik/prognose.
+- [ ] T047 Tilføj nøgletal, nulgrundlag og `no_data`-status for tilfredshed til `GET /api/analytics/hotel` og Tableauvisningen; ingen opdigtet tilfredshedsscore. Tableauvisningen forbindes til API-feedet efter T052–T053. **Delvist:** API-delen er implementeret og kontraktkontrolleret; Tableau er uden for Milepæl 3.
+- [x] T048 Dæk US8 med tests for nulgrundlag, skudår, landefilter, kapacitetsnævner og historik/prognose.
 
 ## Fase 10 – US9: Helene Christines baranalyser (P1)
 
