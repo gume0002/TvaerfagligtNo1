@@ -26,7 +26,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 - [x] T009 Opret fælles backend-opstart i `backend/app/main.py` med dependency wiring, readiness/health og ensartet JSON-fejlformat med request-id; API-laget må ikke indeholde SQL eller domæneregler.
 - [x] T010 Implementér laggrænser og en automatisk arkitekturkontrol i `backend/tests/`, så API kun kalder business, business kun kalder dataadgang, og SQLAlchemy/SQL ikke bruges uden for dataadgang.
 - [x] T011 Opret Alembic-konfiguration og første MySQL-skema i `backend/migrations/` og `backend/app/data_access/orm_models.py` for værelsestyper, lande, drikke, medarbejdere, bookinger, barsalg, referenceposter, seedmarkør og importlog.
-- [ ] T012 Implementér repositories og Unit of Work i `backend/app/data_access/repositories.py` og `unit_of_work.py`, herunder transaktioner, snapshots til analyser, låsning af kapacitet og idempotensnøgler. **Delvist:** Transaktioner, låsning og idempotens er færdige. Læsesnapshots til analyser følger med T041–T043.
+- [x] T012 Implementér repositories og Unit of Work i `backend/app/data_access/repositories.py` og `unit_of_work.py`, herunder transaktioner, snapshots til analyser, låsning af kapacitet og idempotensnøgler.
 - [x] T013 Implementér domæneobjekter og fælles validering i `backend/app/business/models.py`; brug Decimal for beløb og hotellets lokale dato/tid efter Plan.
 - [x] T014 Opret testprofilen `test-db` og `test` i `compose.yaml` samt samlet kommando `docker compose --profile test run --build --rm test`; tests må aldrig bruge demoens volume.
 - [x] T015 Tilføj den kontraktstyrede Swagger UI-container og API-konfiguration i `compose.yaml`; offentliggør frontend på `localhost:8080` og Swagger UI på `localhost:8081` som beskrevet i Plan.
@@ -97,7 +97,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Mål:** API'et leverer aktuelle, håndberegnelige hotelresultater; Tableau viser krævede fordelinger og ranglister.<br>
 **Selvstændig kontrol:** Kontrollér årsskifte, sæsonskifte, gæsteophold, filtre, aflysninger og delte førstepladser mod håndberegnede resultater.
 
-- [ ] T041 Implementér hotelomsætning i `backend/app/business/analytics_service.py` pr. overnatningsnat, kalenderår, sæson, værelsestype og land; adskil passeret, forventet og samlet omsætning.
+- [x] T041 Implementér hotelomsætning i `backend/app/business/analytics_service.py` pr. overnatningsnat, kalenderår, sæson, værelsestype og land; adskil passeret, forventet og samlet omsætning.
 - [ ] T042 Implementér gæsteophold pr. land, omsætning pr. type/sæson/land samt filtrerede ranglister med delte førstepladser i businesslaget.
 - [ ] T043 Implementér `GET /api/analytics/hotel` i `backend/app/api/analytics.py` efter OpenAPI; alle grupper og summer skal komme fra samme datagrundlag og filtre.
 - [ ] T044 Byg Tableau hotelvisninger for gæstelande, omsætning pr. type og sæson, lande, topindtjening og årstotal i `tableau/`; layout kan udvikles mod fixture, men forbind først til det godkendte API-feed efter T052–T053. Vis filtre, demo-markering og snapshot-tidspunkt.

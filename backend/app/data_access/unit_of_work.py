@@ -57,5 +57,11 @@ class SqlUnitOfWork:
             if translated is not None:
                 raise translated from exc
 
+    def begin_snapshot(self) -> None:
+        # This must be the first operation in an analysis transaction. The
+        # explicit snapshot also covers later catalog and relationship reads.
+        connection = self._session.connection(execution_options={"isolation_level": "REPEATABLE READ"})
+        connection.exec_driver_sql("START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY")
+
     def commit(self) -> None:
         self._session.commit()
