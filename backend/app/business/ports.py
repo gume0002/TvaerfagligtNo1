@@ -9,6 +9,7 @@ from datetime import date, datetime
 from typing import Protocol
 
 from app.business.models import (
+    Sale,
     Booking,
     BookingInput,
     BookingSearch,
@@ -47,6 +48,10 @@ class BookingRepository(Protocol):
     def cancel(self, booking_id: int, cancelled_at: datetime) -> None: ...
 
 
+class SaleRepository(Protocol):
+    def add(self, sale: NewBarSale) -> Sale: ...
+
+
 class IdempotencyRepository(Protocol):
     def find(self, context: IdempotencyContext) -> StoredIdempotentResult | None: ...
     def save(self, context: IdempotencyContext, result: StoredIdempotentResult, created_at: datetime) -> None: ...
@@ -75,6 +80,7 @@ class UnitOfWork(Protocol):
 
     catalogs: CatalogRepository
     bookings: BookingRepository
+    sales: SaleRepository
     idempotency: IdempotencyRepository
     seed: SeedRepository
     health: HealthRepository

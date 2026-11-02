@@ -306,3 +306,44 @@ class SeedResult:
     bookings: int = 0
     bar_sales: int = 0
     reference_records: int = 0
+
+
+@dataclass(frozen=True)
+class SaleInput:
+    drink_id: int
+    employee_id: int
+    quantity: int
+    unit_price: Decimal
+    sale_date: date
+
+
+@dataclass(frozen=True)
+class Sale:
+    id: int
+    drink_id: int
+    drink_name: str
+    category: DrinkCategory
+    employee_id: int
+    employee_name: str
+    quantity: int
+    unit_price: Decimal
+    sale_date: date
+    status: ResourceStatus
+    demo_data: bool
+    created_at: datetime
+    updated_at: datetime
+    cancelled_at: datetime | None
+
+    @property
+    def total_amount(self) -> Decimal:
+        return self.unit_price * self.quantity
+
+
+@dataclass(frozen=True)
+class SaleSearch:
+    sale_date_from: date | None = None
+    sale_date_to: date | None = None
+    employee_id: int | None = None
+    status: StatusFilter = StatusFilter.ACTIVE
+    offset: int = 0
+    limit: int = 50

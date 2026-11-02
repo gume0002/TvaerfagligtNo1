@@ -10,6 +10,7 @@ from app.data_access.repositories import (
     SqlHealthRepository,
     SqlIdempotencyRepository,
     SqlSeedRepository,
+    SqlSaleRepository,
 )
 
 MYSQL_LOCK_WAIT_TIMEOUT = 1205
@@ -36,6 +37,7 @@ class SqlUnitOfWork:
     def __enter__(self) -> "SqlUnitOfWork":
         self._session = self._session_factory()
         self.catalogs = SqlCatalogRepository(self._session)
+        self.sales = SqlSaleRepository(self._session)
         self.bookings = SqlBookingRepository(self._session)
         self.idempotency = SqlIdempotencyRepository(self._session)
         self.seed = SqlSeedRepository(self._session)

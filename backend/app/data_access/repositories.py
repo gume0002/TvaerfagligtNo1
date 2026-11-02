@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.business.models import (
+    Sale,
     Booking,
     BookingInput,
     BookingSearch,
@@ -357,3 +358,30 @@ class SqlHealthRepository:
 
     def ping(self) -> None:
         self._session.execute(text("SELECT 1"))
+
+
+class SqlSaleRepository:
+    def __init__(self, session: Session):
+        self._session = session
+
+    def _sale(self, row: BarSaleRow) -> Sale:
+        drink = self._session.get_one(DrinkRow, row.drink_id)
+        employee = self._session.get_one(EmployeeRow, row.employee_id)
+        return Sale(
+            id=row.id, drink_id=row.drink_id, drink_name=drink.name,
+            category=DrinkCategory(drink.category), employee_id=row.employee_id,
+            employee_name=employee.name, quantity=row.quantity, unit_price=row.unit_price,
+            sale_date=row.sale_date, status=ResourceStatus(row.status), demo_data=row.demo_data,
+            created_at=row.created_at, updated_at=row.updated_at, cancelled_at=row.cancelled_at,
+        )
+
+    def add(self, sale: NewBarSale) -> Sale:
+        row = BarSaleRow(
+            drink_id=sale.drink_id, employee_id=sale.employee_id, quantity=sale.quantity,
+            unit_price=sale.unit_price, sale_date=sale.sale_date, status=sale.status.value,
+            demo_data=sale.demo_data, created_at=sale.created_at, updated_at=sale.created_at,
+            cancelled_at=sale.cancelled_at,
+        )
+        self._session.add(row)
+        self._session.flush()
+        return self._sale(row)

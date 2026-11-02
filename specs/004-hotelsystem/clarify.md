@@ -113,3 +113,7 @@ Den tekniske [Plan](plan.md) er nu udarbejdet med valgte teknologier, laggrænse
 Brugeren har bekræftet Tableau Public og accepteret: »Det er fint hvis man trykker refresh inde på tableau«. Det erstatter projektets tidligere automatikkrav; det kræver ikke en ny godkendelse fra brugeren. Ændringen er indarbejdet i Specify under Analyser og filtre, US10, FR-007 og SC-003 og i Plan, afsnit 7 og teststrategien.
 
 En vellykket refresh skal hente aktuelle analyser gennem API’et, omfatte oprettelser, rettelser og aflysninger samt vise datagrundlagets tidspunkt. Fejlet refresh må ikke mærke et gammelt snapshot som nyt. Det tidligere krav om synlig opdatering inden fem sekunder efter gemning gælder ikke længere. Der er endnu ikke udført en praktisk refreshprøve i Public.
+
+## Afklaring 2. november 2026: rang ved lighed
+
+Brugeren har godkendt konkurrenceplacering for både værelsestyper og lande: omsætninger på 3.000, 3.000 og 2.000 DKK giver `rank` 1, 1 og 3.
