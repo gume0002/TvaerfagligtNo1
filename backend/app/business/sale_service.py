@@ -9,7 +9,7 @@ from decimal import Decimal
 from app.business.models import (
     Clock, DrinkCategory, DuplicateIdempotencyKey, FieldError, IdempotencyConflict,
     IdempotencyContext, NewBarSale, ResourceStatus, RetryableTransactionError,
-    Sale, SaleInput, StoredIdempotentResult, TemporarilyUnavailable, ValidationFailed,
+    ResourceNotFound, ResourceCancelled, Sale, SaleInput, StoredIdempotentResult, TemporarilyUnavailable, ValidationFailed,
 )
 from app.business.ports import UnitOfWorkFactory
 from app.business.rules import EARLIEST_DATE, amount_errors
@@ -88,3 +88,31 @@ class SaleService:
                 return sale
 
         return self._with_retry(save)
+
+    def update(self, sale_id: int, data: SaleInput) -> Sale:
+        self._validate(data)
+
+        def save():
+            with self._uow_factory() as uow:
+                current = uow.sales.lock(sale_id)
+                if current is None:
+                    raise ResourceNotFound('Salget blev ikke fundet.')
+                if current.status is ResourceStatus.CANCELLED:
+                    raise ResourceCancelled('Et aflyst salg kan ikke rettes.')
+                self._references(uow, data)
+                sale = uow.sales.update(sale_id, data, self._clock.now_utc())
+                uow.commit()
+                return sale
+        return self._with_retry(save)
+
+    def cancel(self, sale_id: int) -> None:
+        def save():
+            with self._uow_factory() as uow:
+                current = uow.sales.lock(sale_id)
+                if current is None:
+                    raise ResourceNotFound('Salget blev ikke fundet.')
+                if current.status is ResourceStatus.CANCELLED:
+                    return
+                uow.sales.cancel(sale_id, self._clock.now_utc())
+                uow.commit()
+        self._with_retry(save)

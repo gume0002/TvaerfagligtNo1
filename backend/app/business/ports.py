@@ -10,6 +10,7 @@ from typing import Protocol
 
 from app.business.models import (
     Sale,
+    SaleInput,
     Booking,
     BookingInput,
     BookingSearch,
@@ -50,6 +51,10 @@ class BookingRepository(Protocol):
 
 class SaleRepository(Protocol):
     def add(self, sale: NewBarSale) -> Sale: ...
+    def get(self, sale_id: int) -> Sale | None: ...
+    def lock(self, sale_id: int) -> Sale | None: ...
+    def update(self, sale_id: int, data: SaleInput, updated_at: datetime) -> Sale: ...
+    def cancel(self, sale_id: int, cancelled_at: datetime) -> None: ...
 
 
 class IdempotencyRepository(Protocol):

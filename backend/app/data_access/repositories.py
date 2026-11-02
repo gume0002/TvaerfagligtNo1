@@ -385,3 +385,30 @@ class SqlSaleRepository:
         self._session.add(row)
         self._session.flush()
         return self._sale(row)
+
+    def get(self, sale_id: int) -> Sale | None:
+        row = self._session.get(BarSaleRow, sale_id)
+        return self._sale(row) if row else None
+
+    def lock(self, sale_id: int) -> Sale | None:
+        row = self._session.scalars(select(BarSaleRow).where(BarSaleRow.id == sale_id)
+            .with_for_update().execution_options(populate_existing=True)).first()
+        return self._sale(row) if row else None
+
+    def update(self, sale_id: int, data, updated_at: datetime) -> Sale:
+        row = self._session.get_one(BarSaleRow, sale_id)
+        row.drink_id = data.drink_id
+        row.employee_id = data.employee_id
+        row.quantity = data.quantity
+        row.unit_price = data.unit_price
+        row.sale_date = data.sale_date
+        row.updated_at = updated_at
+        self._session.flush()
+        return self._sale(row)
+
+    def cancel(self, sale_id: int, cancelled_at: datetime) -> None:
+        row = self._session.get_one(BarSaleRow, sale_id)
+        row.status = ResourceStatus.CANCELLED.value
+        row.cancelled_at = cancelled_at
+        row.updated_at = cancelled_at
+        self._session.flush()
