@@ -154,10 +154,14 @@ def run_round(number: int) -> None:
 
 def show(kind: str) -> None:
     if kind == 'booking':
-        data = get(f'/api/analytics/hotel?year={YEAR}')
-        for period, label in (('all', 'Samlet'), ('past', 'Passeret'), ('upcoming', 'Kommende')):
-            row = data['totals'][period]
-            print(f"  {label}: omsætning {row['revenue']}, nætter {row['bookedRoomNights']}, ADR {row['adr']}, belægning {row['occupancyRatePercent']}")
+        for title, query in (('Alle sæsoner', ''), ('Højsæson', '&season=high')):
+            data = get(f'/api/analytics/hotel?year={YEAR}{query}')
+            print(f'  {title}:')
+            for period, label in (('all', 'Samlet'), ('past', 'Passeret'), ('upcoming', 'Kommende')):
+                row = data['totals'][period]
+                print(f"    {label}: omsætning {row['revenue']}, nætter {row['bookedRoomNights']}, ADR {row['adr']}, belægning {row['occupancyRatePercent']}")
+            single = [item for item in data['byRoomTypeAndSeason'] if item['roomTypeName'] == 'Standard Single' and item['season'] == 'high']
+            print(f"    Standard Single i højsæson: {single[0]['revenue'] if single else '0.00'}")
     else:
         data = get(f'/api/analytics/bar?year={YEAR}')
         print(f"  Helene Christine: {data['totals']['quantity']} drikke, {data['totals']['revenue']} DKK")
