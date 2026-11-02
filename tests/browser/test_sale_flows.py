@@ -1,4 +1,4 @@
-"""T035/T036: sale form through the browser; list fixture until T038."""
+"""T035/T036: sale form, editing, cancellation and history through the browser."""
 import os
 
 import pytest
