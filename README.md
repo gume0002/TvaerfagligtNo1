@@ -6,9 +6,9 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem API'et. Hotel- og baranalyser beregnes i backendens forretningslogik fra aktuelle MySQL-data. Tableau-dashboardet er bygget og bruger backendens OData-feed. [Milepæl 3-kontrollen](specs/004-hotelsystem/milestone-3.md) beskriver den afgrænsede kontrol af backendfunktionerne; den samlede afleveringsgennemgang mangler stadig.
 
-**Tableau:** Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) virker. Det henter sine tal fra API'ets OData-feed, tallene stemmer med API'et for flere filtervalg, og manuel refresh er afprøvet efter oprettelse, rettelse og aflysning af en booking. Se [vejledningen](tableau/README.md).
+**Tableau:** Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) virker. Det henter sine tal fra API'ets OData-feed, tallene stemmer med API'et for flere filtervalg, og manuel refresh er afprøvet efter oprettelse, rettelse og aflysning af både bookinger og barsalg, også når API'et er nede. Se [vejledningen](tableau/README.md).
 
-**Mangler endnu:** Afklar med underviseren, om manglende tilfredshedsdata og Tableau uden for Docker accepteres (T001). T054 mangler refresh-prøver for barsalg og fejlet API-forbindelse mod det rigtige system. T055's 60 refresh-prøver mangler. Den samlede testkørsel, den manuelle bookingprøve, acceptkriteriegennemgangen, Converge, gruppens review og præsentationsforberedelsen står også åbne (T062–T068). Se [tasklisten](specs/004-hotelsystem/tasks.md) for status.
+**Mangler endnu:** Afklar med underviseren, om manglende tilfredshedsdata og Tableau uden for Docker accepteres (T001). T055's 60 refresh-prøver mangler. Den samlede testkørsel, den manuelle bookingprøve, acceptkriteriegennemgangen, Converge, gruppens review og præsentationsforberedelsen står også åbne (T062–T068). Se [tasklisten](specs/004-hotelsystem/tasks.md) for status.
 
 ## Start systemet
 
