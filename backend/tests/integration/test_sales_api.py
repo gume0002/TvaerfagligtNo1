@@ -96,3 +96,60 @@ def test_inclusive_dates_employee_and_pagination(client):
     {'saleDateFrom': 'wrong'}, {'saleDateFrom': '2026-10-02', 'saleDateTo': '2026-10-01'}])
 def test_invalid_search(client, params):
     assert call(client, 'get', params=params).status_code == 400
+
+
+def test_frozen_price_replay_after_changes_and_invalid_writes_leave_no_rows(client, engine):
+    from decimal import Decimal
+    from sqlalchemy import select, func
+    from sqlalchemy.orm import Session
+    from app.data_access.orm_models import BarSaleRow, DrinkRow
+    original = post(client, key='frozen').json()
+    with Session(engine) as session:
+        session.get_one(DrinkRow, 1).suggested_unit_price = Decimal('999.00')
+        session.commit()
+    assert call(client, 'get', original['id']).json()['unitPrice'] == '100.00'
+    call(client, 'put', original['id'], json=payload(quantity=2))
+    assert post(client, key='frozen').json() == original
+    call(client, 'delete', original['id'])
+    assert post(client, key='frozen').json() == original
+    assert post(client, payload(quantity=0), key='rejected').status_code == 400
+    assert post(client, key='rejected').status_code == 201
+    with Session(engine) as session:
+        assert session.scalar(select(func.count()).select_from(BarSaleRow)) == 2
+
+
+def test_all_sale_fields_can_be_changed(client, engine):
+    from decimal import Decimal
+    from sqlalchemy.orm import Session
+    from app.data_access.orm_models import DrinkRow, EmployeeRow
+    with Session(engine, expire_on_commit=False) as session:
+        drink = DrinkRow(name='Coffee', category='coffee', suggested_unit_price=Decimal('50.00'))
+        employee = EmployeeRow(code='other', name='Other employee')
+        session.add_all([drink, employee]); session.commit()
+        changes = payload(drinkId=drink.id, employeeId=employee.id, quantity=2, unitPrice='45.50', saleDate='2020-01-01')
+    sale = post(client).json()
+    response = call(client, 'put', sale['id'], json=changes)
+    assert response.status_code == 200
+    for name, value in changes.items():
+        assert response.json()[name] == value
+    assert response.json()['totalAmount'] == '91.00'
+
+
+def test_simultaneous_creation_with_same_key_commits_once(settings, frozen_clock, catalog, engine):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+    from sqlalchemy import select, func
+    from sqlalchemy.orm import Session
+    from app.data_access.orm_models import BarSaleRow
+    barrier = Barrier(2)
+    def create():
+        with TestClient(create_app(settings, frozen_clock)) as independent_client:
+            barrier.wait(timeout=10)
+            return post(independent_client, key='concurrent')
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [pool.submit(create) for _ in range(2)]
+        results = [future.result(timeout=20) for future in futures]
+    assert [result.status_code for result in results] == [201, 201]
+    assert results[0].json() == results[1].json()
+    with Session(engine) as session:
+        assert session.scalar(select(func.count()).select_from(BarSaleRow)) == 1

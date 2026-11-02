@@ -80,7 +80,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 - [x] T033 Implementér salgsregler i `backend/app/business/sale_service.py`: positivt heltal, kendt drik/medarbejder, positiv pris med højst to decimaler, salgsdato højst dags dato og fastfrosset salgspris.
 - [x] T034 Implementér `GET /api/catalogs` gennem alle tre lag for lande, værelsestyper, sæsonpriser, medarbejdere og drikke samt `POST /api/bar-sales` i `backend/app/api/catalogs.py` og `sales.py` efter OpenAPI.
 - [x] T035 Byg registreringsformular og salgsoversigt i `frontend/`; hent drikke og medarbejdere fra API'et.
-- [ ] T036 Dæk US5-kriterierne med business-, MySQL-, kontrakt- og browserkontroller. **Delvist:** Oprettelse, fejl og fastfrosset pris er kontrolleret; genlæsning og fuldt browserforløb følger T038–T040.
+- [x] T036 Dæk US5-kriterierne med business-, MySQL-, kontrakt- og browserkontroller.
 
 ## Fase 7 – US6: Ret eller aflys barsalg (P2)
 
@@ -90,7 +90,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 - [x] T037 Implementér rettelse og logisk aflysning i `backend/app/business/sale_service.py`; aflyste salg kan hverken rettes eller genaktiveres.
 - [x] T038 Implementér `GET/PUT/DELETE /api/bar-sales/{id}` samt liste/historik i `backend/app/api/sales.py` efter kontrakten.
 - [x] T039 Tilføj redigerings-, aflysnings- og historikforløb i `frontend/`.
-- [ ] T040 Dæk US6-kriterierne, herunder at ugyldig rettelse bevarer de oprindelige værdier.
+- [ ] T040 Dæk US6-kriterierne, herunder at ugyldig rettelse bevarer de oprindelige værdier. **Delvist:** Skrive-/historikforløb er kontrolleret; analyseudeladelse følger T051.
 
 ## Fase 8 – US7: Hotellets omsætning og gæstelande (P1)
 
