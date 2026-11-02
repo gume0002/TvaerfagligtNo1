@@ -146,7 +146,8 @@ button.danger {
 
 .result-count { margin: 16px 0 8px; color: var(--muted); }
 
-.table-wrap { overflow-x: auto; }
+/* position: relative keeps the visually hidden column heading inside the scroll area. */
+.table-wrap { position: relative; overflow-x: auto; }
 
 table { width: 100%; border-collapse: collapse; }
 

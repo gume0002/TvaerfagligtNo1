@@ -132,6 +132,12 @@ class TestUS1:
         expect(page.locator("#booking-rows img")).to_have_count(0)
 
 
+def test_page_has_no_horizontal_scroll_on_a_phone(page):
+    create_booking(page, name="Gæst med et langt navn til telefonvisningen")
+    page.set_viewport_size({"width": 390, "height": 844})
+    assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
+
+
 class TestUS2:
     def test_name_and_dates_can_be_combined(self, page):
         create_booking(page, name="Anna Juni", arrival="2026-06-10", departure="2026-06-12")
