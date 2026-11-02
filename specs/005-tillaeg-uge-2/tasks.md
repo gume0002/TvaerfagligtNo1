@@ -31,11 +31,11 @@ Afkryds først en task, når leverancen findes, og kontrollen faktisk er kørt.
 ## Fase 3 – US14: Analyser i browseren
 
 - [ ] T087 Tilføj funktioner til `frontend/js/api.js`, der henter hotel- og baranalyser.
-- [ ] T088 Byg `frontend/analytics.html` og `frontend/js/analytics.js` med filtre og hotelvisninger.
-- [ ] T089 Tilføj barens visninger: årets salg, omsætning pr. drik og begge kategoriandele.
+- [ ] T088 Byg `frontend/analytics.html` og `frontend/js/analytics.js` med filtre og hotelvisninger som grafer og tabeller.
+- [ ] T089 Tilføj barens visninger som grafer og tabeller: årets salg, omsætning pr. drik og begge kategoriandele.
 - [ ] T090 Vis datagrundlagets tidspunkt, »Demodata«, »Intet datagrundlag« og fejl ved utilgængeligt API.
 - [ ] T091 Tilføj links fra bookingsiden og salgssiden, og tilpas `frontend/Dockerfile`, hvis det er nødvendigt.
-- [ ] T092 Dæk US14 med browsertests, herunder 400 DKK og andelene 60/40 % og 75/25 % samt nye tal efter en ændring.
+- [ ] T092 Dæk US14 inkl. grafer og tabelvisning med browsertests, herunder 400 DKK og andelene 60/40 % og 75/25 % samt nye tal efter en ændring.
 
 ## Fase 4 – Tableau, dokumentation og Converge
 

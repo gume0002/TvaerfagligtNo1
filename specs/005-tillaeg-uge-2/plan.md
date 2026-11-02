@@ -2,7 +2,7 @@
 
 **Dato:** 2. november 2026. **Grundlag:** [spec.md](spec.md), [constitution](../../.specify/memory/constitution.md) og [planen for hotelsystemet](../004-hotelsystem/plan.md).
 
-**Status:** Forslag til gruppens gennemgang. Intet af det nye er implementeret eller afprøvet.
+**Status:** Implementeret på branchen `tillaegsopgave-uge-2`. Afventer gruppens gennemgang.
 
 ## Hvad ændrer sig ikke?
 
@@ -15,8 +15,8 @@ Tre lag, REST/JSON, kontrakt, forretningsregler, frontend, OData-feed og Tableau
 | Side | `frontend/analytics.html` og `frontend/js/analytics.js`, med link fra bookingsiden og salgssiden |
 | Data | Nye funktioner i `frontend/js/api.js` kalder `GET /api/analytics/hotel`, `GET /api/analytics/bar` og `GET /api/catalogs` |
 | Filtre | År, sæson, land, værelsestype og medarbejder. Hvert valg giver et nyt kald til API'et |
-| Visning | Tabeller med API'ets værdier. `null` med status `no_data` vises som »Intet datagrundlag« |
-| Regel | Siden formaterer kun tal og laver ingen beregninger |
+| Visning | Nøgletal, søjlegrafer og tabelvisning med API'ets værdier. Graferne er håndskrevet HTML og CSS uden bibliotek. `null` vises som »Intet datagrundlag« |
+| Regel | Siden formaterer tal og laver ingen nøgletal. Den beregner kun søjlernes længde ud fra API'ets værdier |
 
 Kontrakten skal kun ændres, hvis gennemgangen finder et manglende felt.
 

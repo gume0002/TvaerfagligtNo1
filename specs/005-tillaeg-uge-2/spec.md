@@ -3,7 +3,7 @@
 **Specifikationsmappe:** `specs/005-tillaeg-uge-2/`
 **Oprettet:** 2. november 2026
 **Grundlag:** `opgavebeskrivelse/Tillægsopgave_uge_2.pdf`, [constitution](../../.specify/memory/constitution.md) og [hotelsystemets specifikation](../004-hotelsystem/spec.md)
-**Status:** Udkast til gruppens gennemgang. Intet af det nye er implementeret.
+**Status:** Implementeret på branchen `tillaegsopgave-uge-2`. Afventer gruppens gennemgang i en pull request. Se [converge.md](converge.md).
 
 ## Formål
 
@@ -23,7 +23,7 @@ Hotellet vil kunne læse dataanalyserne direkte gennem API'et og i browserfronte
 - Nye nøgletal eller nye forretningsregler.
 - Flytning af eksisterende data fra MySQL.
 - Fjernelse af Tableau. Opgaven skriver "ikke kun som nu gennem Tableau", så dashboardet bevares.
-- Login, grafer som krav i frontenden og andre ændringer af brugerfladen.
+- Login og andre ændringer af brugerfladen.
 
 ## Beslutninger
 
@@ -31,8 +31,8 @@ Hotellet vil kunne læse dataanalyserne direkte gennem API'et og i browserfronte
 |---|---|---|
 | Databasen skiftes til **PostgreSQL** | Gruppens valg. Det kræver mindst ombygning og viser, at kun dataadgang og drift skal ændres | Besluttet af gruppen 2. november 2026 |
 | Nuværende version er sikret med tagget `v1-mysql-tableau` | Opgaven kræver, at arbejdet er tilgængeligt til præsentationen via Git | Tagget peger på `d38e39b` |
-| Eksisterende data flyttes ikke | Databasen er ny og får startdata ved første start. Ændringer i en lokal MySQL-demo går tabt | Forslag, se åbne punkter |
-| Frontenden viser tabeller, ikke grafer | Opgaven kræver, at beregningerne vises, og Tableau står for visualiseringen | Forslag, se åbne punkter |
+| Eksisterende data flyttes ikke | Databasen er ny og får startdata ved første start. Ændringer i en lokal MySQL-demo går tabt | Besluttet 2. november 2026 |
+| Frontenden viser både grafer og tabeller | Ledelsen skal kunne aflæse tallene uden Tableau. Tabellerne gør alle værdier læsbare uden farver og uden at holde musen over | Besluttet 2. november 2026 |
 
 **Tolkningsrisiko:** Opgaven skriver "en anden type end den nuværende MySql". PostgreSQL er en anden database, men også relationel. Hvis opgaven menes som en anden slags database, fx NoSQL, opfylder valget det ikke bogstaveligt. Gruppen har valgt ikke at afstemme med underviseren og skal kunne begrunde valget.
 
@@ -62,8 +62,9 @@ Som hotelledelse ønsker jeg at se analyserne i browseren, så jeg kan følge n�
 3. År, sæson, land, værelsestype og medarbejder kan vælges, og siden henter nye tal fra API'et, når valget ændres.
 4. Alle tal kommer fra API'et, og siden beregner ikke selv nøgletal. Med tre cocktails til 100 DKK og to kaffer til 50 DKK vises 400 DKK og andelene 60/40 % og 75/25 %.
 5. Efter oprettelse, rettelse eller aflysning af en booking eller et salg viser siden de nye tal, når den hentes igen.
-6. Siden viser tidspunkt for datagrundlaget, mærket »Demodata« og »Intet datagrundlag«, hvor et forholdstal mangler.
-7. Hvis API'et ikke kan nås, viser siden en forståelig fejl og ingen gamle tal som aktuelle.
+6. Siden viser hotellets og barens tal som grafer og giver adgang til de samme værdier som tabeller.
+7. Siden viser tidspunkt for datagrundlaget, mærket »Demodata« og »Intet datagrundlag«, hvor et forholdstal mangler.
+8. Hvis API'et ikke kan nås, viser siden en forståelig fejl og ingen gamle tal som aktuelle.
 
 ### US15 – Skift database (P1)
 
@@ -94,8 +95,4 @@ Som hotel ønsker jeg, at løsningen ikke bruger MySQL, så den følger vores kr
 
 ## Åbne punkter
 
-Gruppen bedes tage stilling til disse i pull requesten:
-
-1. Er det i orden, at data i en lokal MySQL-demo ikke flyttes med?
-2. Er tabeller nok i frontenden, eller ønskes der også grafer?
-3. Skal præsentationen vise begge versioner, eller kun den nye?
+Skal præsentationen vise begge versioner, eller kun den nye? Beslutningen er udskudt.
