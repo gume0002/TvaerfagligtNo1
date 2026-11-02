@@ -1,6 +1,6 @@
 # Tableau-dashboard
 
-**Status:** Dashboardet virker med demodata. Tallene for hotellet er sammenlignet med API'et for flere filtervalg, og tallene for baren for standardvalget. Refresh mod det rigtige system er endnu ikke afprøvet (T054, T055).
+**Status:** Dashboardet virker med demodata. Tallene for hotellet er sammenlignet med API'et for flere filtervalg, og tallene for baren for standardvalget. Refresh mod det rigtige system er afprøvet for bookinger, men ikke for barsalg (T054), og de 60 prøver i T055 er ikke udført.
 
 ## Åbn dashboardet
 
@@ -22,6 +22,21 @@ Filen indeholder et gemt udtræk med demodata. For at se data fra dit eget syste
 Tableaus filtre kalder ikke API'et, men virker kun på det gemte udtræk. Prøven nedenfor viste, at to samtidige filtervalg lægges sammen. Derfor leverer feedet de officielle resultater for hver kombination af år, sæson, land og værelsestype, og dropdowns vælger netop én af dem. Det betyder, at Tableau ikke selv beregner nøgletal og ikke kan lægge belægning eller ADR sammen på tværs af filtervalg.
 
 Beregningerne ligger i `backend/app/business/analytics_service.py`. Feedet i `backend/app/api/odata.py` og `backend/app/business/analytics_feed_service.py` viser kun resultaterne. Med 1.000 bookinger og 1.000 salg tog hele feedet 2,6 sekunder at hente i en måling.
+
+## Refresh mod det rigtige system (T054)
+
+Prøven er udført 2. november 2026 i Tableau Public 2026.3 med det færdige dashboard mod det kørende system. Tallene er sammenlignet med `GET /api/analytics/hotel` for samme filtre, og serverens log viser, at Tableau hentede data igen efter hver ændring.
+
+| Ændring i browseren | Filter | Tableau efter refresh | Datagrundlag (UTC) |
+|---|---|---|---|
+| Start | Alle | Samlet 128.250,00 og 63 nætter | 13.25.33 |
+| Oprettelse: én nat til 900 DKK | Alle | Samlet 129.150,00, 64 nætter og ADR 2.017,97 | 13.58.35 |
+| Rettelse: prisen til 1.000 DKK | Denmark | Samlet 1.000,00, 1 nat og ADR 1.000,00 | 14.02.25 |
+| Aflysning | Denmark | Samlet 0,00, 0 nætter, tom ADR og »Intet datagrundlag« | 14.03.59 |
+
+Før refresh viste Tableau de gamle tal. Hver datakilde skal opdateres for sig, så en visning viser gamle tal, indtil dens egen datakilde er opdateret. API'et var tilbage på 128.250,00 og 63 nætter efter aflysningen, og bookingen er bevaret som aflyst.
+
+**Mangler:** barsalg og fejlet refresh mod det rigtige system. T054 er derfor ikke afkrydset.
 
 ## Byg dashboardet igen
 
