@@ -161,6 +161,17 @@ class TestBar:
         page.reload()
         expect(page.locator("#bar-revenue")).to_have_text("400,00 DKK")
 
+    def test_edited_sale_gives_new_figures(self, context, bar_sales):
+        page = open_page(context)
+        expect(page.locator("#bar-revenue")).to_have_text("400,00 DKK")
+        sale = context.request.get("/api/bar-sales").json()["items"][0]
+        payload = {key: sale[key] for key in ("drinkId", "employeeId", "quantity", "saleDate")}
+        response = context.request.put(f"/api/bar-sales/{sale['id']}", data=json.dumps(payload | {"quantity": sale["quantity"] + 1, "unitPrice": sale["unitPrice"]}),
+                                       headers={"Content-Type": "application/json"})
+        assert response.status == 200, response.text()
+        page.reload()
+        expect(page.locator("#bar-revenue")).not_to_have_text("400,00 DKK")
+
     def test_employee_filter_fetches_that_employees_figures(self, context, empty_database, bar_sales):
         with empty_database.begin() as connection:
             connection.execute(text("INSERT INTO employees (code, name) VALUES ('anden', 'Anden Bartender')"))

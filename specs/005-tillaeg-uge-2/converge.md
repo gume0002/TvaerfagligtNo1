@@ -1,6 +1,6 @@
 # Converge: Tillægsopgave uge 2
 
-**Dato:** 2. november 2026. **Branch:** `tillaegsopgave-uge-2`. **Status:** Kørt lokalt af Mathilde og Claude. Gruppen har ikke gennemgået det endnu, og intet er pushet eller merget.
+**Dato:** 2. november 2026. **Branch:** `tillaegsopgave-uge-2`. **Status:** Kontrollerne er kørt af Claude på Mathildes computer. Gruppen har ikke gennemgået det endnu, og intet er pushet eller merget.
 
 ## Resultat
 
@@ -16,7 +16,7 @@
 
 | Kontrol | Resultat |
 |---|---|
-| `docker compose --profile test run --build --rm test` | 365 beståede tests, exit 0 |
+| `docker compose --profile test run --build --rm test` | 366 beståede tests, exit 0 |
 | Samtidighedstest, 20 gentagelser | 20 af 20 kørsler bestået |
 | `backend/testsupport/check_milestone3_mutations.py` | 5 af 5 bevidste fejl fanget |
 | Bevidste fejl i dataadgang: ingen lås, søgning med store/små bogstaver, søgning uden escape, ingen låseregel | 4 af 4 fanget. Den sidste blev først fanget, efter at testen af en rigtig låsefejl var tilføjet |
@@ -36,7 +36,7 @@ Prøverne med frisk kopi brugte `docker compose up --build -d`, så kommandoen k
 | US12.2 | Delvist | Arbejdet ligger på en branch. Pull request er ikke oprettet |
 | US13.1–3 | Opfyldt | Felterne dækker alle krævede tal, og kontrakten er uændret i forhold til tagget. Kontrakttests består |
 | US14.1–4 | Opfyldt | `tests/browser/test_analytics_page.py`, herunder 400 DKK, 60/40 % og 75/25 %. En test ændrer API-svaret og viser, at siden viser API'ets tal |
-| US14.5 | Opfyldt | Browsertests af oprettet, rettet og aflyst booking samt oprettet og aflyst salg. Rettelse af salg er ikke testet i browseren |
+| US14.5 | Opfyldt | Browsertests af oprettet, rettet og aflyst booking samt oprettet, rettet og aflyst salg |
 | US14.6 | Opfyldt | Grafer og tabeller. Tabelvisningen for lande er testet i browseren, de øvrige er set i koden |
 | US14.7–8 | Opfyldt | Browsertests af demomærke, tidspunkt, »Intet datagrundlag« og tabt API |
 | US15.1–4 | Opfyldt | Frisk kopi, testsuite og samtidighedstest |
@@ -58,7 +58,7 @@ Prøverne med frisk kopi brugte `docker compose up --build -d`, så kommandoen k
 
 ## Forskelle og begrænsninger
 
-- **Accenter i søgning:** PostgreSQL ignorerer store og små bogstaver, men ikke accenter. Søgning på `Jose` finder derfor ikke `José`. MySQL-versionen fandt begge. Kravet nævner kun store og små bogstaver.
+- **Accenter i søgning:** PostgreSQL ignorerer store og små bogstaver, men ikke accenter. Søgning på `Jose` finder derfor ikke `José`. Forskellen fra MySQL-versionen er ikke målt i en prøve. Kravet nævner kun store og små bogstaver.
 - **Demoens data:** Den lokale demo fik en ny volume, `postgres_data`, med startdata. Den gamle volume `tvaerfagligtno1_mysql_data` er ikke slettet, men bruges ikke længere.
 - **Tableau-udtræk:** `tableau/hotel-and-bar.twbx` er ikke ændret og indeholder sit gemte udtræk, indtil nogen trykker refresh.
 - **Mørk tilstand:** Siden har ingen mørk tilstand, ligesom resten af frontenden.
