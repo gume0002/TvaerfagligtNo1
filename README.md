@@ -6,9 +6,9 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem API'et. Hotel- og baranalyser beregnes i backendens forretningslogik fra aktuelle MySQL-data. Milepæl 3 er implementeret; [kontrol og afgrænsning](specs/004-hotelsystem/milestone-3.md) beskriver det faktisk afprøvede.
 
-**Tableau:** Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) henter sine tal fra API'ets OData-feed og er kontrolleret mod API'et for flere filtervalg. Se [vejledningen](tableau/README.md).
+**Tableau:** Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) virker. Det henter sine tal fra API'ets OData-feed, tallene stemmer med API'et for flere filtervalg, og manuel refresh er afprøvet efter oprettelse, rettelse og aflysning af en booking. Se [vejledningen](tableau/README.md).
 
-**Mangler endnu:** Refresh-prøverne mod det rigtige system (T054, T055), underviserafklaringen om kundetilfredshed og Tableau uden for Docker, testpersonens prøve og den afsluttende Converge.
+**Mangler endnu:** Refresh efter barsalg og fejlet refresh mod det rigtige system (T054), de 60 refresh-prøver (T055), underviserafklaringen om kundetilfredshed og Tableau uden for Docker, testpersonens prøve og den afsluttende Converge.
 
 ## Start systemet
 
