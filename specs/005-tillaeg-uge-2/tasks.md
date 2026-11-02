@@ -39,7 +39,7 @@ Afkryds først en task, når leverancen findes, og kontrollen faktisk er kørt.
 
 ## Fase 4 – Tableau, dokumentation og Converge
 
-- [ ] T093 Et gruppemedlem afprøver refresh i Tableau mod PostgreSQL og sammenligner med API og browserfront (US15.7, SC-009).
+- [x] T093 Et gruppemedlem afprøver refresh i Tableau mod PostgreSQL og sammenligner med API og browserfront (US15.7, SC-009).
 - [x] T094 Opdatér `README.md` med diagram, `CONTRIBUTE.md`, `tableau/README.md` og `specs/README.md`.
 - [x] T095 Opret `specs/005-tillaeg-uge-2/converge.md` med status og bevis for US12–US15, FR-013–FR-015 og SC-008–SC-011. Mangler bliver til nye tasks.
 - [ ] T096 Opdatér præsentationen, så den forklarer valget af PostgreSQL, hvad skiftet ændrede, og svaret på SWA-spørgsmål 5.

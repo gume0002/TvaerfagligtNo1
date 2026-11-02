@@ -6,7 +6,7 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem API'et. Hotel- og baranalyser beregnes i backendens forretningslogik fra aktuelle PostgreSQL-data og vises med grafer og tabeller på analysesiden. Versionen med MySQL før tillægsopgaven er bevaret i tagget `v1-mysql-tableau`. Tableau-dashboardet er bygget og bruger backendens OData-feed. [Milepæl 3-kontrollen](specs/004-hotelsystem/milestone-3.md) beskriver den afgrænsede kontrol af backendfunktionerne; den samlede afleveringsgennemgang mangler stadig.
 
-**Tableau:** Refresh mod PostgreSQL er endnu ikke afprøvet (T093). Prøverne herunder er kørt mod MySQL-versionen. Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) virker. Det henter sine tal fra API'ets OData-feed, tallene stemmer med API'et for flere filtervalg, og manuel refresh er afprøvet efter oprettelse, rettelse og aflysning af både bookinger og barsalg, også når API'et er nede. Se [vejledningen](tableau/README.md).
+**Tableau:** Refresh mod PostgreSQL er afprøvet 2. november 2026 (se [`tableau/README.md`](tableau/README.md)). Øvrige prøver er kørt mod MySQL-versionen. Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) virker. Det henter sine tal fra API'ets OData-feed, tallene stemmer med API'et for flere filtervalg, og manuel refresh er afprøvet efter oprettelse, rettelse og aflysning af både bookinger og barsalg, også når API'et er nede. Se [vejledningen](tableau/README.md).
 
 **Åbne fortolkningsrisici:** Manglende kundetilfredshedsdata og Tableau uden for Docker er gruppens egne valg og er ikke afstemt med underviseren.
 

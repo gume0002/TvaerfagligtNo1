@@ -1,6 +1,6 @@
 # Tableau-dashboard
 
-**Bemærk:** Prøverne i dette dokument er kørt mod MySQL-versionen. Efter skiftet til PostgreSQL mangler refresh at blive afprøvet igen (T093 i [tillægsopgavens tasks](../specs/005-tillaeg-uge-2/tasks.md)).
+**Bemærk:** Prøverne i dette dokument er kørt mod MySQL-versionen, bortset fra afsnittet [Refresh mod PostgreSQL (T093)](#refresh-mod-postgresql-t093).
 
 **Status:** Dashboardet virker med demodata. Tallene for hotellet er sammenlignet med API'et for flere filtervalg, og tallene for baren for standardvalget. Refresh mod det rigtige system er afprøvet for bookinger og barsalg, også når API'et er nede (T054). En stikprøve på 12 runder med 1.000 bookinger og 1.000 salg er også udført og stemmer, se [kontrolarket](sc003-kontrolark.md) (T055).
 
@@ -24,6 +24,23 @@ Filen indeholder et gemt udtræk med demodata. For at se data fra dit eget syste
 Tableaus filtre kalder ikke API'et, men virker kun på det gemte udtræk. Prøven nedenfor viste, at to samtidige filtervalg lægges sammen. Derfor leverer feedet de officielle resultater for hver kombination af år, sæson, land og værelsestype, og dropdowns vælger netop én af dem. Det betyder, at Tableau ikke selv beregner nøgletal og ikke kan lægge belægning eller ADR sammen på tværs af filtervalg.
 
 Beregningerne ligger i `backend/app/business/analytics_service.py`. Feedet i `backend/app/api/odata.py` og `backend/app/business/analytics_feed_service.py` viser kun resultaterne. Med 1.000 bookinger og 1.000 salg tog hele feedet 2,6 sekunder at hente i en måling.
+
+## Refresh mod PostgreSQL (T093)
+
+Afprøvet af Mathilde 2. november 2026 i Tableau Public på demoen med PostgreSQL. Der blev oprettet en testbooking gennem API'et: Germany, Junior Suite, 10.-12. december 2026, 1.000 DKK pr. nat. Den blev aflyst bagefter. Alle datakilder blev opdateret.
+
+**Hotel (2026, Højsæson):**
+
+| Tal | Før refresh | Efter refresh | API og browser |
+|---|---|---|---|
+| Samlet omsætning | 54.600,00 | 56.600,00 | 56.600,00 |
+| Germany | 26.500,00 | 28.500,00 | 28.500,00 |
+| Junior Suite | 17.500,00 | 19.500,00 | 19.500,00 |
+| Datagrundlag (UTC) | 13.25.33 | 17.31.25 | Nyt tidspunkt pr. kald |
+
+**Cocktailbar (2026, Helene Christine), efter refresh:** 1.663,47 DKK og 24 drikke. Cocktail og kaffe er 45,83/54,17 % efter antal og 65,52/34,48 % efter omsætning. Tallene er ens i Tableau, API og browser.
+
+Filen er ikke gemt efter prøven. Det gemte udtræk er derfor uændret, indtil nogen trykker refresh.
 
 ## Refresh mod det rigtige system (T054)
 

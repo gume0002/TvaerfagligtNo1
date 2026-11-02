@@ -9,7 +9,7 @@
 | Database | PostgreSQL 17 kører. Alle tests består |
 | Analyser i API | Findes og er uændrede |
 | Analyser i browser | `frontend/analytics.html` viser grafer og tabeller med tal fra API'et |
-| Tableau | **Ikke afprøvet mod PostgreSQL** |
+| Tableau | Refresh afprøvet mod PostgreSQL af Mathilde. Tallene stemmer med API og browser |
 | Præsentation | **Ikke opdateret.** Beslutningen er udskudt |
 
 ## Kørte kontroller
@@ -42,7 +42,7 @@ Prøverne med frisk kopi brugte `docker compose up --build -d`, så kommandoen k
 | US15.1–4 | Opfyldt | Frisk kopi, testsuite og samtidighedstest |
 | US15.5 | Opfyldt | `backend/app/api/` er uændret. I `backend/app/business/` er kun to kommentarer rettet, fordi de nævnte MySQL |
 | US15.6 | Opfyldt | Frisk kopi, se ovenfor |
-| US15.7 | **Ikke kontrolleret** | Feedet svarer 200 og er testet automatisk, men refresh i Tableau mangler (T093) |
+| US15.7 | Opfyldt | En ny booking kom med efter refresh i Tableau, se [`tableau/README.md`](../../tableau/README.md) |
 
 ## Krav og succeskriterier
 
@@ -52,7 +52,7 @@ Prøverne med frisk kopi brugte `docker compose up --build -d`, så kommandoen k
 | FR-014 | Opfyldt. JavaScript beregner kun søjlernes længde ud fra API'ets værdier |
 | FR-015 | Opfyldt for koden. MySQL nævnes kun i historiske dokumenter, i dokumenter om skiftet og i dette tag |
 | SC-008 | Opfyldt |
-| SC-009 | **Delvist.** Demoens 128.250,00 DKK og 1.663,47 DKK er ens i API og browser. Tableau mangler |
+| SC-009 | Opfyldt for de afprøvede filtre: hotel 2026 og Højsæson, bar 2026 og Helene Christine. Andre filterkombinationer er ikke sammenlignet mod PostgreSQL |
 | SC-010 | Opfyldt |
 | SC-011 | Opfyldt |
 
@@ -67,5 +67,4 @@ Prøverne med frisk kopi brugte `docker compose up --build -d`, så kommandoen k
 ## Tilbage
 
 - T074, T075: Gruppen godkender constitution, spec og plan i pull requesten.
-- T093: Et gruppemedlem afprøver refresh i Tableau mod PostgreSQL.
 - T096: Præsentationen opdateres, når beslutningen om den er taget.
