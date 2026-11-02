@@ -145,13 +145,16 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 
 ## Fase 13 – Afsluttende kvalitet og Converge
 
-- [ ] T062 Kør den samlede testkommando fra en isoleret testdatabase; kontrollér unit-, integration-, kontrakt-, arkitektur- og browsertests samt fejlretninger.
+- [x] T062 Kør den samlede testkommando fra en isoleret testdatabase; kontrollér unit-, integration-, kontrakt-, arkitektur- og browsertests samt fejlretninger.
 - [ ] T063 Gennemfør den manuelle to-minutters bookingprøve for SC-001 uden Swagger eller databaseværktøjer.
-- [ ] T064 Kontrollér alle user story-acceptkriterier, FR-001–FR-012 og SC-001–SC-007 mod faktisk løsning; følg browser → API → business → dataadgang → MySQL for booking og analyse, og kontrollér Tableau/API-paritet.
-- [ ] T065 Opret `specs/004-hotelsystem/converge.md` med status og konkret bevis/filsti for hvert acceptkriterium; angiv mangler som nye tasks, ikke som opfyldte krav.
-- [ ] T066 Kontrollér `README.md`, `CONTRIBUTE.md`, OpenAPI/Swagger, arkitekturdiagram, filhenvisninger og `git diff --check`; beskriv kun faktisk udført arbejde og tilskriv ikke gruppemedlemmers bidrag til hinanden.
+- [x] T064 Kontrollér alle user story-acceptkriterier, FR-001–FR-012 og SC-001–SC-007 mod faktisk løsning; følg browser → API → business → dataadgang → MySQL for booking og analyse, og kontrollér Tableau/API-paritet.
+- [x] T065 Opret `specs/004-hotelsystem/converge.md` med status og konkret bevis/filsti for hvert acceptkriterium; angiv mangler som nye tasks, ikke som opfyldte krav.
+- [x] T066 Kontrollér `README.md`, `CONTRIBUTE.md`, OpenAPI/Swagger, arkitekturdiagram, filhenvisninger og `git diff --check`; beskriv kun faktisk udført arbejde og tilskriv ikke gruppemedlemmers bidrag til hinanden.
 - [ ] T067 Sørg for, at ændringer leveres gennem branches og pull requests med et andet gruppemedlems review, og at hvert gruppemedlems faktiske bidrag kan dokumenteres med egne commits; fordel ikke arbejde eller tilskriv bidrag uden aftale.
 - [ ] T068 Forbered og øv den 10-minutters projektpræsentation samt 10 minutters spørgsmål/feedback inden gruppens fremlæggelse fredag 6. november; brug fungerende demo og Converge-resultater som bevis, og aftal taleroller samt eventuel notetagning/feedbackrolle.
+- [ ] T069 Afprøv dropdown for medarbejder, andre år, kombinerede hotelfiltre og salg uden data i Tableau (US7.4, US9.2, US9.3).
+- [ ] T070 Afprøv i Tableau, at en afvist ændring ikke ændrer tallene efter refresh (US10.2).
+- [ ] T071 Åbn `tableau/hotel-and-bar.twbx` på et andet gruppemedlems maskine, og gennemfør refresh.
 
 ## Afhængigheder og leveringsrækkefølge
 

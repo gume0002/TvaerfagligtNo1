@@ -10,7 +10,7 @@ Opgaven angiver rækkefølgen **Constitution → Specify → Clarify → Plan �
 | Plan | [plan.md](004-hotelsystem/plan.md) | Teknisk design fra 29. oktober 2026. Nogle statusnoter i planen beskriver forholdene på det tidspunkt; den aktuelle status står i [tasks.md](004-hotelsystem/tasks.md) og [tableau/README.md](../tableau/README.md). |
 | Tasks | [tasks.md](004-hotelsystem/tasks.md) | Opgaverne er grupperet efter brugerhistorie og viser designporte, afhængigheder og status. |
 | Implement | Applikationskode, kontrakt og Docker-tjenester | Hovedfunktionerne, OData-feedet og Tableau-dashboardet er implementeret. Resterende prøver og status pr. task står i [tasks.md](004-hotelsystem/tasks.md). |
-| Converge | `004-hotelsystem/converge.md` | Den samlede Converge mangler. T065 kræver en gennemgang med bevis og status pr. acceptkriterium samt opfølgende Tasks for mangler. |
+| Converge | [converge.md](004-hotelsystem/converge.md) | Gennemført 2. november 2026 med status og bevis pr. krav. Åbne punkter står i dokumentet og i Tasks. |
 
 ## Filernes rolle
 
