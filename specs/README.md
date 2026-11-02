@@ -14,7 +14,7 @@ Opgaven angiver rækkefølgen **Constitution → Specify → Clarify → Plan �
 
 ## Tillægsopgave uge 2
 
-Tillægsopgaven har sit eget forløb i [`005-tillaeg-uge-2`](005-tillaeg-uge-2/spec.md): analyser i API og frontend samt skift fra MySQL til PostgreSQL. Versionen før tillægsopgaven er bevaret i tagget `v1-mysql-tableau`.
+Tillægsopgaven har sit eget forløb i [`005-tillaeg-uge-2`](005-tillaeg-uge-2/spec.md): analyser i API og frontend samt skift fra MySQL til PostgreSQL. Status og bevis står i [converge.md](005-tillaeg-uge-2/converge.md). Versionen før tillægsopgaven er bevaret i tagget `v1-mysql-tableau`.
 
 ## Filernes rolle
 

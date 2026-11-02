@@ -22,7 +22,7 @@ Kontrollér dokumentationsændringer med `git diff --check` og kontrollér berø
 docker compose --profile test run --build --rm test
 ```
 
-Kommandoen kører unit-, arkitektur-, kontrakt-, MySQL- og browsertests mod en separat testdatabase, som ikke rører demoens data. Exitkoden er 0, når alt består. Testdatabasen og dens hjælpetjenester bliver kørende bagefter. Stop kun dem med `docker compose --profile test rm -sf test-db test-backend test-frontend`. Brug ikke `docker compose --profile test down`, for den stopper også en kørende demo. Demoens data bevares dog, så længe `-v` ikke bruges.
+Kommandoen kører unit-, arkitektur-, kontrakt-, PostgreSQL- og browsertests mod en separat testdatabase, som ikke rører demoens data. Exitkoden er 0, når alt består. Testdatabasen og dens hjælpetjenester bliver kørende bagefter. Stop kun dem med `docker compose --profile test rm -sf test-db test-backend test-frontend`. Brug ikke `docker compose --profile test down`, for den stopper også en kørende demo. Demoens data bevares dog, så længe `-v` ikke bruges.
 
 Når funktioner implementeres, skal tests kontrollere regler, beregninger, kontrakt og relevante acceptkriterier. Et nyt endpoint skal først stå i `specs/004-hotelsystem/contracts/openapi.yaml`, og det skal fjernes fra listen `NOT_IMPLEMENTED_YET` i `backend/tests/contract/test_api_uses_contract.py`. Ændrede afhængigheder skrives i `backend/requirements.in` eller `backend/requirements-test.in`, og `backend/requirements.lock` opdateres i samme PR. Converge dokumenterer bevis og status for hvert kriterium; mangler bliver til nye Tasks.
 

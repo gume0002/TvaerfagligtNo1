@@ -1,5 +1,7 @@
 # Tableau-dashboard
 
+**Bemærk:** Prøverne i dette dokument er kørt mod MySQL-versionen. Efter skiftet til PostgreSQL mangler refresh at blive afprøvet igen (T093 i [tillægsopgavens tasks](../specs/005-tillaeg-uge-2/tasks.md)).
+
 **Status:** Dashboardet virker med demodata. Tallene for hotellet er sammenlignet med API'et for flere filtervalg, og tallene for baren for standardvalget. Refresh mod det rigtige system er afprøvet for bookinger og barsalg, også når API'et er nede (T054). En stikprøve på 12 runder med 1.000 bookinger og 1.000 salg er også udført og stemmer, se [kontrolarket](sc003-kontrolark.md) (T055).
 
 ## Åbn dashboardet
@@ -195,7 +197,7 @@ Udfyldes af den, der gennemfører prøven. Skriv kun det, der faktisk er observe
 | Forespørgsler i terminalen, som fejlede | Ingen. Tableau brugte ikke `$top`, `$filter` eller andre query-parametre, kun `$skip` fra vores eget sidelink |
 | Samlet vurdering: kan OData bruges? | Ja, til hentning og manuel refresh. Filtre skal bygge på færdigberegnede rækker pr. filterkombination |
 
-Hvis OData ikke virker, må vi ikke skifte stiltiende til filimport eller direkte MySQL. Så skal en anden API-baseret vej afprøves, eller integrationsdesignet skal revideres med gruppen og underviseren.
+Hvis OData ikke virker, må vi ikke skifte stiltiende til filimport eller direkte databaseadgang. Så skal en anden API-baseret vej afprøves, eller integrationsdesignet skal revideres med gruppen og underviseren.
 
 ### Automatisk kontrol af fixturen
 

@@ -4,9 +4,9 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 ## Hvor langt er vi?
 
-Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem API'et. Hotel- og baranalyser beregnes i backendens forretningslogik fra aktuelle MySQL-data. Tableau-dashboardet er bygget og bruger backendens OData-feed. [Milepæl 3-kontrollen](specs/004-hotelsystem/milestone-3.md) beskriver den afgrænsede kontrol af backendfunktionerne; den samlede afleveringsgennemgang mangler stadig.
+Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem API'et. Hotel- og baranalyser beregnes i backendens forretningslogik fra aktuelle PostgreSQL-data og vises med grafer og tabeller på analysesiden. Versionen med MySQL før tillægsopgaven er bevaret i tagget `v1-mysql-tableau`. Tableau-dashboardet er bygget og bruger backendens OData-feed. [Milepæl 3-kontrollen](specs/004-hotelsystem/milestone-3.md) beskriver den afgrænsede kontrol af backendfunktionerne; den samlede afleveringsgennemgang mangler stadig.
 
-**Tableau:** Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) virker. Det henter sine tal fra API'ets OData-feed, tallene stemmer med API'et for flere filtervalg, og manuel refresh er afprøvet efter oprettelse, rettelse og aflysning af både bookinger og barsalg, også når API'et er nede. Se [vejledningen](tableau/README.md).
+**Tableau:** Refresh mod PostgreSQL er endnu ikke afprøvet (T093). Prøverne herunder er kørt mod MySQL-versionen. Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) virker. Det henter sine tal fra API'ets OData-feed, tallene stemmer med API'et for flere filtervalg, og manuel refresh er afprøvet efter oprettelse, rettelse og aflysning af både bookinger og barsalg, også når API'et er nede. Se [vejledningen](tableau/README.md).
 
 **Åbne fortolkningsrisici:** Manglende kundetilfredshedsdata og Tableau uden for Docker er gruppens egne valg og er ikke afstemt med underviseren.
 
@@ -24,6 +24,7 @@ docker compose up
 |---|---|
 | <http://localhost:8080> | Bookingfrontend |
 | <http://localhost:8080/sales.html> | Barsalg og historik |
+| <http://localhost:8080/analytics.html> | Analyser med filtre, grafer og tabeller |
 | <http://localhost:8080/api/analytics/hotel> | Hotelanalyse for indeværende år |
 | <http://localhost:8080/api/analytics/bar> | Baranalyse for Helene Christine, indeværende år |
 | <http://localhost:8080/api/health> | API'ets driftsstatus |
@@ -80,8 +81,8 @@ flowchart LR
       API[1. API: backend/app/api] --> Logik[2. Forretningslogik: backend/app/business]
       Logik --> Data[3. Dataadgang: backend/app/data_access]
     end
-    Data -->|SQL| DB[(MySQL 8.4)]
-    DB --- Volume[Navngivet volume: mysql_data]
+    Data -->|SQL| DB[(PostgreSQL 17)]
+    DB --- Volume[Navngivet volume: postgres_data]
     Init[Init: migrationer og startdata] --> DB
   end
   Raadata[data/raw] -->|kun første opstart| Init
@@ -89,7 +90,7 @@ flowchart LR
 
 | Tjeneste | Rolle |
 |---|---|
-| `db` | MySQL. Kan kun nås internt, og data ligger i `mysql_data`. |
+| `db` | PostgreSQL. Kan kun nås internt, og data ligger i `postgres_data`. |
 | `init` | Engangsjob, der kører migrationer og indlæser startdata, når databasen er klar. |
 | `backend` | FastAPI med de tre lag. Starter først, når `init` er færdig. |
 | `frontend` | Nginx, der serverer browserfronten og sender `/api/` videre til backend. |
@@ -97,7 +98,7 @@ flowchart LR
 
 Tjenesterne finder hinanden ved navn på Docker-netværket, fx `db` og `backend`. Kun `frontend` og `swagger` kan nås udefra, og kun fra din egen maskine.
 
-Plan beskriver, hvorfor netop Python/FastAPI, SQLAlchemy/PyMySQL, MySQL og en HTML/CSS/JavaScript-frontend med Nginx er valgt. Gruppen har Tableau Public; OData V4 undersøges til API-baserede udtræk, og manuel refresh inde i Tableau er accepteret.
+Plan beskriver, hvorfor netop Python/FastAPI, SQLAlchemy og en HTML/CSS/JavaScript-frontend med Nginx er valgt. Planen blev skrevet til MySQL. Skiftet til PostgreSQL er begrundet i [tillægsopgavens spec](specs/005-tillaeg-uge-2/spec.md). Gruppen har Tableau Public; OData V4 undersøges til API-baserede udtræk, og manuel refresh inde i Tableau er accepteret.
 
 ## Eksempel: en ny booking
 
@@ -106,7 +107,7 @@ Plan beskriver, hvorfor netop Python/FastAPI, SQLAlchemy/PyMySQL, MySQL og en HT
 3. `backend/app/api/bookings.py` kontrollerer formatet og oversætter JSON til et domæneobjekt.
 4. `backend/app/business/booking_service.py` kontrollerer felterne, åbner en transaktion og låser værelsestypen gennem dataadgangen.
 5. Servicen kontrollerer gæsteantal og ledig kapacitet for hver nat. Afvises bookingen, rulles alt tilbage, og brugeren får en JSON-fejl med en forståelig besked.
-6. `backend/app/data_access/repositories.py` gemmer bookingen og idempotensresultatet i MySQL i samme transaktion.
+6. `backend/app/data_access/repositories.py` gemmer bookingen og idempotensresultatet i PostgreSQL i samme transaktion.
 7. API'et svarer `201` med bookingen og en `Location`-header, og browseren viser den i listen.
 
 Går svaret tabt, og medarbejderen gemmer igen, genbruges samme nøgle. Så bliver der ikke oprettet en dobbelt booking.
@@ -125,7 +126,7 @@ Specifikationen definerer et valgbart kalenderår, sæsoner, natbaseret bookingo
 
 `GET /api/analytics/hotel?year=2026&season=low` går gennem Nginx → `api/analytics.py` → `business/analytics_service.py` → repositories/Unit of Work → MySQL. API-laget kontrollerer inputformat og formaterer svar. Businesslaget fordeler nætterne og beregner alle officielle tal. Dataadgangen henter domæneobjekter uden at beregne nøgletal i SQL.
 
-Hver analyse åbner en separat `REPEATABLE READ`-transaktion med et eksplicit konsistent snapshot og kun læsning. Kataloger og driftsdata læses fra samme snapshot. Skrivetransaktionerne bruger stadig `READ COMMITTED`. Der er ingen cache eller rapporttabeller; ændringer ses ved næste API-kald.
+Hver analyse åbner en separat `REPEATABLE READ`-transaktion med kun læsning, hvor snapshottet tages ved første læsning. Kataloger og driftsdata læses fra samme snapshot. Skrivetransaktionerne bruger stadig `READ COMMITTED`. Der er ingen cache eller rapporttabeller; ændringer ses ved næste API-kald.
 
 - Hotellet: `year` (2000–2100), valgfri `season`, `countryId` og `roomTypeId`. Nætter fordeles i `past`, `upcoming` og `all`; dags dato i Europe/Copenhagen tilhører `upcoming`.
 - Baren: `year` og valgfri `employeeId`; standard er Helene Christine. Alle 30 katalogdrikke og begge kategorier medtages, også uden salg.
