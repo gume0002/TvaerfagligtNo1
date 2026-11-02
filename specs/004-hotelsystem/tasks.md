@@ -90,7 +90,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 - [x] T037 Implementér rettelse og logisk aflysning i `backend/app/business/sale_service.py`; aflyste salg kan hverken rettes eller genaktiveres.
 - [x] T038 Implementér `GET/PUT/DELETE /api/bar-sales/{id}` samt liste/historik i `backend/app/api/sales.py` efter kontrakten.
 - [x] T039 Tilføj redigerings-, aflysnings- og historikforløb i `frontend/`.
-- [ ] T040 Dæk US6-kriterierne, herunder at ugyldig rettelse bevarer de oprindelige værdier. **Delvist:** Skrive-/historikforløb er kontrolleret; analyseudeladelse følger T051.
+- [x] T040 Dæk US6-kriterierne, herunder at ugyldig rettelse bevarer de oprindelige værdier.
 
 ## Fase 8 – US7: Hotellets omsætning og gæstelande (P1)
 
@@ -119,7 +119,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 
 - [x] T049 Implementér barens år/medarbejderfiltre, totaler, omsætning pr. navngiven drik og begge kategoriandele i `backend/app/business/analytics_service.py`.
 - [ ] T050 Implementér `GET /api/analytics/bar` i `backend/app/api/analytics.py` og Tableau barvisninger med Helene Christine som standard, nulgrundlag, demo-markering og snapshot-tidspunkt. Layout kan udvikles mod fixture; feedintegration afhænger af T052–T053. **Delvist:** API-delen er implementeret og kontraktkontrolleret; Tableau er uden for Milepæl 3.
-- [ ] T051 Dæk US9 med håndberegnede tests for kategoriandele, medarbejder/år, aflyste salg, nulgrundlag og katalogets 20 cocktails/10 kaffetyper.
+- [x] T051 Dæk US9 med håndberegnede tests for kategoriandele, medarbejder/år, aflyste salg, nulgrundlag og katalogets 20 cocktails/10 kaffetyper.
 
 ## Fase 11 – US10: Aktuelle data i Tableau (P1)
 

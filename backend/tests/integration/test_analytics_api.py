@@ -213,3 +213,40 @@ def test_invalid_bar_filters(client, params):
     response = client.get(BAR, params=params)
     assert_matches_contract(response, 'GET', BAR)
     assert response.status_code == 400
+
+
+def test_us9_4_seed_catalog_includes_twenty_cocktails_ten_coffees(settings, frozen_clock, uow_factory, empty_database):
+    import os
+    from pathlib import Path
+    from app.business.seed_service import SeedService
+    from app.data_access.raw_files import read_raw_data
+    SeedService(uow_factory, frozen_clock).run(read_raw_data(Path(os.environ['RAW_DATA_DIR'])))
+    with TestClient(create_app(settings, frozen_clock)) as seeded_client:
+        data = bar(seeded_client, year=2000)
+    assert len(data['byDrink']) == 30
+    assert sum(item['category'] == 'cocktail' for item in data['byDrink']) == 20
+    assert sum(item['category'] == 'coffee' for item in data['byDrink']) == 10
+    assert len({item['drinkName'] for item in data['byDrink']}) == 30
+    assert all(item['quantity'] == 0 and item['revenue'] == '0.00' for item in data['byDrink'])
+    assert data['totals'] == {'quantity': 0, 'revenue': '0.00'}
+
+
+def test_contract_assertion_rejects_wrong_metric_type(client):
+    import httpx
+    data = hotel(client)
+    data['totals']['all']['revenue'] = 0
+    malformed = httpx.Response(200, json=data)
+    with pytest.raises(AssertionError, match='revenue'):
+        assert_matches_contract(malformed, 'GET', HOTEL)
+
+
+@pytest.mark.parametrize('path', [HOTEL, BAR])
+def test_lost_database_is_503(settings, frozen_clock, path):
+    from dataclasses import replace
+    broken = replace(settings, database_host='host-that-does-not-exist')
+    with TestClient(create_app(broken, frozen_clock), raise_server_exceptions=False) as broken_client:
+        response = broken_client.get(path)
+    assert_matches_contract(response, 'GET', path)
+    assert response.status_code == 503
+    assert 'sql' not in response.text.lower()
+    assert response.headers['Retry-After']
