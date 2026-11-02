@@ -473,3 +473,18 @@ class TestErrors:
         assert response.json()["code"] == "internal_error"
         assert response.json()["requestId"]
         assert "secret" not in response.text
+
+
+class TestEmptyFormFields:
+    """An empty field must say that it is empty, also when a browser makes it look filled in."""
+
+    @pytest.mark.parametrize("field", ["arrival", "departure", "countryId", "roomTypeId", "guestCount", "guestName"])
+    def test_empty_value_asks_for_the_field(self, client, body, field):
+        response = post(client, body(**{field: ""}))
+        assert response.status_code == 400
+        errors = {item["field"]: item["message"] for item in response.json()["fieldErrors"]}
+        assert errors[field] == "Feltet skal udfyldes."
+
+    def test_invalid_date_keeps_the_general_message(self, client, body):
+        response = post(client, body(arrival="10-06-2026"))
+        assert response.json()["fieldErrors"][0]["message"] == "Værdien er ugyldig."

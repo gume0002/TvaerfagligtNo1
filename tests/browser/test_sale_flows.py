@@ -106,3 +106,10 @@ def test_edit_brings_the_form_into_view(page):
     expect(page.locator('#sale-title')).to_contain_text('Ret salg')
     expect(page.locator('#quantity')).to_be_in_viewport()
     expect(page.locator('#quantity')).to_be_focused()
+
+
+def test_empty_sale_date_says_the_field_is_empty(page):
+    fill_sale(page)
+    page.get_by_label('Salgsdato').fill('')
+    page.get_by_role('button', name='Registrér salg').click()
+    expect(page.locator('[data-error-for="saleDate"]')).to_have_text('Feltet skal udfyldes.')
