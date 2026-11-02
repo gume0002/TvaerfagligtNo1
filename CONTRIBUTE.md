@@ -16,7 +16,13 @@ Dokumentation skrives på dansk. Kode, endpoints, JSON-felter og databasenavne s
 
 Følg [hotel-architecture-review](project-skills/hotel-architecture-review/SKILL.md) ved arkitektur- og acceptgennemgang. En booking skal følge browser → REST/JSON API → forretningslogik → dataadgang → MySQL. SQL hører til i dataadgangen; domæneregler og officielle nøgletal hører til i logiklaget. Tableau bruger API’et.
 
-Kontrollér dokumentationsændringer med `git diff --check` og kontrollér berørte links. Der findes endnu ingen kørende applikation eller testopsætning. Plan vælger `docker compose --profile test run --build --rm test` som kommende fælles testkommando; den kan først køres, når Compose og runner er implementeret. Når funktioner implementeres, skal tests kontrollere regler, beregninger, kontrakt og relevante acceptkriterier. Converge dokumenterer bevis og status for hvert kriterium; mangler bliver til nye Tasks.
+Kontrollér dokumentationsændringer med `git diff --check` og kontrollér berørte links. Der findes endnu ingen kørende applikation eller samlet testopsætning. OpenAPI-dokumentet kan kontrolleres med Docker, indtil afhængighederne er låst i T006:
+
+```sh
+docker run --rm -e PYTHONDONTWRITEBYTECODE=1 -v "$PWD:/w:ro" -w /w python:3.13-slim sh -c "pip install -q pytest pyyaml openapi-spec-validator openapi-schema-validator && pytest -p no:cacheprovider -q backend/tests/contract"
+```
+
+Plan vælger `docker compose --profile test run --build --rm test` som kommende fælles testkommando; den kan først køres, når Compose og runner er implementeret. Når funktioner implementeres, skal tests kontrollere regler, beregninger, kontrakt og relevante acceptkriterier. Converge dokumenterer bevis og status for hvert kriterium; mangler bliver til nye Tasks.
 
 ## Ejerskab
 

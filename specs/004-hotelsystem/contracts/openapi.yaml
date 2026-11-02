@@ -1,0 +1,1238 @@
+openapi: 3.0.3
+info:
+  title: Hotel Kong Arthur API
+  version: 0.1.0
+  description: |
+    **Status: Udkast til gruppens gennemgang. Må ikke implementeres, før gruppen har godkendt det.**
+
+    REST/JSON API til bookinger, barsalg, kataloger og analyser. Kunderne til kontrakten er
+    bookingfrontenden, Tableau og hotellets fremtidige bookingsystem.
+
+    **Ikke med endnu:** Tableaus læsefeed (T052–T053). Dets form afhænger af prøven i T002,
+    se `tableau/README.md`.
+
+    **Fælles regler**
+
+    - Beløb og procenter sendes som decimaltal i strenge, fx `"1000.00"`.
+    - Datoer har formatet `YYYY-MM-DD` og er hotellets lokale kalenderdatoer (Europe/Copenhagen).
+      Tekniske tidsstempler er i UTC.
+    - Forretningsregler håndhæves af backendens logiklag. Skemaerne beskriver kun formatet.
+    - Prototypen har bevidst ingen adgangskontrol.
+servers:
+  - url: http://localhost:8080
+    description: Lokal Docker Compose-opstart gennem Nginx
+tags:
+  - name: Bookings
+    description: Oprettelse, søgning, rettelse og logisk sletning af bookinger (US1–US4)
+  - name: Bar sales
+    description: Registrering, rettelse og aflysning af barsalg (US5–US6)
+  - name: Catalogs
+    description: Stamdata til formularer og filtre
+  - name: Analytics
+    description: Officielle nøgletal beregnet i logiklaget (US7–US9)
+  - name: Health
+    description: Systemets driftsstatus
+paths:
+  /api/bookings:
+    get:
+      tags: [Bookings]
+      operationId: listBookings
+      summary: Søg og filtrér bookinger
+      parameters:
+        - name: name
+          in: query
+          description: Del af gæstens navn. Store og små bogstaver er ens, og `%` og `_` behandles bogstaveligt.
+          schema:
+            type: string
+          example: anna
+        - name: arrivalFrom
+          in: query
+          description: Start på opholdsinterval. Skal angives sammen med `departureTo`.
+          schema:
+            type: string
+            format: date
+          example: "2026-06-10"
+        - name: departureTo
+          in: query
+          description: |
+            Slut på opholdsinterval, og skal ligge efter `arrivalFrom`. Bookinger med mindst én fælles nat vises.
+            For 10.–12. juni vises en booking med afrejse den 10. eller ankomst den 12. derfor ikke.
+          schema:
+            type: string
+            format: date
+          example: "2026-06-12"
+        - $ref: "#/components/parameters/StatusFilter"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Bookinger sorteret stabilt efter id. Intet match giver en tom liste.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookingPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+    post:
+      tags: [Bookings]
+      operationId: createBooking
+      summary: Opret en booking
+      description: |
+        Afvises, hvis værelsestypen er fuldt booket på mindst én nat i `[arrival, departure)`,
+        eller hvis gæsteantal, datoer eller pris er ugyldige. Ankomst på en anden bookings afrejsedag er tilladt.
+
+        Gentages samme `Idempotency-Key` med samme input, returneres det oprindelige resultat
+        uden en ny booking.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+            example:
+              guestName: Anna Jensen
+              countryId: 1
+              roomTypeId: 3
+              arrival: "2026-12-30"
+              departure: "2027-01-02"
+              guestCount: 2
+              nightlyRate: "1000.00"
+      responses:
+        "201":
+          description: Bookingen er gemt.
+          headers:
+            Location:
+              description: Adressen på den oprettede booking.
+              schema:
+                type: string
+              example: /api/bookings/42
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+              example:
+                id: 42
+                guestName: Anna Jensen
+                countryId: 1
+                countryName: Denmark
+                roomTypeId: 3
+                roomTypeName: Standard Double
+                arrival: "2026-12-30"
+                departure: "2027-01-02"
+                guestCount: 2
+                nightlyRate: "1000.00"
+                status: active
+                demoData: false
+                createdAt: "2026-11-02T10:00:00Z"
+                updatedAt: "2026-11-02T10:00:00Z"
+                cancelledAt: null
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/bookings/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ResourceId"
+    get:
+      tags: [Bookings]
+      operationId: getBooking
+      summary: Hent en booking
+      parameters:
+        - $ref: "#/components/parameters/IncludeCancelled"
+      responses:
+        "200":
+          description: Bookingen.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+    put:
+      tags: [Bookings]
+      operationId: updateBooking
+      summary: Ret alle redigerbare felter på en booking
+      description: |
+        Hele ændringen gemmes, eller også afvises den, og den tidligere booking bevares.
+        Bookingen selv tælles ikke med i kapaciteten. En aflyst booking kan ikke rettes (409).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+      responses:
+        "200":
+          description: Den opdaterede booking.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+    delete:
+      tags: [Bookings]
+      operationId: cancelBooking
+      summary: Slet en booking logisk (aflys)
+      description: |
+        Bookingen markeres som aflyst, frigiver sin kapacitet og udgår af analyserne, men bevares i historikken.
+        En gentagelse giver også 204 og ændrer ikke `cancelledAt`.
+      responses:
+        "204":
+          description: Bookingen er aflyst.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/bar-sales:
+    get:
+      tags: [Bar sales]
+      operationId: listBarSales
+      summary: Vis og filtrér barsalg
+      parameters:
+        - name: saleDateFrom
+          in: query
+          description: Første salgsdato, inklusive.
+          schema:
+            type: string
+            format: date
+        - name: saleDateTo
+          in: query
+          description: Sidste salgsdato, inklusive.
+          schema:
+            type: string
+            format: date
+        - name: employeeId
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+        - $ref: "#/components/parameters/StatusFilter"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Barsalg sorteret stabilt efter id. Intet match giver en tom liste.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BarSalePage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+    post:
+      tags: [Bar sales]
+      operationId: createBarSale
+      summary: Registrér et barsalg
+      description: |
+        Salgsdatoen må højst være dags dato. Den registrerede `unitPrice` gemmes på salget og
+        ændres ikke af senere katalogpriser. Idempotens fungerer som ved bookinger.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BarSaleInput"
+            example:
+              drinkId: 1
+              employeeId: 1
+              quantity: 3
+              unitPrice: "100.00"
+              saleDate: "2026-10-29"
+      responses:
+        "201":
+          description: Salget er gemt.
+          headers:
+            Location:
+              description: Adressen på det oprettede salg.
+              schema:
+                type: string
+              example: /api/bar-sales/7
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BarSale"
+              example:
+                id: 7
+                drinkId: 1
+                drinkName: Espresso Martini
+                category: cocktail
+                employeeId: 1
+                employeeName: Helene Christine
+                quantity: 3
+                unitPrice: "100.00"
+                totalAmount: "300.00"
+                saleDate: "2026-10-29"
+                status: active
+                demoData: false
+                createdAt: "2026-11-02T10:00:00Z"
+                updatedAt: "2026-11-02T10:00:00Z"
+                cancelledAt: null
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/bar-sales/{id}:
+    parameters:
+      - $ref: "#/components/parameters/ResourceId"
+    get:
+      tags: [Bar sales]
+      operationId: getBarSale
+      summary: Hent et barsalg
+      parameters:
+        - $ref: "#/components/parameters/IncludeCancelled"
+      responses:
+        "200":
+          description: Salget.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BarSale"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+    put:
+      tags: [Bar sales]
+      operationId: updateBarSale
+      summary: Ret alle redigerbare felter på et barsalg
+      description: Ugyldige rettelser bevarer de tidligere værdier. Et aflyst salg kan ikke rettes (409).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BarSaleInput"
+      responses:
+        "200":
+          description: Det opdaterede salg.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BarSale"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+    delete:
+      tags: [Bar sales]
+      operationId: cancelBarSale
+      summary: Aflys et barsalg
+      description: Salget bevares i historikken og udgår af analyserne. En gentagelse giver også 204.
+      responses:
+        "204":
+          description: Salget er aflyst.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/catalogs:
+    get:
+      tags: [Catalogs]
+      operationId: getCatalogs
+      summary: Hent lande, værelsestyper, medarbejdere og drikke
+      responses:
+        "200":
+          description: Alle kataloger.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Catalogs"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/analytics/hotel:
+    get:
+      tags: [Analytics]
+      operationId: getHotelAnalytics
+      summary: Hent hotellets omsætning, gæstelande, belægning og ADR
+      description: |
+        Alle tal kommer fra samme læsesnapshot og samme filtre. Filtrene kan kombineres.
+
+        Omsætning fordeles pr. overnatningsnat: ankomstdatoen tæller med, afrejsedatoen tæller ikke.
+        Aflyste bookinger udelades. `past` er nætter før dags dato, og `upcoming` er dags dato og senere.
+      parameters:
+        - $ref: "#/components/parameters/Year"
+        - name: season
+          in: query
+          description: Udelades for alle sæsoner.
+          schema:
+            $ref: "#/components/schemas/Season"
+        - name: countryId
+          in: query
+          description: Udelades for alle lande. Belægningen mærkes da som landets bidrag.
+          schema:
+            type: integer
+            minimum: 1
+        - name: roomTypeId
+          in: query
+          description: Udelades for alle værelsestyper.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sammenhængende analyseresultat.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelAnalytics"
+              example:
+                filters:
+                  year: 2026
+                  season: null
+                  countryId: null
+                  roomTypeId: null
+                generatedAt: "2026-11-02T10:00:00Z"
+                businessDate: "2026-11-02"
+                demoData: true
+                occupancyScope: hotel
+                totals:
+                  past:
+                    revenue: "2000.00"
+                    bookedRoomNights: 2
+                    availableRoomNights: 65270
+                    occupancyRatePercent: "0.00"
+                    occupancyStatus: ok
+                    adr: "1000.00"
+                    adrStatus: ok
+                  upcoming:
+                    revenue: "0.00"
+                    bookedRoomNights: 0
+                    availableRoomNights: 12840
+                    occupancyRatePercent: "0.00"
+                    occupancyStatus: ok
+                    adr: null
+                    adrStatus: no_data
+                  all:
+                    revenue: "2000.00"
+                    bookedRoomNights: 2
+                    availableRoomNights: 78110
+                    occupancyRatePercent: "0.00"
+                    occupancyStatus: ok
+                    adr: "1000.00"
+                    adrStatus: ok
+                byRoomTypeAndSeason:
+                  - roomTypeId: 3
+                    roomTypeName: Standard Double
+                    season: low
+                    revenue: "1000.00"
+                  - roomTypeId: 3
+                    roomTypeName: Standard Double
+                    season: mid
+                    revenue: "1000.00"
+                byCountry:
+                  - countryId: 1
+                    countryName: Denmark
+                    revenue: "2000.00"
+                guestStaysByCountry:
+                  - countryId: 1
+                    countryName: Denmark
+                    guestStays: 2
+                topRoomTypes:
+                  - rank: 1
+                    roomTypeId: 3
+                    roomTypeName: Standard Double
+                    revenue: "2000.00"
+                topCountries:
+                  - rank: 1
+                    countryId: 1
+                    countryName: Denmark
+                    revenue: "2000.00"
+                satisfaction:
+                  status: no_data
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/analytics/bar:
+    get:
+      tags: [Analytics]
+      operationId: getBarAnalytics
+      summary: Hent barens salg, omsætning pr. drik og kategoriandele
+      description: Alle tal bruger samme udvalg. Aflyste salg udelades.
+      parameters:
+        - $ref: "#/components/parameters/Year"
+        - name: employeeId
+          in: query
+          description: Udelades for Helene Christine, som er standardvalget.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sammenhængende analyseresultat.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BarAnalytics"
+              example:
+                filters:
+                  year: 2026
+                  employeeId: 1
+                  employeeName: Helene Christine
+                generatedAt: "2026-11-02T10:00:00Z"
+                businessDate: "2026-11-02"
+                demoData: true
+                totals:
+                  quantity: 5
+                  revenue: "400.00"
+                byDrink:
+                  - drinkId: 1
+                    drinkName: Espresso Martini
+                    category: cocktail
+                    quantity: 3
+                    revenue: "300.00"
+                  - drinkId: 2
+                    drinkName: Negroni
+                    category: cocktail
+                    quantity: 0
+                    revenue: "0.00"
+                  - drinkId: 21
+                    drinkName: Cappuccino
+                    category: coffee
+                    quantity: 2
+                    revenue: "100.00"
+                byCategory:
+                  - category: cocktail
+                    quantity: 3
+                    revenue: "300.00"
+                    quantitySharePercent: "60.00"
+                    revenueSharePercent: "75.00"
+                    shareStatus: ok
+                  - category: coffee
+                    quantity: 2
+                    revenue: "100.00"
+                    quantitySharePercent: "40.00"
+                    revenueSharePercent: "25.00"
+                    shareStatus: ok
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/health:
+    get:
+      tags: [Health]
+      operationId: getHealth
+      summary: Kontrollér om systemet er klar
+      description: Giver 200, når databasen er klar og initialiseringen er fuldført. Kontrollen går gennem logik og dataadgang.
+      responses:
+        "200":
+          description: Systemet er klar.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+              example:
+                status: ready
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+components:
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Klientens unikke nøgle for denne oprettelse. Samme nøgle med andet input giver 409.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+      example: 6f1c1a52-7f3e-4b43-9a55-2f4f6f0a1b11
+    StatusFilter:
+      name: status
+      in: query
+      description: Aflyste poster vises kun, når de vælges.
+      schema:
+        type: string
+        enum: [active, cancelled, all]
+        default: active
+    IncludeCancelled:
+      name: includeCancelled
+      in: query
+      description: Uden denne giver en aflyst post 404.
+      schema:
+        type: boolean
+        default: false
+    Offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 50
+    Year:
+      name: year
+      in: query
+      description: Kalenderår. Udelades for indeværende år.
+      schema:
+        type: integer
+        minimum: 2000
+        maximum: 2100
+      example: 2026
+  responses:
+    BadRequest:
+      description: Ugyldige felter eller filtre. Ingen data er ændret.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: validation_error
+            message: Bookingen kunne ikke gemmes.
+            fieldErrors:
+              - field: guestCount
+                message: Værelsestypen har plads til højst 2 gæster.
+            requestId: 0d3f4a7e-6c1b-4a7e-9d10-3a2b1c0d9e8f
+    NotFound:
+      description: Ressourcen findes ikke eller er ikke synlig.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: not_found
+            message: Bookingen blev ikke fundet.
+            fieldErrors: []
+            requestId: 0d3f4a7e-6c1b-4a7e-9d10-3a2b1c0d9e8f
+    Conflict:
+      description: |
+        Handlingen er i konflikt med den aktuelle tilstand. `code` er `capacity_conflict`,
+        `resource_cancelled` eller `idempotency_conflict`. Ingen data er ændret.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: capacity_conflict
+            message: Værelsestypen er fuldt booket på mindst én nat i perioden.
+            fieldErrors: []
+            requestId: 0d3f4a7e-6c1b-4a7e-9d10-3a2b1c0d9e8f
+    ServiceUnavailable:
+      description: Databasen er midlertidigt utilgængelig, eller låsekonflikten kunne ikke løses efter tre forsøg.
+      headers:
+        Retry-After:
+          description: Antal sekunder, klienten bør vente.
+          schema:
+            type: integer
+            minimum: 0
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: service_unavailable
+            message: Systemet er midlertidigt utilgængeligt. Prøv igen.
+            fieldErrors: []
+            requestId: 0d3f4a7e-6c1b-4a7e-9d10-3a2b1c0d9e8f
+  schemas:
+    Money:
+      type: string
+      description: Beløb i DKK med højst to decimaler.
+      pattern: '^\d+(\.\d{1,2})?$'
+      example: "1000.00"
+    Percent:
+      type: string
+      description: Procent afrundet til to decimaler.
+      pattern: '^\d+\.\d{2}$'
+      example: "50.00"
+    Season:
+      type: string
+      description: Lavsæson er januar og februar. Mellemsæson er marts–maj og september–november. Højsæson er juni–august og december.
+      enum: [low, mid, high]
+    DrinkCategory:
+      type: string
+      enum: [cocktail, coffee]
+    ResourceStatus:
+      type: string
+      enum: [active, cancelled]
+    DataStatus:
+      type: string
+      description: "`no_data` vises som »Intet datagrundlag«, og det tilhørende forholdstal er `null`."
+      enum: [ok, no_data]
+    Error:
+      type: object
+      required: [code, message, fieldErrors, requestId]
+      properties:
+        code:
+          type: string
+          description: Maskinlæsbar fejlkode.
+          enum:
+            - validation_error
+            - not_found
+            - capacity_conflict
+            - resource_cancelled
+            - idempotency_conflict
+            - service_unavailable
+        message:
+          type: string
+          description: Forståelig fejlbesked uden SQL eller stacktrace.
+        fieldErrors:
+          type: array
+          items:
+            type: object
+            required: [field, message]
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+        requestId:
+          type: string
+          description: Samme id som i backendens log.
+    BookingInput:
+      type: object
+      additionalProperties: false
+      required: [guestName, countryId, roomTypeId, arrival, departure, guestCount, nightlyRate]
+      properties:
+        guestName:
+          type: string
+          minLength: 1
+          maxLength: 200
+        countryId:
+          type: integer
+          minimum: 1
+        roomTypeId:
+          type: integer
+          minimum: 1
+        arrival:
+          type: string
+          format: date
+        departure:
+          type: string
+          format: date
+          description: Skal ligge efter `arrival`.
+        guestCount:
+          type: integer
+          minimum: 1
+          description: Må ikke overstige værelsestypens `maxGuests`.
+        nightlyRate:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: Aftalt natpris. Skal være større end 0.
+    Booking:
+      type: object
+      required:
+        - id
+        - guestName
+        - countryId
+        - countryName
+        - roomTypeId
+        - roomTypeName
+        - arrival
+        - departure
+        - guestCount
+        - nightlyRate
+        - status
+        - demoData
+        - createdAt
+        - updatedAt
+        - cancelledAt
+      properties:
+        id:
+          type: integer
+        guestName:
+          type: string
+        countryId:
+          type: integer
+        countryName:
+          type: string
+        roomTypeId:
+          type: integer
+        roomTypeName:
+          type: string
+        arrival:
+          type: string
+          format: date
+        departure:
+          type: string
+          format: date
+        guestCount:
+          type: integer
+        nightlyRate:
+          $ref: "#/components/schemas/Money"
+        status:
+          $ref: "#/components/schemas/ResourceStatus"
+        demoData:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        cancelledAt:
+          type: string
+          format: date-time
+          nullable: true
+    BookingPage:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Booking"
+        total:
+          type: integer
+          description: Antal matchende poster i alt, uanset `offset` og `limit`.
+    BarSaleInput:
+      type: object
+      additionalProperties: false
+      required: [drinkId, employeeId, quantity, unitPrice, saleDate]
+      properties:
+        drinkId:
+          type: integer
+          minimum: 1
+        employeeId:
+          type: integer
+          minimum: 1
+        quantity:
+          type: integer
+          minimum: 1
+        unitPrice:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: Faktisk salgspris pr. enhed. Skal være større end 0.
+        saleDate:
+          type: string
+          format: date
+          description: Må højst være dags dato.
+    BarSale:
+      type: object
+      required:
+        - id
+        - drinkId
+        - drinkName
+        - category
+        - employeeId
+        - employeeName
+        - quantity
+        - unitPrice
+        - totalAmount
+        - saleDate
+        - status
+        - demoData
+        - createdAt
+        - updatedAt
+        - cancelledAt
+      properties:
+        id:
+          type: integer
+        drinkId:
+          type: integer
+        drinkName:
+          type: string
+        category:
+          $ref: "#/components/schemas/DrinkCategory"
+        employeeId:
+          type: integer
+        employeeName:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          $ref: "#/components/schemas/Money"
+        totalAmount:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: Antal gange enhedspris.
+        saleDate:
+          type: string
+          format: date
+        status:
+          $ref: "#/components/schemas/ResourceStatus"
+        demoData:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        cancelledAt:
+          type: string
+          format: date-time
+          nullable: true
+    BarSalePage:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BarSale"
+        total:
+          type: integer
+          description: Antal matchende poster i alt, uanset `offset` og `limit`.
+    Catalogs:
+      type: object
+      required: [countries, roomTypes, employees, drinks]
+      properties:
+        countries:
+          type: array
+          items:
+            type: object
+            required: [id, code, name]
+            properties:
+              id:
+                type: integer
+              code:
+                type: string
+                description: ISO-landekode.
+              name:
+                type: string
+        roomTypes:
+          type: array
+          items:
+            type: object
+            required: [id, code, name, roomCount, maxGuests, demoData, suggestedNightlyRates]
+            properties:
+              id:
+                type: integer
+              code:
+                type: string
+              name:
+                type: string
+              roomCount:
+                type: integer
+              maxGuests:
+                type: integer
+              demoData:
+                type: boolean
+                description: Kapaciteten er konstruerede demostamdata, ikke hotellets faktiske fordeling.
+              suggestedNightlyRates:
+                type: object
+                description: Vejledende priser. En booking gemmer sin egen aftalte natpris.
+                required: [low, mid, high]
+                properties:
+                  low:
+                    $ref: "#/components/schemas/Money"
+                  mid:
+                    $ref: "#/components/schemas/Money"
+                  high:
+                    $ref: "#/components/schemas/Money"
+        employees:
+          type: array
+          items:
+            type: object
+            required: [id, code, name]
+            properties:
+              id:
+                type: integer
+              code:
+                type: string
+              name:
+                type: string
+        drinks:
+          type: array
+          items:
+            type: object
+            required: [id, name, category, suggestedUnitPrice]
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              category:
+                $ref: "#/components/schemas/DrinkCategory"
+              suggestedUnitPrice:
+                $ref: "#/components/schemas/Money"
+    HotelPeriodTotals:
+      type: object
+      required:
+        - revenue
+        - bookedRoomNights
+        - availableRoomNights
+        - occupancyRatePercent
+        - occupancyStatus
+        - adr
+        - adrStatus
+      properties:
+        revenue:
+          $ref: "#/components/schemas/Money"
+        bookedRoomNights:
+          type: integer
+        availableRoomNights:
+          type: integer
+        occupancyRatePercent:
+          type: string
+          nullable: true
+          pattern: '^\d+\.\d{2}$'
+          description: Bookede værelsesnætter divideret med tilgængelige værelsesnætter gange 100.
+        occupancyStatus:
+          $ref: "#/components/schemas/DataStatus"
+        adr:
+          type: string
+          nullable: true
+          pattern: '^\d+\.\d{2}$'
+          description: Omsætning divideret med bookede værelsesnætter.
+        adrStatus:
+          $ref: "#/components/schemas/DataStatus"
+    HotelAnalytics:
+      type: object
+      required:
+        - filters
+        - generatedAt
+        - businessDate
+        - demoData
+        - occupancyScope
+        - totals
+        - byRoomTypeAndSeason
+        - byCountry
+        - guestStaysByCountry
+        - topRoomTypes
+        - topCountries
+        - satisfaction
+      properties:
+        filters:
+          type: object
+          required: [year, season, countryId, roomTypeId]
+          properties:
+            year:
+              type: integer
+            season:
+              type: string
+              nullable: true
+              enum: [low, mid, high, null]
+            countryId:
+              type: integer
+              nullable: true
+            roomTypeId:
+              type: integer
+              nullable: true
+        generatedAt:
+          type: string
+          format: date-time
+          description: Tidspunktet for datagrundlaget.
+        businessDate:
+          type: string
+          format: date
+          description: Hotellets dags dato, som adskiller `past` og `upcoming`.
+        demoData:
+          type: boolean
+          description: Sand, hvis resultatet indeholder demodata.
+        occupancyScope:
+          type: string
+          description: "`country_contribution` betyder, at belægningen er landets bidrag til hotellets kapacitet."
+          enum: [hotel, country_contribution]
+        totals:
+          type: object
+          required: [past, upcoming, all]
+          properties:
+            past:
+              $ref: "#/components/schemas/HotelPeriodTotals"
+            upcoming:
+              $ref: "#/components/schemas/HotelPeriodTotals"
+            all:
+              $ref: "#/components/schemas/HotelPeriodTotals"
+        byRoomTypeAndSeason:
+          type: array
+          items:
+            type: object
+            required: [roomTypeId, roomTypeName, season, revenue]
+            properties:
+              roomTypeId:
+                type: integer
+              roomTypeName:
+                type: string
+              season:
+                $ref: "#/components/schemas/Season"
+              revenue:
+                $ref: "#/components/schemas/Money"
+        byCountry:
+          type: array
+          items:
+            type: object
+            required: [countryId, countryName, revenue]
+            properties:
+              countryId:
+                type: integer
+              countryName:
+                type: string
+              revenue:
+                $ref: "#/components/schemas/Money"
+        guestStaysByCountry:
+          type: array
+          description: Summen af gæsteantal, hvor hver booking tælles én gang. Det er ikke unikke personer.
+          items:
+            type: object
+            required: [countryId, countryName, guestStays]
+            properties:
+              countryId:
+                type: integer
+              countryName:
+                type: string
+              guestStays:
+                type: integer
+        topRoomTypes:
+          type: array
+          description: Fuld rangliste efter omsætning. Lige beløb får samme `rank`, så alle delte førstepladser har `rank` 1.
+          items:
+            type: object
+            required: [rank, roomTypeId, roomTypeName, revenue]
+            properties:
+              rank:
+                type: integer
+              roomTypeId:
+                type: integer
+              roomTypeName:
+                type: string
+              revenue:
+                $ref: "#/components/schemas/Money"
+        topCountries:
+          type: array
+          description: Fuld rangliste efter omsætning. Lige beløb får samme `rank`, så alle delte førstepladser har `rank` 1.
+          items:
+            type: object
+            required: [rank, countryId, countryName, revenue]
+            properties:
+              rank:
+                type: integer
+              countryId:
+                type: integer
+              countryName:
+                type: string
+              revenue:
+                $ref: "#/components/schemas/Money"
+        satisfaction:
+          type: object
+          description: Der findes ingen vurderinger, så der leveres ingen score.
+          additionalProperties: false
+          required: [status]
+          properties:
+            status:
+              type: string
+              enum: [no_data]
+    BarAnalytics:
+      type: object
+      required: [filters, generatedAt, businessDate, demoData, totals, byDrink, byCategory]
+      properties:
+        filters:
+          type: object
+          required: [year, employeeId, employeeName]
+          properties:
+            year:
+              type: integer
+            employeeId:
+              type: integer
+            employeeName:
+              type: string
+        generatedAt:
+          type: string
+          format: date-time
+          description: Tidspunktet for datagrundlaget.
+        businessDate:
+          type: string
+          format: date
+        demoData:
+          type: boolean
+          description: Sand, hvis resultatet indeholder demodata.
+        totals:
+          type: object
+          required: [quantity, revenue]
+          properties:
+            quantity:
+              type: integer
+            revenue:
+              $ref: "#/components/schemas/Money"
+        byDrink:
+          type: array
+          description: Omsætning pr. navngiven drik. Alle drikke i kataloget er med, og drikke uden salg i udvalget har `quantity` 0 og `revenue` "0.00".
+          items:
+            type: object
+            required: [drinkId, drinkName, category, quantity, revenue]
+            properties:
+              drinkId:
+                type: integer
+              drinkName:
+                type: string
+              category:
+                $ref: "#/components/schemas/DrinkCategory"
+              quantity:
+                type: integer
+              revenue:
+                $ref: "#/components/schemas/Money"
+        byCategory:
+          type: array
+          description: Indeholder altid både cocktail og coffee.
+          minItems: 2
+          maxItems: 2
+          items:
+            type: object
+            required:
+              - category
+              - quantity
+              - revenue
+              - quantitySharePercent
+              - revenueSharePercent
+              - shareStatus
+            properties:
+              category:
+                $ref: "#/components/schemas/DrinkCategory"
+              quantity:
+                type: integer
+              revenue:
+                $ref: "#/components/schemas/Money"
+              quantitySharePercent:
+                type: string
+                nullable: true
+                pattern: '^\d+\.\d{2}$'
+              revenueSharePercent:
+                type: string
+                nullable: true
+                pattern: '^\d+\.\d{2}$'
+              shareStatus:
+                $ref: "#/components/schemas/DataStatus"
+    Health:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ready]
