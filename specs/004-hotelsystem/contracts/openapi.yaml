@@ -513,6 +513,11 @@ paths:
                     category: cocktail
                     quantity: 3
                     revenue: "300.00"
+                  - drinkId: 2
+                    drinkName: Negroni
+                    category: cocktail
+                    quantity: 0
+                    revenue: "0.00"
                   - drinkId: 21
                     drinkName: Cappuccino
                     category: coffee
@@ -1178,7 +1183,7 @@ components:
               $ref: "#/components/schemas/Money"
         byDrink:
           type: array
-          description: Omsætning pr. navngiven drik. Kun drikke med salg i udvalget er med.
+          description: Omsætning pr. navngiven drik. Alle drikke i kataloget er med, og drikke uden salg i udvalget har `quantity` 0 og `revenue` "0.00".
           items:
             type: object
             required: [drinkId, drinkName, category, quantity, revenue]
