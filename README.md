@@ -8,7 +8,7 @@ Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem 
 
 **Tableau:** Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) virker. Det henter sine tal fra API'ets OData-feed, tallene stemmer med API'et for flere filtervalg, og manuel refresh er afprøvet efter oprettelse, rettelse og aflysning af både bookinger og barsalg, også når API'et er nede. Se [vejledningen](tableau/README.md).
 
-**Mangler endnu:** Afklar med underviseren, om manglende tilfredshedsdata og Tableau uden for Docker accepteres (T001). T055's 60 refresh-prøver mangler. Den samlede testkørsel, den manuelle bookingprøve, acceptkriteriegennemgangen, Converge, gruppens review og præsentationsforberedelsen står også åbne (T062–T068). Se [tasklisten](specs/004-hotelsystem/tasks.md) for status.
+**Mangler endnu:** Afklar med underviseren, om manglende tilfredshedsdata og Tableau uden for Docker accepteres (T001). T055's stikprøve på 12 refresh-runder mangler; gruppen har fravalgt de fulde 60, så SC-003 kun bliver delvist opfyldt. Den samlede testkørsel, den manuelle bookingprøve, acceptkriteriegennemgangen, Converge, gruppens review og præsentationsforberedelsen står også åbne (T062–T068). Se [tasklisten](specs/004-hotelsystem/tasks.md) for status.
 
 ## Start systemet
 

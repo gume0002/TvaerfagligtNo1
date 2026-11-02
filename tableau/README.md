@@ -1,6 +1,6 @@
 # Tableau-dashboard
 
-**Status:** Dashboardet virker med demodata. Tallene for hotellet er sammenlignet med API'et for flere filtervalg, og tallene for baren for standardvalget. Refresh mod det rigtige system er afprøvet for bookinger og barsalg, også når API'et er nede (T054). De 60 prøver i T055 er ikke udført.
+**Status:** Dashboardet virker med demodata. Tallene for hotellet er sammenlignet med API'et for flere filtervalg, og tallene for baren for standardvalget. Refresh mod det rigtige system er afprøvet for bookinger og barsalg, også når API'et er nede (T054). Stikprøven på 12 runder i T055 er ikke udført.
 
 ## Åbn dashboardet
 

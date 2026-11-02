@@ -118,3 +118,7 @@ En vellykket refresh skal hente aktuelle analyser gennem API’et, omfatte opret
 ## Afklaring 2. november 2026: rang ved lighed
 
 Brugeren har godkendt konkurrenceplacering for både værelsestyper og lande: omsætninger på 3.000, 3.000 og 2.000 DKK giver `rank` 1, 1 og 3.
+
+## Gruppens beslutning 2. november 2026: stikprøve af SC-003
+
+Brugeren har på gruppens vegne valgt at køre 12 runder i stedet for de 60, som SC-003 kræver: to oprettelser, to rettelser og to aflysninger af både bookinger og barsalg, hver fulgt af refresh i Tableau. Begrundelsen er, at Tableau Public ikke har en samlet refresh, så den fulde prøve kræver omkring 210 refresh-klik, og at prioriteten er Converge, testperson og præsentation. Alle ændringstyper er allerede afprøvet i T054. **SC-003 er derfor kun delvist opfyldt**, og det skal fremgå af Converge. Beslutningen er ikke afstemt med underviseren.
