@@ -8,7 +8,7 @@ info:
     REST/JSON API til bookinger, barsalg, kataloger og analyser. Kunderne til kontrakten er
     bookingfrontenden, Tableau og hotellets fremtidige bookingsystem.
 
-    **Tableaus læsefeed** under `/api/odata/` er et udkast, som gruppen skal godkende før implementering (T052–T053).
+    **Tableaus læsefeed** under `/api/odata/` er implementeret (T052–T053) og afventer gruppens godkendelse i pull requesten.
     Formen bygger på prøven i `tableau/README.md`.
 
     **Fælles regler**
