@@ -14,7 +14,18 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 
 # Endpoints in the contract that later tasks implement. When one is added, it
 # must be removed here, otherwise the test below fails.
-NOT_IMPLEMENTED_YET: set[tuple[str, str]] = set()
+NOT_IMPLEMENTED_YET: set[tuple[str, str]] = {("get", "/api/odata/"), ("get", "/api/odata/$metadata")} | {
+    ("get", f"/api/odata/{name}")
+    for name in (
+        "HotelTotals",
+        "HotelRoomTypeSeason",
+        "HotelCountries",
+        "HotelRoomTypeRanks",
+        "BarTotals",
+        "BarDrinks",
+        "BarCategories",
+    )
+}
 
 
 @pytest.fixture()

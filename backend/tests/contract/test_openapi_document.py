@@ -31,6 +31,19 @@ PLANNED_OPERATIONS = {
     ("get", "/api/analytics/bar"),
     ("get", "/api/health"),
 }
+# The Tableau feed, added after the Tableau Public test in T002.
+FEED_OPERATIONS = {("get", "/api/odata/"), ("get", "/api/odata/$metadata")} | {
+    ("get", f"/api/odata/{name}")
+    for name in (
+        "HotelTotals",
+        "HotelRoomTypeSeason",
+        "HotelCountries",
+        "HotelRoomTypeRanks",
+        "BarTotals",
+        "BarDrinks",
+        "BarCategories",
+    )
+}
 HTTP_METHODS = {"get", "post", "put", "delete", "patch", "head", "options"}
 
 
@@ -68,7 +81,7 @@ def json_media_types(contract):
             yield f"{method} {path} request", request["content"]["application/json"]
         for status, response in operation["responses"].items():
             content = resolve(response, contract).get("content")
-            if content:
+            if content and "application/json" in content:
                 yield f"{method} {path} {status}", content["application/json"]
 
 
@@ -79,7 +92,7 @@ def test_document_is_valid_openapi_3_0(contract):
 
 def test_document_has_exactly_the_planned_operations(contract):
     actual = {(method, path) for method, path, _ in operations(contract)}
-    assert actual == PLANNED_OPERATIONS
+    assert actual == PLANNED_OPERATIONS | FEED_OPERATIONS
 
 
 def test_operation_ids_are_unique(contract):
