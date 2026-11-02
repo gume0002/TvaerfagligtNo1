@@ -99,9 +99,9 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 
 - [x] T041 Implementér hotelomsætning i `backend/app/business/analytics_service.py` pr. overnatningsnat, kalenderår, sæson, værelsestype og land; adskil passeret, forventet og samlet omsætning.
 - [x] T042 Implementér gæsteophold pr. land, omsætning pr. type/sæson/land samt filtrerede ranglister med delte førstepladser i businesslaget.
-- [ ] T043 Implementér `GET /api/analytics/hotel` i `backend/app/api/analytics.py` efter OpenAPI; alle grupper og summer skal komme fra samme datagrundlag og filtre.
+- [ ] T043 Implementér `GET /api/analytics/hotel` i `backend/app/api/analytics.py` efter OpenAPI; alle grupper og summer skal komme fra samme datagrundlag og filtre. **Delvist:** Transport er klargjort; endpointet tilsluttes og kontraktkontrolleres med T046–T047, som leverer kontraktens obligatoriske nøgletalsfelter.
 - [ ] T044 Byg Tableau hotelvisninger for gæstelande, omsætning pr. type og sæson, lande, topindtjening og årstotal i `tableau/`; layout kan udvikles mod fixture, men forbind først til det godkendte API-feed efter T052–T053. Vis filtre, demo-markering og snapshot-tidspunkt.
-- [ ] T045 Dæk US7 med håndberegnelige tests for årsskifte, sæsoner, skuddag, land/type/år-filtre, ranglistelighed og udeladelse af aflyste bookinger.
+- [ ] T045 Dæk US7 med håndberegnelige tests for årsskifte, sæsoner, skuddag, land/type/år-filtre, ranglistelighed og udeladelse af aflyste bookinger. **Delvist:** Business-eksempler er testet; fuld API-kontrol følger T047.
 
 ## Fase 9 – US8: Belægning og ekstra nøgletal (P1)
 

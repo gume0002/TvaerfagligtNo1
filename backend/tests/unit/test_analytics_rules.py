@@ -45,3 +45,23 @@ def test_us7_2_competition_rank_for_countries_and_types():
     assert [item['rank'] for item in result['topCountries']] == [1, 1, 3]
     assert [item['revenue'] for item in result['topRoomTypes']] == [Decimal('3000.00'), Decimal('3000.00'), Decimal('2000.00')]
     assert [item['rank'] for item in result['topRoomTypes']] == [1, 1, 3]
+
+
+def test_filters_combine_and_cancelled_bookings_are_excluded():
+    cancelled = booking('2026-02-28', '2026-03-02', status=ResourceStatus.CANCELLED)
+    other = booking('2026-02-28', '2026-03-02', country_id=2)
+    active = booking('2026-02-28', '2026-03-02')
+    selected = hotel_nights([cancelled, other, active], 2026, Season.MID, 1, 1)
+    assert len(selected) == 1
+    assert selected[0][1] == [date(2026, 3, 1)]
+    assert revenue_periods(selected, date(2026, 10, 29))['all'] == Decimal('1000.00')
+    assert hotel_nights([active], 2026, Season.MID, 1, 2) == []
+
+
+def test_leap_day_is_low_season_and_today_is_upcoming(frozen_clock):
+    selected = hotel_nights([booking('2024-02-28', '2024-03-01')], 2024, Season.LOW)
+    assert selected[0][1] == [date(2024, 2, 28), date(2024, 2, 29)]
+    assert revenue_periods(selected, frozen_clock.business_date())['all'] == Decimal('2000.00')
+    selected = hotel_nights([booking('2026-10-28', '2026-10-31')], 2026)
+    assert revenue_periods(selected, frozen_clock.business_date()) == {
+        'past': Decimal('1000.00'), 'upcoming': Decimal('2000.00'), 'all': Decimal('3000.00')}

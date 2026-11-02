@@ -123,3 +123,18 @@ def sale_json(sale):
         'demoData': sale.demo_data, 'createdAt': timestamp(sale.created_at),
         'updatedAt': timestamp(sale.updated_at), 'cancelledAt': timestamp(sale.cancelled_at),
     }
+
+
+def analytics_json(value):
+    """Convert calculated domain values; never calculate metrics here."""
+    if isinstance(value, Decimal):
+        return money(value)
+    if isinstance(value, datetime):
+        return timestamp(value)
+    if isinstance(value, date):
+        return value.isoformat()
+    if isinstance(value, dict):
+        return {key: analytics_json(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [analytics_json(item) for item in value]
+    return value
