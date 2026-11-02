@@ -39,6 +39,29 @@ def revenue_periods(selected, today):
     return {'past': past, 'upcoming': upcoming, 'all': past + upcoming}
 
 
+def ratio(numerator, denominator, percent=False):
+    if denominator == 0:
+        return None
+    return (Decimal(numerator) / Decimal(denominator) * (100 if percent else 1)).quantize(Decimal('0.01'))
+
+
+def period_totals(selected, available_dates, room_count, today):
+    revenues = revenue_periods(selected, today)
+    result = {}
+    for period in ('past', 'upcoming', 'all'):
+        def included(night):
+            return period == 'all' or (night < today if period == 'past' else night >= today)
+        booked = sum(1 for _, nights in selected for night in nights if included(night))
+        available = room_count * sum(1 for night in available_dates if included(night))
+        result[period] = {
+            'revenue': revenues[period], 'bookedRoomNights': booked, 'availableRoomNights': available,
+            'occupancyRatePercent': ratio(booked, available, percent=True),
+            'occupancyStatus': 'ok' if available else 'no_data',
+            'adr': ratio(revenues[period], booked), 'adrStatus': 'ok' if booked else 'no_data',
+        }
+    return result
+
+
 def ranked_revenues(groups, id_field, name_field):
     ordered = sorted(groups.items(), key=lambda item: (-item[1]['revenue'], item[0]))
     result = []
@@ -98,11 +121,15 @@ class AnalyticsService:
             self._reference(catalogs.room_types, room_type_id, 'roomTypeId')
             bookings = uow.bookings.for_year(year)
         selected = hotel_nights(bookings, year, season, country_id, room_type_id)
+        available_dates = [night for night in dates_between(date(year, 1, 1), date(year + 1, 1, 1))
+                           if season is None or season_for_date(night) == season]
+        room_count = sum(room.room_count for room in catalogs.room_types if room_type_id is None or room.id == room_type_id)
         return {
             'filters': {'year': year, 'season': season, 'countryId': country_id, 'roomTypeId': room_type_id},
             'generatedAt': generated_at, 'businessDate': today,
             'demoData': any(booking.demo_data for booking, _ in selected) or any(
                 room.demo_data for room in catalogs.room_types if room_type_id is None or room.id == room_type_id),
-            'revenues': revenue_periods(selected, today),
+            'totals': period_totals(selected, available_dates, room_count, today),
+            'occupancyScope': 'country_contribution' if country_id is not None else 'hotel',
             **hotel_groups(selected),
         }

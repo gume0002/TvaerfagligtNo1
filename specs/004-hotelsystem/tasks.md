@@ -108,7 +108,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Mål:** Hotellet viser belægning og ADR med dokumenterede nævnere samt manglende tilfredshedsgrundlag.<br>
 **Selvstændig kontrol:** To værelser over to nætter med én booking på begge nætter giver 50 % belægning og 1.000 DKK ADR.
 
-- [ ] T046 Beregn tilgængelige/bookede værelsesnætter, belægningsgrad og ADR i `backend/app/business/analytics_service.py`, opdelt på passeret/forventet/samlet og med landefilterets nævnerregel.
+- [x] T046 Beregn tilgængelige/bookede værelsesnætter, belægningsgrad og ADR i `backend/app/business/analytics_service.py`, opdelt på passeret/forventet/samlet og med landefilterets nævnerregel.
 - [ ] T047 Tilføj nøgletal, nulgrundlag og `no_data`-status for tilfredshed til `GET /api/analytics/hotel` og Tableauvisningen; ingen opdigtet tilfredshedsscore. Tableauvisningen forbindes til API-feedet efter T052–T053.
 - [ ] T048 Dæk US8 med tests for nulgrundlag, skudår, landefilter, kapacitetsnævner og historik/prognose.
 

@@ -65,3 +65,23 @@ def test_leap_day_is_low_season_and_today_is_upcoming(frozen_clock):
     selected = hotel_nights([booking('2026-10-28', '2026-10-31')], 2026)
     assert revenue_periods(selected, frozen_clock.business_date()) == {
         'past': Decimal('1000.00'), 'upcoming': Decimal('2000.00'), 'all': Decimal('3000.00')}
+
+
+def test_us8_1_two_rooms_two_nights(frozen_clock):
+    from app.business.analytics_service import period_totals
+    selected = hotel_nights([booking('2026-06-10', '2026-06-12')], 2026)
+    result = period_totals(selected, [date(2026, 6, 10), date(2026, 6, 11)], 2, frozen_clock.business_date())
+    assert result['all'] == {'revenue': Decimal('2000.00'), 'bookedRoomNights': 2,
+        'availableRoomNights': 4, 'occupancyRatePercent': Decimal('50.00'), 'occupancyStatus': 'ok',
+        'adr': Decimal('1000.00'), 'adrStatus': 'ok'}
+
+
+def test_us8_3_zero_bookings_and_zero_capacity(frozen_clock):
+    from app.business.analytics_service import period_totals
+    positive = period_totals([], [date(2026, 6, 10)], 2, frozen_clock.business_date())['all']
+    assert positive['revenue'] == Decimal('0.00')
+    assert positive['adr'] is None and positive['adrStatus'] == 'no_data'
+    assert positive['occupancyRatePercent'] == Decimal('0.00')
+    assert positive['occupancyStatus'] == 'ok'
+    empty = period_totals([], [], 0, frozen_clock.business_date())['all']
+    assert empty['occupancyRatePercent'] is None and empty['occupancyStatus'] == 'no_data'
