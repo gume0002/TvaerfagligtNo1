@@ -3,7 +3,7 @@ info:
   title: Hotel Kong Arthur API
   version: 0.1.0
   description: |
-    **Status: Udkast til gruppens gennemgang. Må ikke implementeres, før gruppen har godkendt det.**
+    **Status: REST-delen er godkendt af gruppen ved merge af PR #7. Ændringer godkendes i den pull request, der indfører dem.**
 
     REST/JSON API til bookinger, barsalg, kataloger og analyser. Kunderne til kontrakten er
     bookingfrontenden, Tableau og hotellets fremtidige bookingsystem.
@@ -118,7 +118,7 @@ paths:
                 id: 42
                 guestName: Anna Jensen
                 countryId: 1
-                countryName: Denmark
+                countryName: Sweden
                 roomTypeId: 3
                 roomTypeName: Standard Double
                 arrival: "2026-12-30"
@@ -453,11 +453,11 @@ paths:
                     revenue: "1000.00"
                 byCountry:
                   - countryId: 1
-                    countryName: Denmark
+                    countryName: Sweden
                     revenue: "2000.00"
                 guestStaysByCountry:
                   - countryId: 1
-                    countryName: Denmark
+                    countryName: Sweden
                     guestStays: 2
                 topRoomTypes:
                   - rank: 1
@@ -467,7 +467,7 @@ paths:
                 topCountries:
                   - rank: 1
                     countryId: 1
-                    countryName: Denmark
+                    countryName: Sweden
                     revenue: "2000.00"
                 satisfaction:
                   status: no_data
@@ -701,7 +701,9 @@ components:
       properties:
         code:
           type: string
-          description: Maskinlæsbar fejlkode.
+          description: |
+            Maskinlæsbar fejlkode. `method_not_allowed` (405) og `internal_error` (500) er ikke en del af
+            de enkelte operationers forventede svar, men bruger samme format, hvis de opstår.
           enum:
             - validation_error
             - not_found
@@ -709,6 +711,8 @@ components:
             - resource_cancelled
             - idempotency_conflict
             - service_unavailable
+            - method_not_allowed
+            - internal_error
         message:
           type: string
           description: Forståelig fejlbesked uden SQL eller stacktrace.
