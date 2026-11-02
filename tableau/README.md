@@ -1,6 +1,6 @@
 # Tableau-afprøvning (T002)
 
-**Status:** Forbindelse, datatyper, pagination, manuel refresh og fejlet refresh er afprøvet i Tableau Public mod fixturen. Filtre og beløb som tekst mangler, og T002 er først færdig, når resultatskemaet nederst er udfyldt.
+**Status:** Forbindelse, datatyper, pagination, manuel refresh og fejlet refresh er afprøvet i Tableau Public mod fixturen. Se resultaterne nederst. To forhold mangler: `update` og `cancel` er ikke afprøvet med refresh, og kun arket med begge filtervalg er kontrolleret.
 
 Prøven skal vise, om Tableau Public kan hente data fra et OData V4-API og hente nye tal ved manuel refresh. Den afgør, om vi kan bygge videre på OData-sporet fra [Plan, afsnit 7](../specs/004-hotelsystem/plan.md).
 
@@ -120,17 +120,17 @@ Udfyldes af den, der gennemfører prøven. Skriv kun det, der faktisk er observe
 | Metadata og tabeller indlæses | Ja, alle tre tabeller |
 | Alle tre rækker hentes (`@odata.nextLink`) | Ja, 3 rækker. Loggen viser `HotelKpis` og derefter `HotelKpis?$skip=2` |
 | Decimal som JSON-tal | Ja, felterne er tal, fx `Adr` 1,000.00 |
-| Decimal som tekst | |
+| Decimal som tekst | Ikke afprøvet. Ikke nødvendig, fordi JSON-tal virker, og feedet bruger dem |
 | `null` vises som tom værdi | Ja, vises som `Null` og ikke som 0 |
 | `generatedAt` genkendes som tidsstempel | Ja, men vises i UTC uden tidszone, fx 12.38.48 mens klokken var 13.38 i Danmark |
-| Filtrering med `filterKey` virker | |
-| Filtrering sender nye forespørgsler | |
+| Filtrering med `filterKey` virker | Ja. Valgte man begge værdier, blev tallene lagt sammen: `low` 2.000. Dashboardet skal derfor tvinge præcis ét filtervalg |
+| Filtrering sender nye forespørgsler | Nej. Hverken filter eller åbning af projektmappen gav nye kald i loggen, så filtre virker kun på udtrækket |
 | Menuhandling for manuel refresh | **Data → [datakilde] → Refresh** |
 | Refresh efter `create`, `update` og `cancel` giver de forventede tal | `create` er afprøvet: `Quantity` gik fra 3 og 2 til 3 og 4, og loggen viser et nyt kald. Før refresh viste Tableau stadig de gamle tal. `update` og `cancel` er ikke afprøvet |
 | `generatedAt` bliver nyere ved refresh | Ja, fra 12.40.48 til 12.42.22 |
 | Fejlbesked og tal ved stoppet fixture | "There was a problem connecting to the data source", fejlkode 7C19CF64. Tal og `generatedAt` bevares (3 og 4, 12.42.22) |
-| Forespørgsler i terminalen, som fejlede | |
-| Samlet vurdering: kan OData bruges? | |
+| Forespørgsler i terminalen, som fejlede | Ingen. Tableau brugte ikke `$top`, `$filter` eller andre query-parametre, kun `$skip` fra vores eget sidelink |
+| Samlet vurdering: kan OData bruges? | Ja, til hentning og manuel refresh. Filtre skal bygge på færdigberegnede rækker pr. filterkombination |
 
 Hvis OData ikke virker, må vi ikke skifte stiltiende til filimport eller direkte MySQL. Så skal en anden API-baseret vej afprøves, eller integrationsdesignet skal revideres med gruppen og underviseren.
 
