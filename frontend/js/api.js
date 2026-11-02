@@ -80,3 +80,10 @@ export function searchSales(filters) {
 export function createSale(payload, key) {
   return request('/api/bar-sales', jsonOptions('POST', payload, {'Idempotency-Key': key}));
 }
+
+export function updateSale(id, payload) {
+  return request(`/api/bar-sales/${id}`, jsonOptions('PUT', payload));
+}
+export function cancelSale(id) {
+  return request(`/api/bar-sales/${id}`, {method: 'DELETE'});
+}

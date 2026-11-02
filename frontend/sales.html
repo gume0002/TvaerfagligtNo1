@@ -16,10 +16,16 @@
   <div class="field"><label for="quantity">Antal</label><input id="quantity" name="quantity" type="number" step="1"><p data-error-for="quantity" class="field-error"></p></div>
   <div class="field"><label for="unitPrice">Enhedspris (DKK)</label><input id="unitPrice" name="unitPrice" inputmode="decimal"><p data-error-for="unitPrice" class="field-error"></p></div>
   <div class="field"><label for="saleDate">Salgsdato</label><input id="saleDate" name="saleDate" type="date"><p data-error-for="saleDate" class="field-error"></p></div>
-  <div class="actions wide"><button id="sale-save" class="primary">Registrér salg</button></div>
+  <div class="actions wide"><button id="sale-save" class="primary">Registrér salg</button><button id="sale-cancel-edit" type="button" hidden>Annullér rettelse</button></div>
 </form>
 </section>
 <section class="panel"><h2>Salgsoversigt</h2>
+<form id="sale-search" class="filters">
+<div class="field"><label for="sale-from">Salg fra</label><input id="sale-from" type="date"></div>
+<div class="field"><label for="sale-to">Salg til</label><input id="sale-to" type="date"></div>
+<div class="field"><label for="sale-employee">Medarbejderfilter</label><select id="sale-employee"></select></div>
+<div class="field"><label for="sale-status">Vis salg</label><select id="sale-status"><option value="active">Aktive</option><option value="cancelled">Aflyste (historik)</option><option value="all">Alle</option></select></div>
+<button>Søg salg</button></form>
 <div id="sale-search-message" role="alert" class="message error" hidden></div>
 <p id="sale-count" aria-live="polite"></p>
 <div class="table-wrap"><table><thead><tr><th>Nr.</th><th>Drik</th><th>Medarbejder</th><th>Dato</th><th>Antal</th><th>Pris</th><th>Beløb</th><th>Status</th><th>Handlinger</th></tr></thead><tbody id="sale-rows"></tbody></table></div>

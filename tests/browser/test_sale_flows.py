@@ -50,3 +50,47 @@ def test_backend_errors_keep_form(page, quantity, price, sale_date, field):
     page.get_by_role('button', name='Registrér salg').click()
     expect(page.locator(f'[data-error-for="{field}"]')).not_to_be_empty()
     expect(page.get_by_label('Enhedspris (DKK)')).to_have_value(price)
+
+
+def test_saved_sale_survives_reload_and_can_be_edited_cancelled(page):
+    fill_sale(page)
+    page.get_by_role('button', name='Registrér salg').click()
+    expect(page.locator('#sale-rows tr')).to_contain_text('300.00 DKK')
+    page.reload()
+    expect(page.locator('#sale-rows tr')).to_contain_text('Negroni')
+    page.locator('#sale-rows').get_by_role('button', name='Ret', exact=True).click()
+    page.get_by_label('Antal', exact=True).fill('0')
+    page.get_by_role('button', name='Gem salg').click()
+    expect(page.locator('[data-error-for="quantity"]')).not_to_be_empty()
+    expect(page.locator('#sale-rows tr')).to_contain_text('300.00 DKK')
+    page.get_by_label('Antal', exact=True).fill('2')
+    page.get_by_role('button', name='Gem salg').click()
+    expect(page.locator('#sale-rows tr')).to_contain_text('200.00 DKK')
+    page.once('dialog', lambda dialog: dialog.dismiss())
+    page.locator('#sale-rows').get_by_role('button', name='Aflys').click()
+    expect(page.locator('#sale-rows tr')).to_have_count(1)
+    page.once('dialog', lambda dialog: dialog.accept())
+    page.locator('#sale-rows').get_by_role('button', name='Aflys').click()
+    expect(page.locator('#sale-rows tr')).to_have_count(0)
+    page.get_by_label('Vis salg').select_option('cancelled')
+    page.get_by_role('button', name='Søg salg').click()
+    expect(page.locator('#sale-rows tr')).to_contain_text('Aflyst')
+    expect(page.locator('#sale-rows button')).to_have_count(0)
+
+
+def test_lost_response_reuses_key(page):
+    lost = []
+    def lose(route):
+        if route.request.method == 'POST' and not lost:
+            lost.append(True)
+            route.fetch()
+            route.abort()
+        else:
+            route.continue_()
+    page.route('**/api/bar-sales', lose)
+    fill_sale(page)
+    page.get_by_role('button', name='Registrér salg').click()
+    expect(page.locator('#sale-message')).to_contain_text('Kunne ikke få kontakt')
+    page.get_by_role('button', name='Registrér salg').click()
+    expect(page.locator('#sale-message')).to_contain_text('er oprettet')
+    expect(page.locator('#sale-rows tr')).to_have_count(1)
