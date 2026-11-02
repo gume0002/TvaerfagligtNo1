@@ -1,6 +1,6 @@
 # Milepæl 3 – barsalg og analyser gennem API'et
 
-**Dato:** 2. november 2026. **Branch:** `milepael-3-barsalg-analyser` fra opdateret `origin/main` (`cbe60b8`). Arbejdstræet var rent ved start. `git config user.name` viste `magnusegemoseornhof`; commits bruger denne konfiguration. Ingen push eller PR er udført.
+**Dato:** 2. november 2026. **Branch:** `milepael-3-barsalg-analyser` fra opdateret `origin/main` (`cbe60b8`). Arbejdstræet var rent ved start. `git config user.name` viste `magnusegemoseornhof`; commits bruger denne konfiguration. Ved afslutningen af implementeringskontrollen var der endnu ikke udført push eller oprettet PR; efterfølgende levering sker efter brugerens særskilte anmodning.
 
 Dette er en afgrænset Implement-kontrol af Milepæl 3, ikke gruppens samlede Converge eller godkendelse af afleveringen. Projektets `hotel-architecture-review`-vejledning er brugt. Begge opgave-PDF'er, constitution, spec, clarify, plan, kontrakt, tasks og eksisterende bookingforløb er læst før implementeringen. Ingen rådata eller opgave-PDF'er er ændret.
 
@@ -97,3 +97,7 @@ Snapshot giver konsistente læsninger pr. forespørgsel; to separate kald kan na
 **Ændring:** Implementér US5/US6 med browserforløb, fastfrosset pris, idempotent oprettelse, rettelse og logisk aflysning. Lever API-delene af US7–US9 med natfordelt omsætning, gæstelande, ranglister med 1/1/3, belægning, ADR og barandele. Alle tal beregnes i businesslaget fra ét konsistent MySQL-snapshot pr. analyse. Afslut snapshot-/analyseudeladelsesrester fra Milepæl 2, og opdatér README, CONTRIBUTE, OpenAPI og taskstatus. Tableau og den samlede Converge er uden for PR'en.
 
 **Kontrol:** Den fulde Docker-testkommando giver 292 beståede tests og exit 0. Fem bevidste regelfejl i en midlertidig projektkopi opdages af relevante tests. En automatiseret Chromium-prøve mod demoen kontrollerer barsalg, begge analyser, Swagger UI og omsætningsændring efter booking/aflysning. Testperson, Tableau-refresh og gruppens review er ikke udført. Prøvens egne poster er aflyst; ingen volumes er slettet.
+
+## Overdragelse til næste milepæl
+
+Brug [prompten til Milepæl 4](prompt-milestone-4.md) efter gruppens review og merge af Milepæl 3. Den fastholder de åbne designporte, de vedtagne regler og kravet om faktiske Tableau- og menneskelige acceptbeviser. Prompten er forberedelse, ikke en påbegyndt implementering af Milepæl 4.
