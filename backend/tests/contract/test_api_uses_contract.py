@@ -16,7 +16,6 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 # must be removed here, otherwise the test below fails.
 NOT_IMPLEMENTED_YET = {
     ("get", "/api/bar-sales"),
-    ("post", "/api/bar-sales"),
     ("get", "/api/bar-sales/{id}"),
     ("put", "/api/bar-sales/{id}"),
     ("delete", "/api/bar-sales/{id}"),

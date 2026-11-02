@@ -6,7 +6,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
-from app.business.models import Booking, BookingInput, Catalogs
+from app.business.models import Booking, BookingInput, Catalogs, SaleInput
 
 
 def _parse_iso_date(value: object) -> date:
@@ -98,4 +98,28 @@ def catalogs_json(catalogs: Catalogs) -> dict:
             }
             for item in catalogs.drinks
         ],
+    }
+
+
+class SaleBody(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    drinkId: StrictInt
+    employeeId: StrictInt
+    quantity: StrictInt
+    unitPrice: MoneyInput
+    saleDate: IsoDate
+
+    def to_domain(self):
+        return SaleInput(self.drinkId, self.employeeId, self.quantity, Decimal(self.unitPrice), self.saleDate)
+
+
+def sale_json(sale):
+    return {
+        'id': sale.id, 'drinkId': sale.drink_id, 'drinkName': sale.drink_name,
+        'category': sale.category.value, 'employeeId': sale.employee_id,
+        'employeeName': sale.employee_name, 'quantity': sale.quantity,
+        'unitPrice': money(sale.unit_price), 'totalAmount': money(sale.total_amount),
+        'saleDate': sale.sale_date.isoformat(), 'status': sale.status.value,
+        'demoData': sale.demo_data, 'createdAt': timestamp(sale.created_at),
+        'updatedAt': timestamp(sale.updated_at), 'cancelledAt': timestamp(sale.cancelled_at),
     }
