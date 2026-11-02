@@ -1,8 +1,8 @@
 # Specifikation: Hotelsystem
 
 **Specifikationsmappe:** `specs/004-hotelsystem/`
-**Oprettet:** 26. oktober 2026 · **Opdateret:** 29. oktober 2026  
-**Status:** Specify og Clarify gennemgået; [Plan](plan.md) er udarbejdet til gruppens gennemgang med åbne Tableau- og fortolkningsrisici. Ingen funktioner er implementeret.
+**Oprettet:** 26. oktober 2026 · **Krav senest opdateret:** 29. oktober 2026
+**Status:** Dette dokument er kravgrundlaget, ikke en statusrapport. Funktionerne er siden implementeret i forskelligt omfang; se [tasklisten](tasks.md) og [Milepæl 3-kontrollen](milestone-3.md). Tableau-dashboardet er bygget, men de åbne refresh-prøver, underviserafklaringer og den samlede Converge mangler stadig.
 
 ## Formål og grundlag
 
