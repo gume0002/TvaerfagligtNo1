@@ -29,10 +29,10 @@ Hotellet vil kunne læse dataanalyserne direkte gennem API'et og i browserfronte
 
 | Beslutning | Begrundelse | Grundlag |
 |---|---|---|
-| Databasen skiftes til **PostgreSQL** | Gruppens valg. Det kræver mindst ombygning og viser, at kun dataadgang og drift skal ændres | Besluttet af gruppen 2. november 2026 |
+| Databasen skiftes til **PostgreSQL** | Gruppens valg. Det kræver mindst ombygning og viser, at kun dataadgang og drift skal ændres | Valgt 2. november 2026. Gruppen godkender i pull requesten |
 | Nuværende version er sikret med tagget `v1-mysql-tableau` | Opgaven kræver, at arbejdet er tilgængeligt til præsentationen via Git | Tagget peger på `d38e39b` |
-| Eksisterende data flyttes ikke | Databasen er ny og får startdata ved første start. Ændringer i en lokal MySQL-demo går tabt | Besluttet 2. november 2026 |
-| Frontenden viser både grafer og tabeller | Ledelsen skal kunne aflæse tallene uden Tableau. Tabellerne gør alle værdier læsbare uden farver og uden at holde musen over | Besluttet 2. november 2026 |
+| Eksisterende data flyttes ikke | Databasen er ny og får startdata ved første start. Ændringer i en lokal MySQL-demo går tabt | Valgt 2. november 2026. Gruppen godkender i pull requesten |
+| Frontenden viser både grafer og tabeller | Ledelsen skal kunne aflæse tallene uden Tableau. Tabellerne gør alle værdier læsbare uden farver og uden at holde musen over | Valgt 2. november 2026. Gruppen godkender i pull requesten |
 
 **Tolkningsrisiko:** Opgaven skriver "en anden type end den nuværende MySql". PostgreSQL er en anden database, men også relationel. Hvis opgaven menes som en anden slags database, fx NoSQL, opfylder valget det ikke bogstaveligt. Gruppen har valgt ikke at afstemme med underviseren og skal kunne begrunde valget.
 
