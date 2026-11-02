@@ -122,3 +122,12 @@ Brugeren har godkendt konkurrenceplacering for både værelsestyper og lande: om
 ## Gruppens beslutning 2. november 2026: stikprøve af SC-003
 
 Brugeren har på gruppens vegne valgt at køre 12 runder i stedet for de 60, som SC-003 kræver: to oprettelser, to rettelser og to aflysninger af både bookinger og barsalg, hver fulgt af refresh i Tableau. Begrundelsen er, at Tableau Public ikke har en samlet refresh, så den fulde prøve kræver omkring 210 refresh-klik, og at prioriteten er Converge, testperson og præsentation. Alle ændringstyper er allerede afprøvet i T054. **SC-003 er derfor kun delvist opfyldt**, og det skal fremgå af Converge. Beslutningen er ikke afstemt med underviseren.
+
+## Gruppens beslutning 2. november 2026: ingen afstemning med underviseren
+
+Brugeren har på gruppens vegne besluttet, at gruppen ikke spørger underviseren om de to fortolkningsrisici. **De er derfor ikke afklaret og er ikke godkendt af underviseren:**
+
+- **Kundetilfredshed:** Opgaven nævner nøgletallet, men der findes ingen vurderingsdata. Løsningen viser »Intet datagrundlag« og beregner ikke en score.
+- **Tableau uden for Docker:** Opgaven skriver »Alt i jeres system«. Tableau Public kører som ekstern klient, mens resten starter med `docker compose up`.
+
+Gruppen står selv inde for de to valg, og de skal fremgå af Converge som åbne fortolkningsrisici.
