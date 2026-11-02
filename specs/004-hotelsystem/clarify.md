@@ -1,8 +1,9 @@
 # Clarify: Hotelsystem
 
-**Dato:** 29. oktober 2026
+**Oprindelig Clarify:** 29. oktober 2026
+**Status senest opdateret:** 2. november 2026
 
-**Status:** Gennemgået mod opgavebeskrivelsen; klar til Plan med dokumenterede fortolkningsrisici og gruppens gennemgang.
+**Status:** Gennemgået mod opgavebeskrivelsen. De to fortolkningsrisici om tilfredshedsdata og Tableau uden for Docker kræver fortsat underviserafklaring; se de åbne punkter nedenfor og i [tasklisten](tasks.md).
 
 **Grundlag:** [Specify](spec.md), [constitution](../../.specify/memory/constitution.md), opgave-PDF’erne i `opgavebeskrivelse/` og [projektets arkitekturvejledning](../../project-skills/hotel-architecture-review/SKILL.md).
 
@@ -100,19 +101,19 @@ De to åbne punkter er aktiviteter til Plan og efterfølgende Tasks. De er ikke 
 
 ## Dokumentstruktur efter gruppens ønske
 
-Det aktive forløb er samlet via [specs/README.md](../README.md) i opgavens faserækkefølge. Specify er den gældende kravbeskrivelse; Clarify beskriver afklaringer og deres begrundelser med henvisninger til kravene. Tidligere dokumentationsopgaver er bevaret uændret direkte under `specs/` i mapperne 001, 002 og 003. Plan, Tasks og Converge for hotelsystemet er fortsat kommende faser.
+Det aktive forløb er samlet via [specs/README.md](../README.md) i opgavens faserækkefølge. Specify er kravbeskrivelsen; Clarify dokumenterer afklaringer og begrundelser. Plan og Tasks for hotelsystemet findes, og implementeringen er i gang. Den samlede Converge mangler stadig; se [tasklisten](tasks.md). Tidligere dokumentationsopgaver ligger fortsat i mapperne 001, 002 og 003.
 
-**Kontrol af omlægningen:** Filerne i 001, 002 og 003 er bevaret byte-for-byte ved tilbageflytningen. Lokale Markdown-links og Spec Kits stiopløsning kontrolleres. README viser de tre backendlag, API-klienterne, MySQL og den planlagte førstegangsindlæsning gennem dataadgangen. Der er fortsat ingen kørende forespørgsel at følge eller OpenAPI-adfærd at funktionsteste.
+**Kontrol af omlægningen (historisk):** Ved omlægningen blev filerne i 001, 002 og 003 bevaret byte-for-byte. Den daværende README beskrev målarkitekturen; siden er bookingforløb, API, dataadgang og MySQL implementeret. Den aktuelle arkitektur og status fremgår af [README](../../README.md), OpenAPI-kontrakten og tasklisten.
 
 ## Videreført til Plan
 
-Den tekniske [Plan](plan.md) er nu udarbejdet med valgte teknologier, laggrænser, datamodel, transaktioner, API-design, demokapacitet, import, Docker og teststrategi. Gruppen har efterfølgende bekræftet Tableau Public. Den praktiske Tableau-afprøvning, valideringen af den manuelle datakilde-refresh og afstemningen om tilfredshed/systemgrænse er fortsat åbne; planens afsnit 7 og 12 beskriver næste handling. De tidligere statusangivelser ovenfor beskriver afslutningen af Clarify.
+**Overdragelse til Plan (historisk):** Planen beskrev teknologier, laggrænser, datamodel, transaktioner, API, startdata, Docker og teststrategi. Siden er OData-forbindelsen og dashboardet afprøvet og bygget. De resterende Tableau-prøver og underviserafklaringer står i tasklisten; status på implementeringen skal læses dér frem for i de daterede planlægningsnoter.
 
 ## Godkendt ændring: manuel refresh i Tableau
 
 Brugeren har bekræftet Tableau Public og accepteret: »Det er fint hvis man trykker refresh inde på tableau«. Det erstatter projektets tidligere automatikkrav; det kræver ikke en ny godkendelse fra brugeren. Ændringen er indarbejdet i Specify under Analyser og filtre, US10, FR-007 og SC-003 og i Plan, afsnit 7 og teststrategien.
 
-En vellykket refresh skal hente aktuelle analyser gennem API’et, omfatte oprettelser, rettelser og aflysninger samt vise datagrundlagets tidspunkt. Fejlet refresh må ikke mærke et gammelt snapshot som nyt. Det tidligere krav om synlig opdatering inden fem sekunder efter gemning gælder ikke længere. Der er endnu ikke udført en praktisk refreshprøve i Public.
+En vellykket refresh skal hente aktuelle analyser gennem API’et, omfatte oprettelser, rettelser og aflysninger samt vise datagrundlagets tidspunkt. Fejlet refresh må ikke mærke et gammelt snapshot som nyt. Det tidligere krav om synlig opdatering inden fem sekunder efter gemning gælder ikke længere. Tableau Public er siden afprøvet mod en fixture, og refresh efter oprettelse, rettelse og aflysning af en booking er afprøvet mod systemet. Refresh af barsalg og fejlet API-forbindelse mod systemet mangler; derfor står T054 fortsat åben. Se [Tableau-vejledningen](../../tableau/README.md) for de registrerede resultater.
 
 ## Afklaring 2. november 2026: rang ved lighed
 

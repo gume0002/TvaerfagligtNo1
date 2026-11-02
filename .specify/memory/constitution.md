@@ -164,4 +164,4 @@ Beslutninger dokumenteres i spec, plan og pull requests. Der føres ingen særsk
 - Ændringer i constitution laves som en almindelig pull request med én godkendelse. Pull requesten skal begrunde ændringen og tælle versionsnummeret op.
 - I Converge sammenholdes løsningen med constitution, spec, plan, tasks og acceptkriterier.
 
-**Version:** 1.0.0 · **Vedtaget:** Afventer godkendelse af pull request · **Senest ændret:** 26. oktober 2026
+**Version:** 1.0.0 · **Status:** PR #2 er merged, men GitHub viser ingen formel reviewgodkendelse; gruppens godkendelse er derfor ikke dokumenteret · **Senest ændret:** 26. oktober 2026

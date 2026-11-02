@@ -4,13 +4,13 @@ Opgaven angiver rækkefølgen **Constitution → Specify → Clarify → Plan �
 
 | Fase | Dokument eller resultat | Status og ansvar |
 |---|---|---|
-| Constitution | [constitution.md](../.specify/memory/constitution.md) | Fælles principper og faste krav; afventer gruppens PR-godkendelse. Én fælles fil. |
-| Specify | [spec.md](004-hotelsystem/spec.md) | Funktioner, brugere, domæneregler, krav, brugerhistorier og acceptkriterier. Dette er den gældende kravbeskrivelse. |
+| Constitution | [constitution.md](../.specify/memory/constitution.md) | Fælles principper og faste krav. PR #2 er merged, men GitHub viser ingen formel reviewgodkendelse; gruppens godkendelse er ikke dokumenteret. Én fælles fil. |
+| Specify | [spec.md](004-hotelsystem/spec.md) | Funktioner, brugere, domæneregler, krav, brugerhistorier og acceptkriterier. Dette er den gældende kravbeskrivelse, ikke bevis på at alle kriterier er kontrolleret. |
 | Clarify | [clarify.md](004-hotelsystem/clarify.md) | Afklaringer, begrundelser, kontrol mod opgaven og åbne punkter. Ændrede krav er indarbejdet i spec.md. |
-| Plan | [plan.md](004-hotelsystem/plan.md) | Teknisk plan udarbejdet til gennemgang; Tableau Public er bekræftet; manuel refresh er accepteret; praktisk afprøvning og fortolkningsrisici er åbne. |
+| Plan | [plan.md](004-hotelsystem/plan.md) | Teknisk design fra 29. oktober 2026. Nogle statusnoter i planen beskriver forholdene på det tidspunkt; den aktuelle status står i [tasks.md](004-hotelsystem/tasks.md) og [tableau/README.md](../tableau/README.md). |
 | Tasks | [tasks.md](004-hotelsystem/tasks.md) | Opgaverne er grupperet efter brugerhistorie og viser designporte, afhængigheder og status. |
-| Implement | Applikationskode, kontrakt og Docker-tjenester | I gang. Fundament, booking-CRUD, kataloger, startdata og Docker-opstart er implementeret; status pr. task står i [tasks.md](004-hotelsystem/tasks.md). |
-| Converge | `004-hotelsystem/converge.md` | Oprettes ved gennemgang af implementeringen; bevis og status pr. acceptkriterium samt mangler til Tasks. |
+| Implement | Applikationskode, kontrakt og Docker-tjenester | Hovedfunktionerne, OData-feedet og Tableau-dashboardet er implementeret. Resterende prøver og status pr. task står i [tasks.md](004-hotelsystem/tasks.md). |
+| Converge | `004-hotelsystem/converge.md` | Den samlede Converge mangler. T065 kræver en gennemgang med bevis og status pr. acceptkriterium samt opfølgende Tasks for mangler. |
 
 ## Filernes rolle
 
@@ -26,7 +26,7 @@ Deres planer, opgaver og Converge-resultater vedrører de enkelte dokumentations
 
 ## Næste trin
 
-Læs constitution, spec, clarify og [plan](004-hotelsystem/plan.md) i den rækkefølge. Åbne punkter står i [tasks.md](004-hotelsystem/tasks.md): prøven af manuel datakilde-refresh i Tableau Public, afklaringen med underviseren, barsalg og analyser.
+Læs constitution, spec, clarify og [plan](004-hotelsystem/plan.md) i den rækkefølge. De vigtigste rester står i [tasks.md](004-hotelsystem/tasks.md): underviserafklaringer, resterende Tableau-refresh-prøver, samlet test- og acceptgennemgang, Converge, gruppereview og præsentationsforberedelse.
 
 Ved brug af de medfølgende Spec Kit-scripts kan den aktive mappe angives eksplicit fra projektroden:
 
