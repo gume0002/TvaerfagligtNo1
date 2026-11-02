@@ -70,3 +70,20 @@ export function updateBooking(id, payload) {
 export function cancelBooking(id) {
   return request(`/api/bookings/${id}`, { method: "DELETE" });
 }
+
+
+export function searchSales(filters) {
+  const query = new URLSearchParams(Object.entries(filters).filter(([, value]) => value !== ""));
+  return request(`/api/bar-sales?${query}`);
+}
+
+export function createSale(payload, key) {
+  return request('/api/bar-sales', jsonOptions('POST', payload, {'Idempotency-Key': key}));
+}
+
+export function updateSale(id, payload) {
+  return request(`/api/bar-sales/${id}`, jsonOptions('PUT', payload));
+}
+export function cancelSale(id) {
+  return request(`/api/bar-sales/${id}`, {method: 'DELETE'});
+}

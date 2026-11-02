@@ -4,9 +4,9 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 ## Hvor langt er vi?
 
-Bookingdelen er bygget og kan køres: bookinger kan oprettes, findes, rettes og slettes i browseren gennem API'et, og data gemmes i MySQL.
+Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem API'et. Hotel- og baranalyser beregnes i backendens forretningslogik fra aktuelle MySQL-data. Milepæl 3 er implementeret; [kontrol og afgrænsning](specs/004-hotelsystem/milestone-3.md) beskriver det faktisk afprøvede.
 
-**Mangler endnu:** barsalg, analyser og Tableau-dashboard. Kontrakten beskriver allerede endpoints til barsalg og analyser, men de svarer endnu ikke. Tableau-prøven er ikke afsluttet, og kontrakten mangler Tableaus læsefeed.
+**Mangler endnu:** Tableau-dashboard, API-feed til Tableau og praktisk datakilde-refresh. Tableau-prøven er ikke afsluttet, og kontrakten mangler Tableaus læsefeed. Tilfredshed har kun `no_data`; underviserafklaringen og gruppens afsluttende review er åbne.
 
 ## Start systemet
 
@@ -19,6 +19,9 @@ docker compose up
 | Adresse | Indhold |
 |---|---|
 | <http://localhost:8080> | Bookingfrontend |
+| <http://localhost:8080/sales.html> | Barsalg og historik |
+| <http://localhost:8080/api/analytics/hotel> | Hotelanalyse for indeværende år |
+| <http://localhost:8080/api/analytics/bar> | Baranalyse for Helene Christine, indeværende år |
 | <http://localhost:8080/api/health> | API'ets driftsstatus |
 | <http://localhost:8081> | Swagger UI med OpenAPI-kontrakten |
 
@@ -105,13 +108,27 @@ Går svaret tabt, og medarbejderen gemmer igen, genbruges samme nøgle. Så bliv
 
 ## Tal, systemet skal kunne vise
 
-Disse visninger er endnu ikke bygget.
+Resultaterne leveres gennem REST API'et. Tableau-visningerne er endnu ikke bygget.
 
 **Hotellet:** gæsternes lande, omsætning fordelt på værelsestype, sæson og land, de værelsestyper og lande der giver størst omsætning, årets samlede omsætning samt belægning og ADR. Gæstetilfredshed har intet datagrundlag og vises som »Intet datagrundlag«.
 
 **Helene Christine:** årets samlede salg, omsætning pr. drik og fordelingen mellem cocktails og kaffe, både efter antal og omsætning.
 
 Specifikationen definerer et valgbart kalenderår, sæsoner, natbaseret bookingomsætning og særskilt passeret og forventet omsætning. Opgavens værelsespriser er estimater og må ikke fremstilles som faktiske bookingindtægter.
+
+### Fra analyseforespørgsel til tal
+
+`GET /api/analytics/hotel?year=2026&season=low` går gennem Nginx → `api/analytics.py` → `business/analytics_service.py` → repositories/Unit of Work → MySQL. API-laget kontrollerer inputformat og formaterer svar. Businesslaget fordeler nætterne og beregner alle officielle tal. Dataadgangen henter domæneobjekter uden at beregne nøgletal i SQL.
+
+Hver analyse åbner en separat `REPEATABLE READ`-transaktion med et eksplicit konsistent snapshot og kun læsning. Kataloger og driftsdata læses fra samme snapshot. Skrivetransaktionerne bruger stadig `READ COMMITTED`. Der er ingen cache eller rapporttabeller; ændringer ses ved næste API-kald.
+
+- Hotellet: `year` (2000–2100), valgfri `season`, `countryId` og `roomTypeId`. Nætter fordeles i `past`, `upcoming` og `all`; dags dato i Europe/Copenhagen tilhører `upcoming`.
+- Baren: `year` og valgfri `employeeId`; standard er Helene Christine. Alle 30 katalogdrikke og begge kategorier medtages, også uden salg.
+- Belægning = bookede værelsesnætter / tilgængelige værelsesnætter × 100. Landevalg ændrer tælleren, mens kapaciteten bevares. ADR = omsætning / bookede værelsesnætter. Ved nul nævner er forholdstallet `null` med `no_data`; summer er nul.
+- En booking med to gæster og tre nætter til 1.000 DKK giver 2 gæsteophold, 3 værelsesnætter og 3.000 DKK. Med to værelser over to nætter giver én booking begge nætter 50 % belægning og ADR på 1.000 DKK.
+- Aflyste bookinger og salg udelades helt. Aftalte priser bevares uafhængigt af katalogpriser. Ranglister følger `1, 1, 3` ved delt førsteplads. Beløb og procenter leveres som strenge med to decimaler.
+
+`POST /api/bar-sales` bruger `Idempotency-Key` som bookingoprettelse. Salg og det oprindelige svar gemmes atomisk. Samme nøgle og input giver samme svar, også efter senere rettelse/aflysning. En anden payload med samme nøgle giver 409. `PUT` kan ikke rette en aflyst post; gentaget `DELETE` ændrer ikke aflysningstidspunktet.
 
 ## Data
 

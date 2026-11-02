@@ -14,15 +14,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 
 # Endpoints in the contract that later tasks implement. When one is added, it
 # must be removed here, otherwise the test below fails.
-NOT_IMPLEMENTED_YET = {
-    ("get", "/api/bar-sales"),
-    ("post", "/api/bar-sales"),
-    ("get", "/api/bar-sales/{id}"),
-    ("put", "/api/bar-sales/{id}"),
-    ("delete", "/api/bar-sales/{id}"),
-    ("get", "/api/analytics/hotel"),
-    ("get", "/api/analytics/bar"),
-}
+NOT_IMPLEMENTED_YET: set[tuple[str, str]] = set()
 
 
 @pytest.fixture()

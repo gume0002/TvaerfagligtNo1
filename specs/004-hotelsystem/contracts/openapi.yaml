@@ -1116,7 +1116,7 @@ components:
                 type: integer
         topRoomTypes:
           type: array
-          description: Fuld rangliste efter omsætning. Lige beløb får samme `rank`, så alle delte førstepladser har `rank` 1.
+          description: Fuld rangliste efter omsætning. Lige beløb får samme `rank`, så alle delte førstepladser har `rank` 1. Næste placering springer de delte pladser over, fx 1, 1, 3.
           items:
             type: object
             required: [rank, roomTypeId, roomTypeName, revenue]
@@ -1131,7 +1131,7 @@ components:
                 $ref: "#/components/schemas/Money"
         topCountries:
           type: array
-          description: Fuld rangliste efter omsætning. Lige beløb får samme `rank`, så alle delte førstepladser har `rank` 1.
+          description: Fuld rangliste efter omsætning. Lige beløb får samme `rank`, så alle delte førstepladser har `rank` 1. Næste placering springer de delte pladser over, fx 1, 1, 3.
           items:
             type: object
             required: [rank, countryId, countryName, revenue]

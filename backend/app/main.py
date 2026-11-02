@@ -5,8 +5,10 @@ from uuid import uuid4
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import bookings, catalogs, health
+from app.api import bookings, catalogs, health, sales, analytics
 from app.api.errors import register_error_handlers
+from app.business.analytics_service import AnalyticsService
+from app.business.sale_service import SaleService
 from app.business.booking_service import BookingService
 from app.business.catalog_service import CatalogService
 from app.business.health_service import HealthService
@@ -16,7 +18,7 @@ from app.data_access.database import create_database_engine, create_session_fact
 from app.data_access.unit_of_work import SqlUnitOfWork
 
 
-ROUTERS = (bookings.router, catalogs.router, health.router)
+ROUTERS = (bookings.router, catalogs.router, health.router, sales.router, analytics.router)
 
 
 def create_app(settings: Settings | None = None, clock: Clock | None = None) -> FastAPI:
@@ -29,6 +31,8 @@ def create_app(settings: Settings | None = None, clock: Clock | None = None) -> 
 
     session_factory = create_session_factory(create_database_engine(settings))
     uow_factory = lambda: SqlUnitOfWork(session_factory)  # noqa: E731
+    app.state.analytics_service = AnalyticsService(uow_factory, clock)
+    app.state.sale_service = SaleService(uow_factory, clock)
     app.state.booking_service = BookingService(uow_factory, clock)
     app.state.catalog_service = CatalogService(uow_factory)
     app.state.health_service = HealthService(uow_factory)

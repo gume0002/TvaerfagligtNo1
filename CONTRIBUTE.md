@@ -26,6 +26,28 @@ Kommandoen kører unit-, arkitektur-, kontrakt-, MySQL- og browsertests mod en s
 
 Når funktioner implementeres, skal tests kontrollere regler, beregninger, kontrakt og relevante acceptkriterier. Et nyt endpoint skal først stå i `specs/004-hotelsystem/contracts/openapi.yaml`, og det skal fjernes fra listen `NOT_IMPLEMENTED_YET` i `backend/tests/contract/test_api_uses_contract.py`. Ændrede afhængigheder skrives i `backend/requirements.in` eller `backend/requirements-test.in`, og `backend/requirements.lock` opdateres i samme PR. Converge dokumenterer bevis og status for hvert kriterium; mangler bliver til nye Tasks.
 
+## Milepæl 3: målrettet kontrol
+
+De håndberegnede US5–US9-eksempler findes i `backend/tests/unit/test_sale_rules.py`, `test_analytics_rules.py`, integrationsfilerne `test_sales_api.py`, `test_sales_service.py`, `test_analytics_api.py` og `test_analytics_snapshot.py` samt `tests/browser/test_sale_flows.py`. API-svar sammenlignes med den versionsstyrede kontrakt gennem `assert_matches_contract`. En negativ kontrol viser, at et beløb med forkert JSON-type bliver afvist af hjælperen.
+
+Kontrollér, at testene opdager bevidste regelfejl:
+
+```sh
+docker compose --profile test run --rm test python backend/testsupport/check_milestone3_mutations.py
+```
+
+Scriptet ændrer kun en midlertidig projektkopi inde i testcontaineren. Det kontrollerer medregnet afrejsedag, medregnede aflyste bookinger/salg, gæsteantal ganget på omsætning og manglende konsistent snapshot. En importfejl eller tom testkørsel tæller ikke som en fundet mutation. Det benytter kun testdatabasen.
+
+Demoens browserprøve kan gentages efter `docker compose up -d --build`:
+
+```sh
+docker compose --profile test run --rm -e PYTHONPATH=/workspace/backend test python backend/testsupport/smoke_milestone3.py
+```
+
+Prøven bruger Chromium i testcontaineren og `host.docker.internal:8080/8081` til demoen på Docker Desktop. `DEMO_URL` og `SWAGGER_URL` kan overskrives med `-e`, hvis værten er en anden. Den opretter en navngivet prøvebooking og et salg, kontrollerer analysernes ændringer og Swagger UI, og aflyser sine egne poster i `finally`. De bevares i historikken; der slettes ingen eksisterende data eller volumes. Kør den uden samtidige demoændringer, da den sammenligner totaler før/efter.
+
+Læs [Milepæl 3-kontrollen](specs/004-hotelsystem/milestone-3.md) før review. T047/T050 er kun færdige på API-siden. T001/T002, Tableau, testpersonens prøve og gruppens Converge/review er ikke godkendt af disse tests.
+
 ## Ejerskab
 
 Hvert gruppemedlem skal kunne forklare og vurdere egne bidrag, også når AI er brugt. Beskriv kun arbejde og tests, der faktisk er udført. Alle medlemmers deltagelse skal kunne underbygges af deres egne commits; tilskriv ikke andres arbejde til dig selv.

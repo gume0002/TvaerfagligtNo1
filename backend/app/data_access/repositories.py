@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.business.models import (
+    Sale,
     Booking,
     BookingInput,
     BookingSearch,
@@ -175,6 +176,12 @@ class SqlBookingRepository:
             select(BookingRow).where(*conditions).order_by(BookingRow.id).offset(search.offset).limit(search.limit)
         )
         return [_booking(row) for row in rows], total
+
+    def for_year(self, year: int) -> list[Booking]:
+        rows = self._session.scalars(select(BookingRow).where(
+            BookingRow.arrival < date(year + 1, 1, 1), BookingRow.departure > date(year, 1, 1)
+        ).order_by(BookingRow.id))
+        return [_booking(row) for row in rows]
 
     def active_stays_overlapping(
         self, room_type_id: int, arrival: date, departure: date, exclude_booking_id: int | None
@@ -357,3 +364,78 @@ class SqlHealthRepository:
 
     def ping(self) -> None:
         self._session.execute(text("SELECT 1"))
+
+
+class SqlSaleRepository:
+    def __init__(self, session: Session):
+        self._session = session
+
+    def _sale(self, row: BarSaleRow) -> Sale:
+        drink = self._session.get_one(DrinkRow, row.drink_id)
+        employee = self._session.get_one(EmployeeRow, row.employee_id)
+        return Sale(
+            id=row.id, drink_id=row.drink_id, drink_name=drink.name,
+            category=DrinkCategory(drink.category), employee_id=row.employee_id,
+            employee_name=employee.name, quantity=row.quantity, unit_price=row.unit_price,
+            sale_date=row.sale_date, status=ResourceStatus(row.status), demo_data=row.demo_data,
+            created_at=row.created_at, updated_at=row.updated_at, cancelled_at=row.cancelled_at,
+        )
+
+    def add(self, sale: NewBarSale) -> Sale:
+        row = BarSaleRow(
+            drink_id=sale.drink_id, employee_id=sale.employee_id, quantity=sale.quantity,
+            unit_price=sale.unit_price, sale_date=sale.sale_date, status=sale.status.value,
+            demo_data=sale.demo_data, created_at=sale.created_at, updated_at=sale.created_at,
+            cancelled_at=sale.cancelled_at,
+        )
+        self._session.add(row)
+        self._session.flush()
+        return self._sale(row)
+
+    def get(self, sale_id: int) -> Sale | None:
+        row = self._session.get(BarSaleRow, sale_id)
+        return self._sale(row) if row else None
+
+    def lock(self, sale_id: int) -> Sale | None:
+        row = self._session.scalars(select(BarSaleRow).where(BarSaleRow.id == sale_id)
+            .with_for_update().execution_options(populate_existing=True)).first()
+        return self._sale(row) if row else None
+
+    def update(self, sale_id: int, data, updated_at: datetime) -> Sale:
+        row = self._session.get_one(BarSaleRow, sale_id)
+        row.drink_id = data.drink_id
+        row.employee_id = data.employee_id
+        row.quantity = data.quantity
+        row.unit_price = data.unit_price
+        row.sale_date = data.sale_date
+        row.updated_at = updated_at
+        self._session.flush()
+        return self._sale(row)
+
+    def cancel(self, sale_id: int, cancelled_at: datetime) -> None:
+        row = self._session.get_one(BarSaleRow, sale_id)
+        row.status = ResourceStatus.CANCELLED.value
+        row.cancelled_at = cancelled_at
+        row.updated_at = cancelled_at
+        self._session.flush()
+
+    def search(self, search):
+        conditions = []
+        if search.sale_date_from:
+            conditions.append(BarSaleRow.sale_date >= search.sale_date_from)
+        if search.sale_date_to:
+            conditions.append(BarSaleRow.sale_date <= search.sale_date_to)
+        if search.employee_id is not None:
+            conditions.append(BarSaleRow.employee_id == search.employee_id)
+        if search.status is not StatusFilter.ALL:
+            conditions.append(BarSaleRow.status == search.status.value)
+        total = self._session.scalar(select(func.count()).select_from(BarSaleRow).where(*conditions))
+        rows = self._session.scalars(select(BarSaleRow).where(*conditions).order_by(BarSaleRow.id)
+            .offset(search.offset).limit(search.limit))
+        return [self._sale(row) for row in rows], total
+
+    def for_year(self, year: int) -> list[Sale]:
+        rows = self._session.scalars(select(BarSaleRow).where(
+            BarSaleRow.sale_date >= date(year, 1, 1), BarSaleRow.sale_date < date(year + 1, 1, 1)
+        ).order_by(BarSaleRow.id))
+        return [self._sale(row) for row in rows]

@@ -10,6 +10,7 @@ from app.data_access.repositories import (
     SqlHealthRepository,
     SqlIdempotencyRepository,
     SqlSeedRepository,
+    SqlSaleRepository,
 )
 
 MYSQL_LOCK_WAIT_TIMEOUT = 1205
@@ -36,6 +37,7 @@ class SqlUnitOfWork:
     def __enter__(self) -> "SqlUnitOfWork":
         self._session = self._session_factory()
         self.catalogs = SqlCatalogRepository(self._session)
+        self.sales = SqlSaleRepository(self._session)
         self.bookings = SqlBookingRepository(self._session)
         self.idempotency = SqlIdempotencyRepository(self._session)
         self.seed = SqlSeedRepository(self._session)
@@ -54,6 +56,12 @@ class SqlUnitOfWork:
             translated = _domain_error(exc)
             if translated is not None:
                 raise translated from exc
+
+    def begin_snapshot(self) -> None:
+        # This must be the first operation in an analysis transaction. The
+        # explicit snapshot also covers later catalog and relationship reads.
+        connection = self._session.connection(execution_options={"isolation_level": "REPEATABLE READ"})
+        connection.exec_driver_sql("START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY")
 
     def commit(self) -> None:
         self._session.commit()

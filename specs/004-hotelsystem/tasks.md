@@ -26,7 +26,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 - [x] T009 Opret fælles backend-opstart i `backend/app/main.py` med dependency wiring, readiness/health og ensartet JSON-fejlformat med request-id; API-laget må ikke indeholde SQL eller domæneregler.
 - [x] T010 Implementér laggrænser og en automatisk arkitekturkontrol i `backend/tests/`, så API kun kalder business, business kun kalder dataadgang, og SQLAlchemy/SQL ikke bruges uden for dataadgang.
 - [x] T011 Opret Alembic-konfiguration og første MySQL-skema i `backend/migrations/` og `backend/app/data_access/orm_models.py` for værelsestyper, lande, drikke, medarbejdere, bookinger, barsalg, referenceposter, seedmarkør og importlog.
-- [ ] T012 Implementér repositories og Unit of Work i `backend/app/data_access/repositories.py` og `unit_of_work.py`, herunder transaktioner, snapshots til analyser, låsning af kapacitet og idempotensnøgler. **Delvist:** Transaktioner, låsning og idempotens er færdige. Læsesnapshots til analyser følger med T041–T043.
+- [x] T012 Implementér repositories og Unit of Work i `backend/app/data_access/repositories.py` og `unit_of_work.py`, herunder transaktioner, snapshots til analyser, låsning af kapacitet og idempotensnøgler.
 - [x] T013 Implementér domæneobjekter og fælles validering i `backend/app/business/models.py`; brug Decimal for beløb og hotellets lokale dato/tid efter Plan.
 - [x] T014 Opret testprofilen `test-db` og `test` i `compose.yaml` samt samlet kommando `docker compose --profile test run --build --rm test`; tests må aldrig bruge demoens volume.
 - [x] T015 Tilføj den kontraktstyrede Swagger UI-container og API-konfiguration i `compose.yaml`; offentliggør frontend på `localhost:8080` og Swagger UI på `localhost:8081` som beskrevet i Plan.
@@ -67,59 +67,59 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Mål:** DELETE aflyser en booking, bevarer historikken og frigiver kapacitet.<br>
 **Selvstændig kontrol:** Aflys, find i historik, genbrug kapaciteten, og gentag DELETE.
 
-- [ ] T029 Implementér idempotent logisk aflysning i `backend/app/business/booking_service.py`; aflyste bookinger udelades fra aktive opslag og analyser. **Delvist:** Aflysning er færdig for aktive opslag. Udeladelse af analyser kan først kontrolleres med T041–T043.
+- [x] T029 Implementér idempotent logisk aflysning i `backend/app/business/booking_service.py`; aflyste bookinger udelades fra aktive opslag og analyser.
 - [x] T030 Implementér `DELETE /api/bookings/{id}` i `backend/app/api/bookings.py` med kontraktens 204/404-adfærd.
 - [x] T031 Tilføj bekræftet aflysning og opdatering af aktive/historiske visninger i `frontend/`.
-- [ ] T032 Dæk US4-kriterierne, inklusive frigivet kapacitet, ingen analysebidrag og gentaget sletning. **Delvist:** Frigivet kapacitet og gentaget sletning er dækket. Ingen analysebidrag kan først testes med T045.
+- [x] T032 Dæk US4-kriterierne, inklusive frigivet kapacitet, ingen analysebidrag og gentaget sletning.
 
 ## Fase 6 – US5: Registrer barsalg (P1)
 
 **Mål:** Medarbejderens salg gemmes med den faktiske enhedspris og salgsdato.<br>
 **Selvstændig kontrol:** Registrér tre cocktails til 100 DKK og kontrollér tre enheder/300 DKK; afvis fremtidig dato og ugyldige felter.
 
-- [ ] T033 Implementér salgsregler i `backend/app/business/sale_service.py`: positivt heltal, kendt drik/medarbejder, positiv pris med højst to decimaler, salgsdato højst dags dato og fastfrosset salgspris.
-- [ ] T034 Implementér `GET /api/catalogs` gennem alle tre lag for lande, værelsestyper, sæsonpriser, medarbejdere og drikke samt `POST /api/bar-sales` i `backend/app/api/catalogs.py` og `sales.py` efter OpenAPI. **Delvist:** `GET /api/catalogs` er færdig. `POST /api/bar-sales` mangler.
-- [ ] T035 Byg registreringsformular og salgsoversigt i `frontend/`; hent drikke og medarbejdere fra API'et.
-- [ ] T036 Dæk US5-kriterierne med business-, MySQL-, kontrakt- og browserkontroller.
+- [x] T033 Implementér salgsregler i `backend/app/business/sale_service.py`: positivt heltal, kendt drik/medarbejder, positiv pris med højst to decimaler, salgsdato højst dags dato og fastfrosset salgspris.
+- [x] T034 Implementér `GET /api/catalogs` gennem alle tre lag for lande, værelsestyper, sæsonpriser, medarbejdere og drikke samt `POST /api/bar-sales` i `backend/app/api/catalogs.py` og `sales.py` efter OpenAPI.
+- [x] T035 Byg registreringsformular og salgsoversigt i `frontend/`; hent drikke og medarbejdere fra API'et.
+- [x] T036 Dæk US5-kriterierne med business-, MySQL-, kontrakt- og browserkontroller.
 
 ## Fase 7 – US6: Ret eller aflys barsalg (P2)
 
 **Mål:** Fejl i salg kan rettes eller aflyses uden at forvride historik og analyser.<br>
 **Selvstændig kontrol:** Ret mængde fra tre til to, aflys salget, og kontrollér historik/idempotens.
 
-- [ ] T037 Implementér rettelse og logisk aflysning i `backend/app/business/sale_service.py`; aflyste salg kan hverken rettes eller genaktiveres.
-- [ ] T038 Implementér `GET/PUT/DELETE /api/bar-sales/{id}` samt liste/historik i `backend/app/api/sales.py` efter kontrakten.
-- [ ] T039 Tilføj redigerings-, aflysnings- og historikforløb i `frontend/`.
-- [ ] T040 Dæk US6-kriterierne, herunder at ugyldig rettelse bevarer de oprindelige værdier.
+- [x] T037 Implementér rettelse og logisk aflysning i `backend/app/business/sale_service.py`; aflyste salg kan hverken rettes eller genaktiveres.
+- [x] T038 Implementér `GET/PUT/DELETE /api/bar-sales/{id}` samt liste/historik i `backend/app/api/sales.py` efter kontrakten.
+- [x] T039 Tilføj redigerings-, aflysnings- og historikforløb i `frontend/`.
+- [x] T040 Dæk US6-kriterierne, herunder at ugyldig rettelse bevarer de oprindelige værdier.
 
 ## Fase 8 – US7: Hotellets omsætning og gæstelande (P1)
 
 **Mål:** API'et leverer aktuelle, håndberegnelige hotelresultater; Tableau viser krævede fordelinger og ranglister.<br>
 **Selvstændig kontrol:** Kontrollér årsskifte, sæsonskifte, gæsteophold, filtre, aflysninger og delte førstepladser mod håndberegnede resultater.
 
-- [ ] T041 Implementér hotelomsætning i `backend/app/business/analytics_service.py` pr. overnatningsnat, kalenderår, sæson, værelsestype og land; adskil passeret, forventet og samlet omsætning.
-- [ ] T042 Implementér gæsteophold pr. land, omsætning pr. type/sæson/land samt filtrerede ranglister med delte førstepladser i businesslaget.
-- [ ] T043 Implementér `GET /api/analytics/hotel` i `backend/app/api/analytics.py` efter OpenAPI; alle grupper og summer skal komme fra samme datagrundlag og filtre.
+- [x] T041 Implementér hotelomsætning i `backend/app/business/analytics_service.py` pr. overnatningsnat, kalenderår, sæson, værelsestype og land; adskil passeret, forventet og samlet omsætning.
+- [x] T042 Implementér gæsteophold pr. land, omsætning pr. type/sæson/land samt filtrerede ranglister med delte førstepladser i businesslaget.
+- [x] T043 Implementér `GET /api/analytics/hotel` i `backend/app/api/analytics.py` efter OpenAPI; alle grupper og summer skal komme fra samme datagrundlag og filtre.
 - [ ] T044 Byg Tableau hotelvisninger for gæstelande, omsætning pr. type og sæson, lande, topindtjening og årstotal i `tableau/`; layout kan udvikles mod fixture, men forbind først til det godkendte API-feed efter T052–T053. Vis filtre, demo-markering og snapshot-tidspunkt.
-- [ ] T045 Dæk US7 med håndberegnelige tests for årsskifte, sæsoner, skuddag, land/type/år-filtre, ranglistelighed og udeladelse af aflyste bookinger.
+- [x] T045 Dæk US7 med håndberegnelige tests for årsskifte, sæsoner, skuddag, land/type/år-filtre, ranglistelighed og udeladelse af aflyste bookinger.
 
 ## Fase 9 – US8: Belægning og ekstra nøgletal (P1)
 
 **Mål:** Hotellet viser belægning og ADR med dokumenterede nævnere samt manglende tilfredshedsgrundlag.<br>
 **Selvstændig kontrol:** To værelser over to nætter med én booking på begge nætter giver 50 % belægning og 1.000 DKK ADR.
 
-- [ ] T046 Beregn tilgængelige/bookede værelsesnætter, belægningsgrad og ADR i `backend/app/business/analytics_service.py`, opdelt på passeret/forventet/samlet og med landefilterets nævnerregel.
-- [ ] T047 Tilføj nøgletal, nulgrundlag og `no_data`-status for tilfredshed til `GET /api/analytics/hotel` og Tableauvisningen; ingen opdigtet tilfredshedsscore. Tableauvisningen forbindes til API-feedet efter T052–T053.
-- [ ] T048 Dæk US8 med tests for nulgrundlag, skudår, landefilter, kapacitetsnævner og historik/prognose.
+- [x] T046 Beregn tilgængelige/bookede værelsesnætter, belægningsgrad og ADR i `backend/app/business/analytics_service.py`, opdelt på passeret/forventet/samlet og med landefilterets nævnerregel.
+- [ ] T047 Tilføj nøgletal, nulgrundlag og `no_data`-status for tilfredshed til `GET /api/analytics/hotel` og Tableauvisningen; ingen opdigtet tilfredshedsscore. Tableauvisningen forbindes til API-feedet efter T052–T053. **Delvist:** API-delen er implementeret og kontraktkontrolleret; Tableau er uden for Milepæl 3.
+- [x] T048 Dæk US8 med tests for nulgrundlag, skudår, landefilter, kapacitetsnævner og historik/prognose.
 
 ## Fase 10 – US9: Helene Christines baranalyser (P1)
 
 **Mål:** Tableau viser årets salg, omsætning pr. drik og cocktail/kaffe-fordeling efter antal og omsætning.<br>
 **Selvstændig kontrol:** Tre cocktails til 100 DKK og to kaffer til 50 DKK giver 400 DKK, fem enheder, antalandele 60/40 % og omsætningsandele 75/25 %.
 
-- [ ] T049 Implementér barens år/medarbejderfiltre, totaler, omsætning pr. navngiven drik og begge kategoriandele i `backend/app/business/analytics_service.py`.
-- [ ] T050 Implementér `GET /api/analytics/bar` i `backend/app/api/analytics.py` og Tableau barvisninger med Helene Christine som standard, nulgrundlag, demo-markering og snapshot-tidspunkt. Layout kan udvikles mod fixture; feedintegration afhænger af T052–T053.
-- [ ] T051 Dæk US9 med håndberegnede tests for kategoriandele, medarbejder/år, aflyste salg, nulgrundlag og katalogets 20 cocktails/10 kaffetyper.
+- [x] T049 Implementér barens år/medarbejderfiltre, totaler, omsætning pr. navngiven drik og begge kategoriandele i `backend/app/business/analytics_service.py`.
+- [ ] T050 Implementér `GET /api/analytics/bar` i `backend/app/api/analytics.py` og Tableau barvisninger med Helene Christine som standard, nulgrundlag, demo-markering og snapshot-tidspunkt. Layout kan udvikles mod fixture; feedintegration afhænger af T052–T053. **Delvist:** API-delen er implementeret og kontraktkontrolleret; Tableau er uden for Milepæl 3.
+- [x] T051 Dæk US9 med håndberegnede tests for kategoriandele, medarbejder/år, aflyste salg, nulgrundlag og katalogets 20 cocktails/10 kaffetyper.
 
 ## Fase 11 – US10: Aktuelle data i Tableau (P1)
 
