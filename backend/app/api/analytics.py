@@ -15,3 +15,9 @@ def hotel(request: Request, year: Year = None, season: Season | None = None,
           country_id: Annotated[int | None, Query(alias='countryId', ge=1)] = None,
           room_type_id: Annotated[int | None, Query(alias='roomTypeId', ge=1)] = None):
     return analytics_json(request.app.state.analytics_service.hotel(year, season, country_id, room_type_id))
+
+
+@router.get('/api/analytics/bar')
+def bar(request: Request, year: Year = None,
+        employee_id: Annotated[int | None, Query(alias='employeeId', ge=1)] = None):
+    return analytics_json(request.app.state.analytics_service.bar(year, employee_id))

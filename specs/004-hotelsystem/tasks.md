@@ -118,7 +118,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Selvstændig kontrol:** Tre cocktails til 100 DKK og to kaffer til 50 DKK giver 400 DKK, fem enheder, antalandele 60/40 % og omsætningsandele 75/25 %.
 
 - [x] T049 Implementér barens år/medarbejderfiltre, totaler, omsætning pr. navngiven drik og begge kategoriandele i `backend/app/business/analytics_service.py`.
-- [ ] T050 Implementér `GET /api/analytics/bar` i `backend/app/api/analytics.py` og Tableau barvisninger med Helene Christine som standard, nulgrundlag, demo-markering og snapshot-tidspunkt. Layout kan udvikles mod fixture; feedintegration afhænger af T052–T053.
+- [ ] T050 Implementér `GET /api/analytics/bar` i `backend/app/api/analytics.py` og Tableau barvisninger med Helene Christine som standard, nulgrundlag, demo-markering og snapshot-tidspunkt. Layout kan udvikles mod fixture; feedintegration afhænger af T052–T053. **Delvist:** API-delen er implementeret og kontraktkontrolleret; Tableau er uden for Milepæl 3.
 - [ ] T051 Dæk US9 med håndberegnede tests for kategoriandele, medarbejder/år, aflyste salg, nulgrundlag og katalogets 20 cocktails/10 kaffetyper.
 
 ## Fase 11 – US10: Aktuelle data i Tableau (P1)

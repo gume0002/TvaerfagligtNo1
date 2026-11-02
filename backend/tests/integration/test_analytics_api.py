@@ -135,3 +135,81 @@ def test_invalid_hotel_filters(client, params):
     response = client.get(HOTEL, params=params)
     assert_matches_contract(response, 'GET', HOTEL)
     assert response.status_code == 400
+
+
+def bar(client, **params):
+    response = client.get(BAR, params=params)
+    assert_matches_contract(response, 'GET', BAR)
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+def create_sale(client, **changes):
+    values = dict(drinkId=1, employeeId=1, quantity=3, unitPrice='100.00', saleDate='2026-10-29') | changes
+    response = client.post('/api/bar-sales', json=values, headers={'Idempotency-Key': str(uuid4())})
+    assert_matches_contract(response, 'POST', '/api/bar-sales')
+    assert response.status_code == 201, response.text
+    return response.json()
+
+
+@pytest.fixture()
+def extra_bar_catalog(engine, catalog):
+    from decimal import Decimal
+    from sqlalchemy.orm import Session
+    from app.data_access.orm_models import DrinkRow, EmployeeRow
+    with Session(engine, expire_on_commit=False) as session:
+        coffee = DrinkRow(name='Coffee', category='coffee', suggested_unit_price=Decimal('50.00'))
+        other = EmployeeRow(code='other', name='Demo employee')
+        session.add_all([coffee, other]); session.commit()
+        return coffee.id, other.id
+
+
+def test_us9_1_bar_amounts_categories_and_drinks(client, extra_bar_catalog):
+    coffee, _ = extra_bar_catalog
+    create_sale(client)
+    create_sale(client, drinkId=coffee, quantity=2, unitPrice='50.00')
+    data = bar(client)
+    assert data['filters'] == {'year': 2026, 'employeeId': 1, 'employeeName': 'Helene Christine'}
+    assert data['totals'] == {'quantity': 5, 'revenue': '400.00'}
+    assert data['byDrink'] == [
+        {'drinkId': 1, 'drinkName': 'Negroni', 'category': 'cocktail', 'quantity': 3, 'revenue': '300.00'},
+        {'drinkId': coffee, 'drinkName': 'Coffee', 'category': 'coffee', 'quantity': 2, 'revenue': '100.00'}]
+    assert data['byCategory'] == [
+        {'category': 'cocktail', 'quantity': 3, 'revenue': '300.00', 'quantitySharePercent': '60.00', 'revenueSharePercent': '75.00', 'shareStatus': 'ok'},
+        {'category': 'coffee', 'quantity': 2, 'revenue': '100.00', 'quantitySharePercent': '40.00', 'revenueSharePercent': '25.00', 'shareStatus': 'ok'}]
+
+
+def test_us9_2_year_employee_and_us6_2_cancelled_excluded(client, extra_bar_catalog):
+    _, other = extra_bar_catalog
+    create_sale(client, saleDate='2025-10-01', quantity=7)
+    create_sale(client, employeeId=other, quantity=9)
+    sale = create_sale(client)
+    assert bar(client)['totals'] == {'quantity': 3, 'revenue': '300.00'}
+    assert bar(client, year=2025)['totals'] == {'quantity': 7, 'revenue': '700.00'}
+    assert bar(client, employeeId=other)['totals'] == {'quantity': 9, 'revenue': '900.00'}
+    response = client.put(f"/api/bar-sales/{sale['id']}", json={'drinkId': 1, 'employeeId': 1, 'quantity': 2, 'unitPrice': '100.00', 'saleDate': '2026-10-29'})
+    assert_matches_contract(response, 'PUT', '/api/bar-sales/{id}')
+    assert response.status_code == 200
+    assert bar(client)['totals'] == {'quantity': 2, 'revenue': '200.00'}
+    response = client.delete(f"/api/bar-sales/{sale['id']}")
+    assert_matches_contract(response, 'DELETE', '/api/bar-sales/{id}')
+    assert response.status_code == 204
+    data = bar(client)
+    assert data['totals'] == {'quantity': 0, 'revenue': '0.00'}
+    assert all(item['revenue'] == '0.00' and item['quantity'] == 0 for item in data['byDrink'])
+    assert all(item['quantitySharePercent'] is None and item['revenueSharePercent'] is None and item['shareStatus'] == 'no_data' for item in data['byCategory'])
+
+
+def test_us9_3_no_sales(client):
+    data = bar(client)
+    assert data['totals'] == {'quantity': 0, 'revenue': '0.00'}
+    assert {item['category'] for item in data['byCategory']} == {'cocktail', 'coffee'}
+    assert data['byDrink'][0]['revenue'] == '0.00'
+    assert data['byDrink'][0]['quantity'] == 0
+
+
+@pytest.mark.parametrize('params', [{'year': 1999}, {'year': 2101}, {'year': 'wrong'}, {'employeeId': 0}, {'employeeId': 9999}])
+def test_invalid_bar_filters(client, params):
+    response = client.get(BAR, params=params)
+    assert_matches_contract(response, 'GET', BAR)
+    assert response.status_code == 400
