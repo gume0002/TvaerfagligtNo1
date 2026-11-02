@@ -32,12 +32,13 @@ ROOM_TYPES = [
     _room_type("loft-suite", "LOFT Suite", 8, 4, "3000.00", "3500.00", "4000.00"),
 ]
 
-# The 20 countries in the hotel data, mapped to ISO 3166-1 alpha-2.
+# The 20 countries in the hotel data plus Denmark, mapped to ISO 3166-1 alpha-2.
 COUNTRY_CODES = {
     "Australia": "AU",
     "Brazil": "BR",
     "Canada": "CA",
     "China": "CN",
+    "Denmark": "DK",
     "Egypt": "EG",
     "France": "FR",
     "Germany": "DE",

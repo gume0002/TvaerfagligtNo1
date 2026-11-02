@@ -114,7 +114,8 @@ class TestRawFiles:
 class TestFirstTimeData:
     def test_catalogs_are_loaded(self, seed, engine):
         seed()
-        assert count(engine, CountryRow) == 20
+        assert count(engine, CountryRow) == 21
+        assert count(engine, CountryRow, CountryRow.code == "DK") == 1
         room_types = rows(engine, RoomTypeRow)
         assert len(room_types) == 8
         assert sum(row.room_count for row in room_types) == 214

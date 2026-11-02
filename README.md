@@ -117,7 +117,7 @@ Specifikationen definerer et valgbart kalenderår, sæsoner, natbaseret bookingo
 
 De oprindelige datafiler ligger uændret i [`data/raw/`](data/raw/). Ved første start på en tom database sker dette i én transaktion:
 
-- **Kataloger:** 20 lande, 8 værelsestyper med i alt 214 værelser og 30 drikke (20 cocktails og 10 kaffetyper).
+- **Kataloger:** 21 lande (de 20 fra hoteldataene og Danmark), 8 værelsestyper med i alt 214 værelser og 30 drikke (20 cocktails og 10 kaffetyper).
 - **Referenceposter:** 1.000 hotelposter og 30 drikke gemmes uændret og adskilt fra bookinger. De indgår ikke som aktuelle data, fordi de mangler datoer.
 - **Demodata:** 24 bookinger og 12 barsalg, der er reproducerbare og mærket »Demodata«.
 - **Importrapport:** Tabellen `import_reports` viser, hvad der er udeladt. Det gælder den løse værdi `5379` i celle E1002 og CSV-filen, som ikke importeres, fordi den indeholder de samme poster som Excel-filen og 54 erstatningstegn (`�`) i navne.
@@ -129,7 +129,6 @@ Antal værelser, gæstegrænser og vejledende priser pr. type er konstruerede de
 ## Kendte begrænsninger
 
 - **Ingen adgangskontrol:** Alle, der kan nå API'et, kan læse og ændre data. Det er et bevidst valg for prototypen og den største mangel før produktion.
-- **Lande:** Kataloget indeholder kun de 20 lande fra hoteldataene. Danmark er ikke med.
 - **Én backend og én database:** Ændringer på samme værelsestype venter på hinanden, og systemet har ingen høj tilgængelighed.
 
 ## Tests og bidrag

@@ -144,5 +144,6 @@ class TestCatalogData:
         assert all(set(room_type.suggested_nightly_rates) == set(Season) for room_type in ROOM_TYPES)
 
     def test_countries_have_unique_iso_codes(self):
-        assert len(COUNTRY_CODES) == 20
-        assert len(set(COUNTRY_CODES.values())) == 20
+        assert len(COUNTRY_CODES) == 21
+        assert len(set(COUNTRY_CODES.values())) == 21
+        assert COUNTRY_CODES["Denmark"] == "DK"
