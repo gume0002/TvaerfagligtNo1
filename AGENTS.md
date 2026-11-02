@@ -10,8 +10,9 @@ Ved gennemgang af arkitektur eller acceptkriterier skal du også læse og følge
 
 - Backend skal bestå af tre tydelige lag: REST/API, forretningslogik og dataadgang.
 - API'et skal bruge REST og JSON. Beskriv det i OpenAPI, og gør Swagger UI tilgængelig i Docker.
-- Brug MySQL. Hele systemet skal kunne startes med én kommando: `docker compose up`.
+- Brug PostgreSQL. MySQL må ikke bruges efter tillægsopgaven i uge 2. Hele systemet skal kunne startes med én kommando: `docker compose up`.
 - Lav en brugerflade i browseren, hvor bookinger kan oprettes, redigeres og slettes gennem backend.
+- Browserfronten skal vise analyserne, og tallene skal komme fra API'et.
 - API'et skal kunne opdatere aktuelle data. Eksempeldata i CSV må ikke være systemets eneste datakilde.
 - Hotellets analyser skal vise gæsternes lande, omsætning fordelt på værelsestype, sæson og land, de bedst indtjenende værelsestyper og lande, årets samlede omsætning samt mindst ét ekstra nøgletal.
 - Barens analyser for Helene Christine skal vise årets samlede salg, omsætning pr. drik og fordelingen mellem cocktails og kaffe.
@@ -20,6 +21,6 @@ Ved gennemgang af arkitektur eller acceptkriterier skal du også læse og følge
 
 ## Gennemgang og bidrag
 
-Når du gennemgår løsningen, skal du følge en typisk forespørgsel fra browseren gennem API'et, forretningslogikken og dataadgangen til MySQL. Kontrollér, at API-kontrakten svarer til den faktiske løsning, og at dashboardet kan hente sine data fra API'et. Beskriv fund med filstier og konkrete eksempler.
+Når du gennemgår løsningen, skal du følge en typisk forespørgsel fra browseren gennem API'et, forretningslogikken og dataadgangen til PostgreSQL. Kontrollér, at API-kontrakten svarer til den faktiske løsning, og at dashboardet kan hente sine data fra API'et. Beskriv fund med filstier og konkrete eksempler.
 
 Beskriv kun arbejde, der faktisk er udført. Hvert gruppemedlem skal kunne stå inde for sit eget bidrag; tilskriv ikke andre personers arbejde til dig selv.
