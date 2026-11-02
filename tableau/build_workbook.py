@@ -67,6 +67,7 @@ LABELS = {
     'shareStatus': STATUS_LABELS,
 }
 TWO_DECIMALS = {'occupancyRatePercent', 'adr', 'quantitySharePercent', 'revenueSharePercent', 'revenue'}
+WHOLE_NUMBERS = {'bookedRoomNights', 'availableRoomNights', 'guestStays', 'quantity'}
 
 
 def attr(value) -> str:
@@ -120,6 +121,8 @@ def adapted_datasource(table: str, block: str) -> str:
             column = column.replace("role='measure'", "role='dimension'").replace("type='quantitative'", "type='ordinal'")
         if field in TWO_DECIMALS:
             column = column.replace(' caption=', " default-format='n#,##0.00' caption=", 1)
+        if field in WHOLE_NUMBERS:
+            column = column.replace(' caption=', " default-format='n#,##0' caption=", 1)
         labels = dict(LABELS.get(field, {}))
         keys = {key: formula_text(key) for key in labels}
         if field == 'demoData':
