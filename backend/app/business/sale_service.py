@@ -116,3 +116,16 @@ class SaleService:
                 uow.sales.cancel(sale_id, self._clock.now_utc())
                 uow.commit()
         self._with_retry(save)
+
+    def get(self, sale_id: int, include_cancelled: bool = False) -> Sale:
+        with self._uow_factory() as uow:
+            sale = uow.sales.get(sale_id)
+        if sale is None or (sale.status is ResourceStatus.CANCELLED and not include_cancelled):
+            raise ResourceNotFound('Salget blev ikke fundet.')
+        return sale
+
+    def search(self, search):
+        if search.sale_date_from and search.sale_date_to and search.sale_date_to < search.sale_date_from:
+            raise ValidationFailed('Filtrene er ugyldige.', [FieldError('saleDateTo', 'Slutdatoen må ikke ligge før startdatoen.')])
+        with self._uow_factory() as uow:
+            return uow.sales.search(search)

@@ -412,3 +412,18 @@ class SqlSaleRepository:
         row.cancelled_at = cancelled_at
         row.updated_at = cancelled_at
         self._session.flush()
+
+    def search(self, search):
+        conditions = []
+        if search.sale_date_from:
+            conditions.append(BarSaleRow.sale_date >= search.sale_date_from)
+        if search.sale_date_to:
+            conditions.append(BarSaleRow.sale_date <= search.sale_date_to)
+        if search.employee_id is not None:
+            conditions.append(BarSaleRow.employee_id == search.employee_id)
+        if search.status is not StatusFilter.ALL:
+            conditions.append(BarSaleRow.status == search.status.value)
+        total = self._session.scalar(select(func.count()).select_from(BarSaleRow).where(*conditions))
+        rows = self._session.scalars(select(BarSaleRow).where(*conditions).order_by(BarSaleRow.id)
+            .offset(search.offset).limit(search.limit))
+        return [self._sale(row) for row in rows], total

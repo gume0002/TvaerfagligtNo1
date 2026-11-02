@@ -88,7 +88,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Selvstændig kontrol:** Ret mængde fra tre til to, aflys salget, og kontrollér historik/idempotens.
 
 - [x] T037 Implementér rettelse og logisk aflysning i `backend/app/business/sale_service.py`; aflyste salg kan hverken rettes eller genaktiveres.
-- [ ] T038 Implementér `GET/PUT/DELETE /api/bar-sales/{id}` samt liste/historik i `backend/app/api/sales.py` efter kontrakten.
+- [x] T038 Implementér `GET/PUT/DELETE /api/bar-sales/{id}` samt liste/historik i `backend/app/api/sales.py` efter kontrakten.
 - [ ] T039 Tilføj redigerings-, aflysnings- og historikforløb i `frontend/`.
 - [ ] T040 Dæk US6-kriterierne, herunder at ugyldig rettelse bevarer de oprindelige værdier.
 
