@@ -39,6 +39,44 @@ def revenue_periods(selected, today):
     return {'past': past, 'upcoming': upcoming, 'all': past + upcoming}
 
 
+def ranked_revenues(groups, id_field, name_field):
+    ordered = sorted(groups.items(), key=lambda item: (-item[1]['revenue'], item[0]))
+    result = []
+    previous = None
+    rank = 0
+    for position, (id, values) in enumerate(ordered, 1):
+        if values['revenue'] != previous:
+            rank = position
+        result.append({'rank': rank, id_field: id, name_field: values['name'], 'revenue': values['revenue']})
+        previous = values['revenue']
+    return result
+
+
+def hotel_groups(selected):
+    types = {}
+    countries = {}
+    seasons = {}
+    guests = defaultdict(int)
+    for booking, nights in selected:
+        guests[booking.country_id] += booking.guest_count
+        for target, id, name in [(types, booking.room_type_id, booking.room_type_name),
+                                 (countries, booking.country_id, booking.country_name)]:
+            group = target.setdefault(id, {'name': name, 'revenue': ZERO})
+            group['revenue'] += booking.nightly_rate * len(nights)
+        for night in nights:
+            key = (booking.room_type_id, season_for_date(night))
+            group = seasons.setdefault(key, {'roomTypeId': booking.room_type_id,
+                'roomTypeName': booking.room_type_name, 'season': key[1], 'revenue': ZERO})
+            group['revenue'] += booking.nightly_rate
+    return {
+        'byRoomTypeAndSeason': [seasons[key] for key in sorted(seasons)],
+        'byCountry': [{'countryId': id, 'countryName': item['name'], 'revenue': item['revenue']} for id, item in sorted(countries.items())],
+        'guestStaysByCountry': [{'countryId': id, 'countryName': countries[id]['name'], 'guestStays': count} for id, count in sorted(guests.items())],
+        'topRoomTypes': ranked_revenues(types, 'roomTypeId', 'roomTypeName'),
+        'topCountries': ranked_revenues(countries, 'countryId', 'countryName'),
+    }
+
+
 class AnalyticsService:
     def __init__(self, uow_factory: UnitOfWorkFactory, clock: Clock):
         self._uow_factory = uow_factory
@@ -66,4 +104,5 @@ class AnalyticsService:
             'demoData': any(booking.demo_data for booking, _ in selected) or any(
                 room.demo_data for room in catalogs.room_types if room_type_id is None or room.id == room_type_id),
             'revenues': revenue_periods(selected, today),
+            **hotel_groups(selected),
         }
