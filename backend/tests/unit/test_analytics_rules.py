@@ -85,3 +85,30 @@ def test_us8_3_zero_bookings_and_zero_capacity(frozen_clock):
     assert positive['occupancyStatus'] == 'ok'
     empty = period_totals([], [], 0, frozen_clock.business_date())['all']
     assert empty['occupancyRatePercent'] is None and empty['occupancyStatus'] == 'no_data'
+
+
+def test_us9_1_bar_mix():
+    from app.business.analytics_service import bar_totals
+    from app.business.models import Drink, DrinkCategory
+    drinks = [Drink(1, 'Cocktail', DrinkCategory.COCKTAIL, Decimal('100.00')),
+              Drink(2, 'Coffee', DrinkCategory.COFFEE, Decimal('50.00'))]
+    sales = [SimpleNamespace(drink_id=1, quantity=3, total_amount=Decimal('300.00')),
+             SimpleNamespace(drink_id=2, quantity=2, total_amount=Decimal('100.00'))]
+    result = bar_totals(sales, drinks)
+    assert result['totals'] == {'quantity': 5, 'revenue': Decimal('400.00')}
+    assert result['byCategory'] == [
+        {'category': DrinkCategory.COCKTAIL, 'quantity': 3, 'revenue': Decimal('300.00'),
+         'quantitySharePercent': Decimal('60.00'), 'revenueSharePercent': Decimal('75.00'), 'shareStatus': 'ok'},
+        {'category': DrinkCategory.COFFEE, 'quantity': 2, 'revenue': Decimal('100.00'),
+         'quantitySharePercent': Decimal('40.00'), 'revenueSharePercent': Decimal('25.00'), 'shareStatus': 'ok'}]
+
+
+def test_us9_3_no_sales_keeps_catalog_and_both_categories():
+    from app.business.analytics_service import bar_totals
+    from app.business.models import Drink, DrinkCategory
+    result = bar_totals([], [Drink(1, 'Unused', DrinkCategory.COFFEE, Decimal('50.00'))])
+    assert result['totals'] == {'quantity': 0, 'revenue': Decimal('0.00')}
+    assert result['byDrink'][0]['quantity'] == 0
+    assert result['byDrink'][0]['revenue'] == Decimal('0.00')
+    assert len(result['byCategory']) == 2
+    assert all(item['quantitySharePercent'] is None and item['revenueSharePercent'] is None and item['shareStatus'] == 'no_data' for item in result['byCategory'])

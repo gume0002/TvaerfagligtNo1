@@ -3,7 +3,7 @@ from collections import defaultdict
 from datetime import date, timedelta
 from decimal import Decimal
 
-from app.business.models import Clock, FieldError, ResourceStatus, ValidationFailed
+from app.business.models import Clock, DrinkCategory, FieldError, ResourceStatus, TemporarilyUnavailable, ValidationFailed
 from app.business.ports import UnitOfWorkFactory
 from app.business.rules import season_for_date
 
@@ -134,3 +134,46 @@ class AnalyticsService:
             **hotel_groups(selected),
             'satisfaction': {'status': 'no_data'},
         }
+
+    def bar(self, year=None, employee_id=None):
+        today = self._clock.business_date()
+        year = today.year if year is None else year
+        with self._uow_factory() as uow:
+            uow.begin_snapshot()
+            generated_at = self._clock.now_utc()
+            catalogs = uow.catalogs.get_all()
+            if employee_id is None:
+                employee_id = next((item.id for item in catalogs.employees if item.code == 'helene-christine'), None)
+                if employee_id is None:
+                    raise TemporarilyUnavailable('Standardmedarbejderen mangler i kataloget.')
+            self._reference(catalogs.employees, employee_id, 'employeeId')
+            employee = next(item for item in catalogs.employees if item.id == employee_id)
+            sales = uow.sales.for_year(year)
+        selected = [sale for sale in sales if sale.status is ResourceStatus.ACTIVE and sale.employee_id == employee_id]
+        return {
+            'filters': {'year': year, 'employeeId': employee_id, 'employeeName': employee.name},
+            'generatedAt': generated_at, 'businessDate': today,
+            'demoData': any(sale.demo_data for sale in selected),
+            **bar_totals(selected, catalogs.drinks),
+        }
+
+
+def bar_totals(sales, drinks):
+    by_drink = []
+    for drink in drinks:
+        selected = [sale for sale in sales if sale.drink_id == drink.id]
+        by_drink.append({'drinkId': drink.id, 'drinkName': drink.name, 'category': drink.category,
+            'quantity': sum(sale.quantity for sale in selected),
+            'revenue': sum((sale.total_amount for sale in selected), ZERO)})
+    quantity = sum(item['quantity'] for item in by_drink)
+    revenue = sum((item['revenue'] for item in by_drink), ZERO)
+    categories = []
+    for category in DrinkCategory:
+        items = [item for item in by_drink if item['category'] == category]
+        count = sum(item['quantity'] for item in items)
+        amount = sum((item['revenue'] for item in items), ZERO)
+        categories.append({'category': category, 'quantity': count, 'revenue': amount,
+            'quantitySharePercent': ratio(count, quantity, percent=True),
+            'revenueSharePercent': ratio(amount, revenue, percent=True),
+            'shareStatus': 'ok' if quantity and revenue else 'no_data'})
+    return {'totals': {'quantity': quantity, 'revenue': revenue}, 'byDrink': by_drink, 'byCategory': categories}
