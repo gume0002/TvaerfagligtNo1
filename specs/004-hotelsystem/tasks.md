@@ -11,8 +11,8 @@ Tasks er grupperet efter brugerhistorier og kan spores til acceptkriterierne i `
 Disse opgaver skal udføres før de afhængige dele af implementeringen. Tableau-resultatet kan ændre integrationsdesignet; det må ikke antages at virke på forhånd.
 
 - [ ] T001 Gennemgå Plan med gruppen, og afklar om nødvendigt med underviseren, hvordan manglende tilfredshedsdata og Tableau som ekstern klient påvirker afleveringskravet. Registrér svar og resterende risiko i `specs/004-hotelsystem/clarify.md`; brugerens accept af manuel refresh må ikke fremstilles som underviserens accept.
-- [ ] T002 Afprøv den lokale Tableau Public-version med OData V4-fixture: registrér version, connector, metadata, Decimal/null/tidsstempelfelter, filtrering og manuel refresh; gem trin og resultat i `tableau/README.md`. Hvis OData ikke virker, afprøv og dokumentér en anden API-baseret vej eller revidér integrationsdesignet med gruppen/underviseren før dashboardintegration. CSV-import og direkte databaseadgang opfylder ikke kravet.
-- [ ] T003 Skriv den fulde OpenAPI 3.0.3-kontrakt i `specs/004-hotelsystem/contracts/openapi.yaml` ud fra Plan og den afprøvede Tableau-feedform. Beskriv schemas, eksempler, filtre, pagination, idempotens, statuskoder, JSON-fejl, analysefelter og eventuelle OData-metadata. Gennemgå kontrakten før endpointkode påbegyndes. **Delvist:** REST-delen er godkendt ved merge af PR #7. Tableaus læsefeed mangler, til T002 er afsluttet.
+- [ ] T002 Afprøv den lokale Tableau Public-version med OData V4-fixture: registrér version, connector, metadata, Decimal/null/tidsstempelfelter, filtrering og manuel refresh; gem trin og resultat i `tableau/README.md`. Hvis OData ikke virker, afprøv og dokumentér en anden API-baseret vej eller revidér integrationsdesignet med gruppen/underviseren før dashboardintegration. CSV-import og direkte databaseadgang opfylder ikke kravet. **Delvist:** Forbindelse, datatyper, pagination, filtre, oprettelse med refresh og fejlet refresh er observeret i Tableau Public 2026.3. Rettelse og aflysning med refresh mangler og dækkes af T054. Resultater står i `tableau/README.md`.
+- [x] T003 Skriv den fulde OpenAPI 3.0.3-kontrakt i `specs/004-hotelsystem/contracts/openapi.yaml` ud fra Plan og den afprøvede Tableau-feedform. Beskriv schemas, eksempler, filtre, pagination, idempotens, statuskoder, JSON-fejl, analysefelter og eventuelle OData-metadata. Gennemgå kontrakten før endpointkode påbegyndes.
 - [x] T004 Tilføj en kontraktkontrol, der validerer `openapi.yaml` og sikrer, at Swagger UI og backend bruger den versionsstyrede kontrakt frem for et konkurrerende automatisk schema.
 
 ## Fase 1 – Fælles projektfundament
@@ -100,7 +100,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 - [x] T041 Implementér hotelomsætning i `backend/app/business/analytics_service.py` pr. overnatningsnat, kalenderår, sæson, værelsestype og land; adskil passeret, forventet og samlet omsætning.
 - [x] T042 Implementér gæsteophold pr. land, omsætning pr. type/sæson/land samt filtrerede ranglister med delte førstepladser i businesslaget.
 - [x] T043 Implementér `GET /api/analytics/hotel` i `backend/app/api/analytics.py` efter OpenAPI; alle grupper og summer skal komme fra samme datagrundlag og filtre.
-- [ ] T044 Byg Tableau hotelvisninger for gæstelande, omsætning pr. type og sæson, lande, topindtjening og årstotal i `tableau/`; layout kan udvikles mod fixture, men forbind først til det godkendte API-feed efter T052–T053. Vis filtre, demo-markering og snapshot-tidspunkt.
+- [x] T044 Byg Tableau hotelvisninger for gæstelande, omsætning pr. type og sæson, lande, topindtjening og årstotal i `tableau/`; layout kan udvikles mod fixture, men forbind først til det godkendte API-feed efter T052–T053. Vis filtre, demo-markering og snapshot-tidspunkt.
 - [x] T045 Dæk US7 med håndberegnelige tests for årsskifte, sæsoner, skuddag, land/type/år-filtre, ranglistelighed og udeladelse af aflyste bookinger.
 
 ## Fase 9 – US8: Belægning og ekstra nøgletal (P1)
@@ -109,7 +109,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Selvstændig kontrol:** To værelser over to nætter med én booking på begge nætter giver 50 % belægning og 1.000 DKK ADR.
 
 - [x] T046 Beregn tilgængelige/bookede værelsesnætter, belægningsgrad og ADR i `backend/app/business/analytics_service.py`, opdelt på passeret/forventet/samlet og med landefilterets nævnerregel.
-- [ ] T047 Tilføj nøgletal, nulgrundlag og `no_data`-status for tilfredshed til `GET /api/analytics/hotel` og Tableauvisningen; ingen opdigtet tilfredshedsscore. Tableauvisningen forbindes til API-feedet efter T052–T053. **Delvist:** API-delen er implementeret og kontraktkontrolleret; Tableau er uden for Milepæl 3.
+- [x] T047 Tilføj nøgletal, nulgrundlag og `no_data`-status for tilfredshed til `GET /api/analytics/hotel` og Tableauvisningen; ingen opdigtet tilfredshedsscore. Tableauvisningen forbindes til API-feedet efter T052–T053.
 - [x] T048 Dæk US8 med tests for nulgrundlag, skudår, landefilter, kapacitetsnævner og historik/prognose.
 
 ## Fase 10 – US9: Helene Christines baranalyser (P1)
@@ -118,7 +118,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Selvstændig kontrol:** Tre cocktails til 100 DKK og to kaffer til 50 DKK giver 400 DKK, fem enheder, antalandele 60/40 % og omsætningsandele 75/25 %.
 
 - [x] T049 Implementér barens år/medarbejderfiltre, totaler, omsætning pr. navngiven drik og begge kategoriandele i `backend/app/business/analytics_service.py`.
-- [ ] T050 Implementér `GET /api/analytics/bar` i `backend/app/api/analytics.py` og Tableau barvisninger med Helene Christine som standard, nulgrundlag, demo-markering og snapshot-tidspunkt. Layout kan udvikles mod fixture; feedintegration afhænger af T052–T053. **Delvist:** API-delen er implementeret og kontraktkontrolleret; Tableau er uden for Milepæl 3.
+- [x] T050 Implementér `GET /api/analytics/bar` i `backend/app/api/analytics.py` og Tableau barvisninger med Helene Christine som standard, nulgrundlag, demo-markering og snapshot-tidspunkt. Layout kan udvikles mod fixture; feedintegration afhænger af T052–T053.
 - [x] T051 Dæk US9 med håndberegnede tests for kategoriandele, medarbejder/år, aflyste salg, nulgrundlag og katalogets 20 cocktails/10 kaffetyper.
 
 ## Fase 11 – US10: Aktuelle data i Tableau (P1)
@@ -126,8 +126,8 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 **Mål:** Manuel datakilde-refresh henter backendens opdaterede API-data; dashboardet viser kun API-resultater og tydeligt snapshot.<br>
 **Afhængighed:** T002 skal vise, at den valgte Public-forbindelse kan afprøves. Hvis ikke, skal designet revideres før denne fase fortsætter.
 
-- [ ] T052 Implementér den API-læseprojektion, som T002 og den godkendte kontrakt har vist virker i Tableau Public (OData V4 hvis afprøvningen lykkes), i `backend/app/api/`; fladgør færdigberegnede resultater fra samme analytics-service uden SQL eller egne Tableau-regler.
-- [ ] T053 Implementér feedmetadata, datatyper, filtre og paginering, så de følger `openapi.yaml` og den dokumenterede Tableau Public-afprøvning.
+- [x] T052 Implementér den API-læseprojektion, som T002 og den godkendte kontrakt har vist virker i Tableau Public (OData V4 hvis afprøvningen lykkes), i `backend/app/api/`; fladgør færdigberegnede resultater fra samme analytics-service uden SQL eller egne Tableau-regler.
+- [x] T053 Implementér feedmetadata, datatyper, filtre og paginering, så de følger `openapi.yaml` og den dokumenterede Tableau Public-afprøvning.
 - [ ] T054 Afprøv fuld indlæsning/manuel refresh i Tableau efter oprettelse, rettelse og aflysning af booking og salg; kontrollér API-paritet for samme filtre, snapshot-tidspunkt og fejl ved utilgængeligt API. Dokumentér forløb og begrænsninger i `tableau/README.md`.
 - [ ] T055 Gennemfør og registrér SC-003-kontrolarket med 1.000 bookinger og 1.000 salg: ti oprettelser, ti rettelser og ti aflysninger for hver ressourcetype, hver fulgt af Tableau-refresh og sammenligning med API. Registrér også afbrudt API; ingen femsekundersmåling kræves.
 

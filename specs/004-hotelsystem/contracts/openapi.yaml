@@ -8,8 +8,8 @@ info:
     REST/JSON API til bookinger, barsalg, kataloger og analyser. Kunderne til kontrakten er
     bookingfrontenden, Tableau og hotellets fremtidige bookingsystem.
 
-    **Ikke med endnu:** Tableaus læsefeed (T052–T053). Dets form afhænger af prøven i T002,
-    se `tableau/README.md`.
+    **Tableaus læsefeed** under `/api/odata/` er implementeret (T052–T053) og afventer gruppens godkendelse i pull requesten.
+    Formen bygger på prøven i `tableau/README.md`.
 
     **Fælles regler**
 
@@ -30,6 +30,12 @@ tags:
     description: Stamdata til formularer og filtre
   - name: Analytics
     description: Officielle nøgletal beregnet i logiklaget (US7–US9)
+  - name: Tableau feed
+    description: |
+      Skrivebeskyttet OData V4-feed til Tableau Public. Det indeholder ingen beregninger, men gentager
+      resultaterne fra analyserne pr. filterkombination. Vælg altid præcis én kombination: rækker med
+      forskellige filterværdier må aldrig lægges sammen. Beløb og procenter er JSON-tal i feedet, fordi
+      det er OData-standarden, og fordi Tableau er afprøvet med dem. REST-svarene bruger fortsat strenge.
   - name: Health
     description: Systemets driftsstatus
 paths:
@@ -538,6 +544,187 @@ paths:
                     shareStatus: ok
         "400":
           $ref: "#/components/responses/BadRequest"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/odata/:
+    get:
+      tags: [Tableau feed]
+      operationId: getODataServiceDocument
+      summary: Vis feedets tabeller
+      responses:
+        "200":
+          description: OData V4-servicedokument.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ODataServiceDocument"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/odata/$metadata:
+    get:
+      tags: [Tableau feed]
+      operationId: getODataMetadata
+      summary: Beskriv feedets felter og datatyper
+      description: OData kræver dette metadatadokument i XML. Alle data leveres som JSON.
+      responses:
+        "200":
+          description: OData V4-metadata (CSDL).
+          content:
+            application/xml:
+              schema:
+                type: string
+  /api/odata/HotelTotals:
+    get:
+      tags: [Tableau feed]
+      operationId: getODataHotelTotals
+      summary: Hotellets totaler pr. periode
+      responses:
+        "200":
+          description: Alle rækker fra ét konsistent læsesnapshot i ét svar.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["@odata.context", value]
+                properties:
+                  "@odata.context":
+                    type: string
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ODataRowHotelTotals"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/odata/HotelRoomTypeSeason:
+    get:
+      tags: [Tableau feed]
+      operationId: getODataHotelRoomTypeSeason
+      summary: Omsætning pr. værelsestype og sæson
+      responses:
+        "200":
+          description: Alle rækker fra ét konsistent læsesnapshot i ét svar.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["@odata.context", value]
+                properties:
+                  "@odata.context":
+                    type: string
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ODataRowHotelRoomTypeSeason"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/odata/HotelCountries:
+    get:
+      tags: [Tableau feed]
+      operationId: getODataHotelCountries
+      summary: Omsætning, gæsteophold og placering pr. land
+      responses:
+        "200":
+          description: Alle rækker fra ét konsistent læsesnapshot i ét svar.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["@odata.context", value]
+                properties:
+                  "@odata.context":
+                    type: string
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ODataRowHotelCountries"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/odata/HotelRoomTypeRanks:
+    get:
+      tags: [Tableau feed]
+      operationId: getODataHotelRoomTypeRanks
+      summary: Omsætning og placering pr. værelsestype
+      responses:
+        "200":
+          description: Alle rækker fra ét konsistent læsesnapshot i ét svar.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["@odata.context", value]
+                properties:
+                  "@odata.context":
+                    type: string
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ODataRowHotelRoomTypeRanks"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/odata/BarTotals:
+    get:
+      tags: [Tableau feed]
+      operationId: getODataBarTotals
+      summary: Barens totaler pr. medarbejder
+      responses:
+        "200":
+          description: Alle rækker fra ét konsistent læsesnapshot i ét svar.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["@odata.context", value]
+                properties:
+                  "@odata.context":
+                    type: string
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ODataRowBarTotals"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/odata/BarDrinks:
+    get:
+      tags: [Tableau feed]
+      operationId: getODataBarDrinks
+      summary: Omsætning pr. drik. Alle drikke i kataloget er med, også uden salg
+      responses:
+        "200":
+          description: Alle rækker fra ét konsistent læsesnapshot i ét svar.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["@odata.context", value]
+                properties:
+                  "@odata.context":
+                    type: string
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ODataRowBarDrinks"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+  /api/odata/BarCategories:
+    get:
+      tags: [Tableau feed]
+      operationId: getODataBarCategories
+      summary: Fordeling mellem cocktails og kaffe
+      responses:
+        "200":
+          description: Alle rækker fra ét konsistent læsesnapshot i ét svar.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["@odata.context", value]
+                properties:
+                  "@odata.context":
+                    type: string
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ODataRowBarCategories"
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
   /api/health:
@@ -1233,6 +1420,273 @@ components:
                 pattern: '^\d+\.\d{2}$'
               shareStatus:
                 $ref: "#/components/schemas/DataStatus"
+    ODataServiceDocument:
+      type: object
+      required: ["@odata.context", value]
+      properties:
+        "@odata.context":
+          type: string
+        value:
+          type: array
+          items:
+            type: object
+            required: [name, kind, url]
+            properties:
+              name:
+                type: string
+              kind:
+                type: string
+                enum: [EntitySet]
+              url:
+                type: string
+    ODataRowHotelTotals:
+      type: object
+      required: [id, year, seasonFilter, countryFilter, roomTypeFilter, period, revenue, bookedRoomNights, availableRoomNights, occupancyRatePercent, occupancyStatus, adr, adrStatus, occupancyScope, satisfactionStatus, businessDate, demoData, generatedAt]
+      properties:
+        id:
+          type: integer
+          description: "Rækkens nøgle i dette svar. Den er ikke stabil mellem to refresh."
+        year:
+          type: integer
+          description: "Kalenderår."
+        seasonFilter:
+          type: string
+          description: "Valgt sæson: `all`, `low`, `mid` eller `high`."
+        countryFilter:
+          type: string
+          description: "Valgt land eller `all`."
+        roomTypeFilter:
+          type: string
+          description: "Valgt værelsestype eller `all`."
+        period:
+          type: string
+          description: "`past`, `upcoming` eller `all`."
+        revenue:
+          type: number
+        bookedRoomNights:
+          type: integer
+        availableRoomNights:
+          type: integer
+        occupancyRatePercent:
+          type: number
+          nullable: true
+        occupancyStatus:
+          type: string
+          description: "`ok` eller `no_data`."
+        adr:
+          type: number
+          nullable: true
+        adrStatus:
+          type: string
+          description: "`ok` eller `no_data`."
+        occupancyScope:
+          type: string
+          description: "`hotel` eller `country_contribution`."
+        satisfactionStatus:
+          type: string
+          description: "Altid `no_data`. Der findes ingen score."
+        businessDate:
+          type: string
+          format: date
+          description: "Hotellets dags dato, som adskiller `past` og `upcoming`."
+        demoData:
+          type: boolean
+          description: "Sand, hvis rækkens grundlag indeholder demodata."
+        generatedAt:
+          type: string
+          format: date-time
+          description: "Tidspunktet for datagrundlaget i UTC."
+    ODataRowHotelRoomTypeSeason:
+      type: object
+      required: [id, year, seasonFilter, countryFilter, roomTypeFilter, roomType, season, revenue, demoData, generatedAt]
+      properties:
+        id:
+          type: integer
+          description: "Rækkens nøgle i dette svar. Den er ikke stabil mellem to refresh."
+        year:
+          type: integer
+          description: "Kalenderår."
+        seasonFilter:
+          type: string
+          description: "Valgt sæson: `all`, `low`, `mid` eller `high`."
+        countryFilter:
+          type: string
+          description: "Valgt land eller `all`."
+        roomTypeFilter:
+          type: string
+          description: "Valgt værelsestype eller `all`."
+        roomType:
+          type: string
+        season:
+          type: string
+          description: "`low`, `mid` eller `high`."
+        revenue:
+          type: number
+        demoData:
+          type: boolean
+          description: "Sand, hvis rækkens grundlag indeholder demodata."
+        generatedAt:
+          type: string
+          format: date-time
+          description: "Tidspunktet for datagrundlaget i UTC."
+    ODataRowHotelCountries:
+      type: object
+      required: [id, year, seasonFilter, countryFilter, roomTypeFilter, country, revenue, revenueRank, guestStays, demoData, generatedAt]
+      properties:
+        id:
+          type: integer
+          description: "Rækkens nøgle i dette svar. Den er ikke stabil mellem to refresh."
+        year:
+          type: integer
+          description: "Kalenderår."
+        seasonFilter:
+          type: string
+          description: "Valgt sæson: `all`, `low`, `mid` eller `high`."
+        countryFilter:
+          type: string
+          description: "Valgt land eller `all`."
+        roomTypeFilter:
+          type: string
+          description: "Valgt værelsestype eller `all`."
+        country:
+          type: string
+        revenue:
+          type: number
+        revenueRank:
+          type: integer
+          description: "Lige beløb får samme placering, fx 1, 1, 3."
+        guestStays:
+          type: integer
+          description: "Hver booking tælles én gang. Det er ikke unikke personer."
+        demoData:
+          type: boolean
+          description: "Sand, hvis rækkens grundlag indeholder demodata."
+        generatedAt:
+          type: string
+          format: date-time
+          description: "Tidspunktet for datagrundlaget i UTC."
+    ODataRowHotelRoomTypeRanks:
+      type: object
+      required: [id, year, seasonFilter, countryFilter, roomTypeFilter, roomType, revenue, revenueRank, demoData, generatedAt]
+      properties:
+        id:
+          type: integer
+          description: "Rækkens nøgle i dette svar. Den er ikke stabil mellem to refresh."
+        year:
+          type: integer
+          description: "Kalenderår."
+        seasonFilter:
+          type: string
+          description: "Valgt sæson: `all`, `low`, `mid` eller `high`."
+        countryFilter:
+          type: string
+          description: "Valgt land eller `all`."
+        roomTypeFilter:
+          type: string
+          description: "Valgt værelsestype eller `all`."
+        roomType:
+          type: string
+        revenue:
+          type: number
+        revenueRank:
+          type: integer
+          description: "Lige beløb får samme placering, fx 1, 1, 3."
+        demoData:
+          type: boolean
+          description: "Sand, hvis rækkens grundlag indeholder demodata."
+        generatedAt:
+          type: string
+          format: date-time
+          description: "Tidspunktet for datagrundlaget i UTC."
+    ODataRowBarTotals:
+      type: object
+      required: [id, year, employee, quantity, revenue, demoData, generatedAt]
+      properties:
+        id:
+          type: integer
+          description: "Rækkens nøgle i dette svar. Den er ikke stabil mellem to refresh."
+        year:
+          type: integer
+          description: "Kalenderår."
+        employee:
+          type: string
+          description: "Medarbejderens navn."
+        quantity:
+          type: integer
+        revenue:
+          type: number
+        demoData:
+          type: boolean
+          description: "Sand, hvis rækkens grundlag indeholder demodata."
+        generatedAt:
+          type: string
+          format: date-time
+          description: "Tidspunktet for datagrundlaget i UTC."
+    ODataRowBarDrinks:
+      type: object
+      required: [id, year, employee, drink, category, quantity, revenue, demoData, generatedAt]
+      properties:
+        id:
+          type: integer
+          description: "Rækkens nøgle i dette svar. Den er ikke stabil mellem to refresh."
+        year:
+          type: integer
+          description: "Kalenderår."
+        employee:
+          type: string
+          description: "Medarbejderens navn."
+        drink:
+          type: string
+        category:
+          type: string
+          description: "`cocktail` eller `coffee`."
+        quantity:
+          type: integer
+        revenue:
+          type: number
+        demoData:
+          type: boolean
+          description: "Sand, hvis rækkens grundlag indeholder demodata."
+        generatedAt:
+          type: string
+          format: date-time
+          description: "Tidspunktet for datagrundlaget i UTC."
+    ODataRowBarCategories:
+      type: object
+      required: [id, year, employee, category, quantity, revenue, quantitySharePercent, revenueSharePercent, shareStatus, demoData, generatedAt]
+      properties:
+        id:
+          type: integer
+          description: "Rækkens nøgle i dette svar. Den er ikke stabil mellem to refresh."
+        year:
+          type: integer
+          description: "Kalenderår."
+        employee:
+          type: string
+          description: "Medarbejderens navn."
+        category:
+          type: string
+          description: "`cocktail` eller `coffee`."
+        quantity:
+          type: integer
+        revenue:
+          type: number
+        quantitySharePercent:
+          type: number
+          nullable: true
+        revenueSharePercent:
+          type: number
+          nullable: true
+        shareStatus:
+          type: string
+          description: "`ok` eller `no_data`."
+        demoData:
+          type: boolean
+          description: "Sand, hvis rækkens grundlag indeholder demodata."
+        generatedAt:
+          type: string
+          format: date-time
+          description: "Tidspunktet for datagrundlaget i UTC."
     Health:
       type: object
       required: [status]

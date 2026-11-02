@@ -100,6 +100,35 @@ def hotel_groups(selected):
     }
 
 
+def hotel_result(catalogs, bookings, year, season, country_id, room_type_id, today, generated_at):
+    """The official hotel figures. REST and the Tableau feed both get them from here."""
+    selected = hotel_nights(bookings, year, season, country_id, room_type_id)
+    available_dates = [night for night in dates_between(date(year, 1, 1), date(year + 1, 1, 1))
+                       if season is None or season_for_date(night) == season]
+    room_count = sum(room.room_count for room in catalogs.room_types if room_type_id is None or room.id == room_type_id)
+    return {
+        'filters': {'year': year, 'season': season, 'countryId': country_id, 'roomTypeId': room_type_id},
+        'generatedAt': generated_at, 'businessDate': today,
+        'demoData': any(booking.demo_data for booking, _ in selected) or any(
+            room.demo_data for room in catalogs.room_types if room_type_id is None or room.id == room_type_id),
+        'totals': period_totals(selected, available_dates, room_count, today),
+        'occupancyScope': 'country_contribution' if country_id is not None else 'hotel',
+        **hotel_groups(selected),
+        'satisfaction': {'status': 'no_data'},
+    }
+
+
+def bar_result(catalogs, sales, year, employee, today, generated_at):
+    """The official bar figures. REST and the Tableau feed both get them from here."""
+    selected = [sale for sale in sales if sale.status is ResourceStatus.ACTIVE and sale.employee_id == employee.id]
+    return {
+        'filters': {'year': year, 'employeeId': employee.id, 'employeeName': employee.name},
+        'generatedAt': generated_at, 'businessDate': today,
+        'demoData': any(sale.demo_data for sale in selected),
+        **bar_totals(selected, catalogs.drinks),
+    }
+
+
 class AnalyticsService:
     def __init__(self, uow_factory: UnitOfWorkFactory, clock: Clock):
         self._uow_factory = uow_factory
@@ -120,20 +149,7 @@ class AnalyticsService:
             self._reference(catalogs.countries, country_id, 'countryId')
             self._reference(catalogs.room_types, room_type_id, 'roomTypeId')
             bookings = uow.bookings.for_year(year)
-        selected = hotel_nights(bookings, year, season, country_id, room_type_id)
-        available_dates = [night for night in dates_between(date(year, 1, 1), date(year + 1, 1, 1))
-                           if season is None or season_for_date(night) == season]
-        room_count = sum(room.room_count for room in catalogs.room_types if room_type_id is None or room.id == room_type_id)
-        return {
-            'filters': {'year': year, 'season': season, 'countryId': country_id, 'roomTypeId': room_type_id},
-            'generatedAt': generated_at, 'businessDate': today,
-            'demoData': any(booking.demo_data for booking, _ in selected) or any(
-                room.demo_data for room in catalogs.room_types if room_type_id is None or room.id == room_type_id),
-            'totals': period_totals(selected, available_dates, room_count, today),
-            'occupancyScope': 'country_contribution' if country_id is not None else 'hotel',
-            **hotel_groups(selected),
-            'satisfaction': {'status': 'no_data'},
-        }
+        return hotel_result(catalogs, bookings, year, season, country_id, room_type_id, today, generated_at)
 
     def bar(self, year=None, employee_id=None):
         today = self._clock.business_date()
@@ -149,13 +165,7 @@ class AnalyticsService:
             self._reference(catalogs.employees, employee_id, 'employeeId')
             employee = next(item for item in catalogs.employees if item.id == employee_id)
             sales = uow.sales.for_year(year)
-        selected = [sale for sale in sales if sale.status is ResourceStatus.ACTIVE and sale.employee_id == employee_id]
-        return {
-            'filters': {'year': year, 'employeeId': employee_id, 'employeeName': employee.name},
-            'generatedAt': generated_at, 'businessDate': today,
-            'demoData': any(sale.demo_data for sale in selected),
-            **bar_totals(selected, catalogs.drinks),
-        }
+        return bar_result(catalogs, sales, year, employee, today, generated_at)
 
 
 def bar_totals(sales, drinks):

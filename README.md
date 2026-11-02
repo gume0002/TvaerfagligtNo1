@@ -6,7 +6,9 @@ Dette projekt skal gøre det lettere at holde styr på hotellets reservationer o
 
 Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem API'et. Hotel- og baranalyser beregnes i backendens forretningslogik fra aktuelle MySQL-data. Milepæl 3 er implementeret; [kontrol og afgrænsning](specs/004-hotelsystem/milestone-3.md) beskriver det faktisk afprøvede.
 
-**Mangler endnu:** Tableau-dashboard, API-feed til Tableau og praktisk datakilde-refresh. Tableau-prøven er ikke afsluttet, og kontrakten mangler Tableaus læsefeed. Tilfredshed har kun `no_data`; underviserafklaringen og gruppens afsluttende review er åbne.
+**Tableau:** Dashboardet [`tableau/hotel-and-bar.twbx`](tableau/) henter sine tal fra API'ets OData-feed og er kontrolleret mod API'et for flere filtervalg. Se [vejledningen](tableau/README.md).
+
+**Mangler endnu:** Refresh-prøverne mod det rigtige system (T054, T055), underviserafklaringen om kundetilfredshed og Tableau uden for Docker, testpersonens prøve og den afsluttende Converge.
 
 ## Start systemet
 
@@ -63,7 +65,7 @@ flowchart LR
   Medarbejder[Hotelmedarbejder] --> Browser[Browser]
   Browser -->|localhost:8080| Nginx
   Browser -->|localhost:8081| Swagger
-  Tableau[Tableau Public - ekstern klient] -.->|API, form afhænger af T002| Nginx
+  Tableau[Tableau Public - ekstern klient] -->|OData V4 / JSON, manuel refresh| Nginx
   Hotel[Hotellets bookingsystem - fremtidig klient] -.->|REST / JSON| Nginx
   subgraph Docker[Docker Compose]
     Nginx[Nginx: frontend og proxy til /api/]

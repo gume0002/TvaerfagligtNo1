@@ -183,6 +183,10 @@ class SqlBookingRepository:
         ).order_by(BookingRow.id))
         return [_booking(row) for row in rows]
 
+    def active_stays(self) -> list[tuple[date, date]]:
+        query = select(BookingRow.arrival, BookingRow.departure).where(BookingRow.status == ResourceStatus.ACTIVE.value)
+        return [(row.arrival, row.departure) for row in self._session.execute(query)]
+
     def active_stays_overlapping(
         self, room_type_id: int, arrival: date, departure: date, exclude_booking_id: int | None
     ) -> list[tuple[date, date]]:
@@ -439,3 +443,7 @@ class SqlSaleRepository:
             BarSaleRow.sale_date >= date(year, 1, 1), BarSaleRow.sale_date < date(year + 1, 1, 1)
         ).order_by(BarSaleRow.id))
         return [self._sale(row) for row in rows]
+
+    def active_sale_dates(self) -> list[date]:
+        query = select(BarSaleRow.sale_date).where(BarSaleRow.status == ResourceStatus.ACTIVE.value)
+        return list(self._session.scalars(query))
