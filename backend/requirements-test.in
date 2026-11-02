@@ -1,0 +1,6 @@
+pytest
+httpx
+pyyaml
+openapi-spec-validator
+openapi-schema-validator
+playwright

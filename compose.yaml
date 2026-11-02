@@ -1,0 +1,151 @@
+x-database-env: &database-env
+  DATABASE_NAME: ${MYSQL_DATABASE:-hotel}
+  DATABASE_USER: ${MYSQL_USER:-hotel}
+  DATABASE_PASSWORD: ${MYSQL_PASSWORD:-hotel_demo_password}
+
+x-mysql-image: &mysql-image mysql:8.4@sha256:a0225d1ea6631c8bc2385dc4c2faba17bbf1834ecf369e1659a9a382bd8d5dd7
+
+x-mysql-command: &mysql-command
+  - --character-set-server=utf8mb4
+  - --collation-server=utf8mb4_0900_ai_ci
+
+x-mysql-healthcheck: &mysql-healthcheck
+  # TCP only succeeds on the real server, not on the temporary one MySQL uses
+  # while it initializes the data directory.
+  test: ["CMD-SHELL", "mysqladmin ping --host=127.0.0.1 --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --silent"]
+  interval: 3s
+  timeout: 5s
+  retries: 40
+
+x-backend-build: &backend-build
+  context: ./backend
+  target: runtime
+
+services:
+  db:
+    image: *mysql-image
+    command: *mysql-command
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-hotel}
+      MYSQL_USER: ${MYSQL_USER:-hotel}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-hotel_demo_password}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck: *mysql-healthcheck
+
+  init:
+    build: *backend-build
+    image: hotel-kong-arthur-backend
+    command: ["python", "-m", "app.init"]
+    environment:
+      <<: *database-env
+      DATABASE_HOST: db
+      RAW_DATA_DIR: /data/raw
+    volumes:
+      - ./data/raw:/data/raw:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backend:
+    build: *backend-build
+    image: hotel-kong-arthur-backend
+    environment:
+      <<: *database-env
+      DATABASE_HOST: db
+      CORS_ORIGINS: http://localhost:8081
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3)"]
+      interval: 3s
+      timeout: 5s
+      retries: 40
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  swagger:
+    image: swaggerapi/swagger-ui:v5.29.0@sha256:4fda0073bb5ab84b96ff5d94e3b602799c6935a07005e0fac9d7d3317b67ee20
+    environment:
+      SWAGGER_JSON: /contract/openapi.yaml
+    volumes:
+      - ./specs/004-hotelsystem/contracts/openapi.yaml:/contract/openapi.yaml:ro
+    ports:
+      - "127.0.0.1:8081:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  test-db:
+    profiles: [test]
+    image: *mysql-image
+    command: *mysql-command
+    environment:
+      MYSQL_DATABASE: hotel_test
+      MYSQL_USER: hotel_test
+      MYSQL_PASSWORD: hotel_test_password
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    tmpfs:
+      - /var/lib/mysql
+    healthcheck: *mysql-healthcheck
+    networks: [test-net]
+
+  test-backend:
+    profiles: [test]
+    build: *backend-build
+    image: hotel-kong-arthur-backend
+    environment:
+      DATABASE_HOST: test-db
+      DATABASE_NAME: hotel_test
+      DATABASE_USER: hotel_test
+      DATABASE_PASSWORD: hotel_test_password
+    depends_on:
+      test-db:
+        condition: service_healthy
+    networks:
+      test-net:
+        aliases: [backend]
+
+  test-frontend:
+    profiles: [test]
+    build: ./frontend
+    depends_on:
+      - test-backend
+    networks: [test-net]
+
+  test:
+    profiles: [test]
+    build:
+      context: ./backend
+      target: test
+    working_dir: /workspace
+    command: ["pytest"]
+    environment:
+      DATABASE_HOST: test-db
+      DATABASE_NAME: hotel_test
+      DATABASE_USER: hotel_test
+      DATABASE_PASSWORD: hotel_test_password
+      RAW_DATA_DIR: /workspace/data/raw
+      FRONTEND_URL: http://test-frontend
+    volumes:
+      - .:/workspace:ro
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-frontend:
+        condition: service_started
+    networks: [test-net]
+
+volumes:
+  mysql_data:
+
+networks:
+  test-net:
