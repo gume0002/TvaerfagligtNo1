@@ -72,7 +72,7 @@ Alle primærnøgler er heltals-id’er. Fremmednøgler forbinder stamdata og dri
 
 | Tabel | Centrale felter og relationer |
 |---|---|
-| `countries` | `id`, unik `code`, `name`. De 20 lande fra hoteldata får en eksplicit mapping til ISO-landekoder. |
+| `countries` | `id`, unik `code`, `name`. De 20 lande fra hoteldata og Danmark får en eksplicit mapping til ISO-landekoder. Danmark er tilføjet efter gruppens beslutning, så danske gæster kan registreres. |
 | `room_types` | `id`, unik `code`, `name`, `room_count`, `max_guests`, `demo_data`. Ingen fysisk værelsestildeling. |
 | `room_type_prices` | `room_type_id`, `season`, `suggested_nightly_rate`; unik kombination af type og sæson. Vejledende demopriser. |
 | `bookings` | `id`, `guest_name`, `country_id`, `room_type_id`, `arrival`, `departure`, `guest_count`, `nightly_rate`, `status`, `demo_data`, `created_at`, `updated_at`, `cancelled_at`. |

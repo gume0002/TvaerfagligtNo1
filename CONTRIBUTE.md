@@ -16,13 +16,15 @@ Dokumentation skrives på dansk. Kode, endpoints, JSON-felter og databasenavne s
 
 Følg [hotel-architecture-review](project-skills/hotel-architecture-review/SKILL.md) ved arkitektur- og acceptgennemgang. En booking skal følge browser → REST/JSON API → forretningslogik → dataadgang → MySQL. SQL hører til i dataadgangen; domæneregler og officielle nøgletal hører til i logiklaget. Tableau bruger API’et.
 
-Kontrollér dokumentationsændringer med `git diff --check` og kontrollér berørte links. Der findes endnu ingen kørende applikation eller samlet testopsætning. OpenAPI-dokumentet kan kontrolleres med Docker, indtil afhængighederne er låst i T006:
+Kontrollér dokumentationsændringer med `git diff --check` og kontrollér berørte links. Kør alle tests med én kommando. Den kræver kun Docker:
 
 ```sh
-docker run --rm -e PYTHONDONTWRITEBYTECODE=1 -v "$PWD:/w:ro" -w /w python:3.13-slim sh -c "pip install -q pytest pyyaml openapi-spec-validator openapi-schema-validator && pytest -p no:cacheprovider -q backend/tests/contract"
+docker compose --profile test run --build --rm test
 ```
 
-Plan vælger `docker compose --profile test run --build --rm test` som kommende fælles testkommando; den kan først køres, når Compose og runner er implementeret. Når funktioner implementeres, skal tests kontrollere regler, beregninger, kontrakt og relevante acceptkriterier. Converge dokumenterer bevis og status for hvert kriterium; mangler bliver til nye Tasks.
+Kommandoen kører unit-, arkitektur-, kontrakt-, MySQL- og browsertests mod en separat testdatabase, som ikke rører demoens data. Exitkoden er 0, når alt består. Testdatabasen og dens hjælpetjenester bliver kørende bagefter, og de stoppes med `docker compose --profile test down`.
+
+Når funktioner implementeres, skal tests kontrollere regler, beregninger, kontrakt og relevante acceptkriterier. Et nyt endpoint skal først stå i `specs/004-hotelsystem/contracts/openapi.yaml`, og det skal fjernes fra listen `NOT_IMPLEMENTED_YET` i `backend/tests/contract/test_api_uses_contract.py`. Ændrede afhængigheder skrives i `backend/requirements.in` eller `backend/requirements-test.in`, og `backend/requirements.lock` opdateres i samme PR. Converge dokumenterer bevis og status for hvert kriterium; mangler bliver til nye Tasks.
 
 ## Ejerskab
 
