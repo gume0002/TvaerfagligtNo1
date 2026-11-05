@@ -1,8 +1,10 @@
-# Kontrolark: stikprøve af SC-003 (T055)
+# Kontrolark: SC-003 (T055)
 
-**Dato:** 2. november 2026. **Værktøj:** Tableau Public 2026.3 med `tableau/hotel-and-bar.twbx`. **Program:** `tableau/sc003.py`.
+**Dato for de dokumenterede runder:** 2. november 2026. **Værktøj:** Tableau Public 2026.3 med `tableau/hotel-and-bar.twbx`. **Program:** `tableau/sc003.py`.
 
-**Resultat:** Alle 12 runder gav de forventede tal. **SC-003 er kun delvist opfyldt**, fordi gruppen har valgt 12 runder i stedet for de 60, kravet nævner. Se begrundelsen i [`clarify.md`](../specs/004-hotelsystem/clarify.md).
+**Status opdateret 5. november 2026:** Gruppen har bekræftet, at alle 60 krævede refresh-runder er gennemført. Tabellen nedenfor dokumenterer de 12 runder fra den oprindelige stikprøve; de øvrige 48 målinger er ikke gengivet enkeltvis her.
+
+**Resultat for de 12 dokumenterede runder:** Alle gav de forventede tal. Den tidligere beslutning om at nøjes med 12 runder står som historik i [`clarify.md`](../specs/004-hotelsystem/clarify.md); gruppen har efterfølgende gennemført alle 60.
 
 ## Sådan er prøven udført
 
