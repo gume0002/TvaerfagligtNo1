@@ -7,13 +7,37 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Gå til indhold</a>
   <header class="page-header">
-    <h1>Hotel Kong Arthur</h1>
-    <p>Analyser</p>
-    <nav><a href="/">Bookinger</a> · <a href="sales.html">Barsalg</a></nav>
+    <a class="brand" href="/" aria-label="Hotel Kong Arthur, bookinger"><span class="brand-mark" aria-hidden="true">KA</span><span>HOTEL KONG ARTHUR<small>DIT DAGLIGE OVERBLIK</small></span></a>
+    <nav aria-label="Hovednavigation"><a href="/">Bookinger</a><a href="sales.html">Barsalg</a><a href="analytics.html" aria-current="page">Analyser</a></nav>
+    <span class="header-note">Godt værtskab starter med overblik</span>
   </header>
 
-  <main class="viz-root">
+  <main id="main-content" class="viz-root"><section class="welcome" aria-labelledby="welcome-title">
+      <div><p class="eyebrow">HOTEL KONG ARTHUR / INDSIGT</p>
+      <h1 id="welcome-title">Overblik giver overskud.</h1><p class="welcome-text">Følg hotellets og barens udvikling. Alle dine tal samlet ét sted.</p></div>
+      <div class="welcome-art" aria-hidden="true">
+        <svg class="bird-scene" viewBox="0 0 245 160" fill="none">
+          <circle cx="188" cy="39" r="24" fill="#ead09a"/>
+          <path d="M45 120C93 115 154 125 212 113M183 118L198 101M72 118L60 107" stroke="#9caf95" stroke-width="2" stroke-linecap="round"/>
+          <path d="M196 105C193 94 202 88 209 90C209 100 204 105 196 105Z" fill="#bdcfae"/>
+          <path d="M68 115C58 116 52 108 53 101C63 101 69 106 68 115Z" fill="#cfddc7"/>
+          <g class="welcome-bird">
+            <path d="M127 103L126 119M141 103L144 120M122 119H132M140 120H150" stroke="#536e52" stroke-width="2" stroke-linecap="round"/>
+            <path d="M111 88L84 73L94 101L117 105" fill="#63836a"/>
+            <ellipse cx="131" cy="88" rx="28" ry="22" fill="#94b08c"/>
+            <path d="M114 96C121 113 145 116 155 94C142 103 128 103 114 96Z" fill="#dce7cc"/>
+            <circle cx="152" cy="71" r="17" fill="#94b08c"/>
+            <path d="M167 69L179 74L167 78Z" fill="#ceaa63"/>
+            <circle cx="157" cy="68" r="2.4" fill="#294d3c"/>
+            <circle cx="158" cy="67" r=".7" fill="white"/>
+            <path class="bird-wing" d="M143 83C129 72 113 78 115 88C116 99 131 103 143 83Z" fill="#577e60"/>
+          </g>
+        </svg>
+        <span class="art-caption">LIDT MERE RO I HVERDAGEN</span>
+      </div>
+    </section>
     <div id="analytics-error" class="message error" role="alert" hidden></div>
 
     <section class="panel" aria-labelledby="filter-title">
@@ -86,7 +110,7 @@
       </section>
     </div>
     <div id="chart-tooltip" class="chart-tooltip" role="status" hidden></div>
-  </main>
+  <footer class="page-footer"><span>Hotel Kong Arthur</span><span>Plads til det gode værtskab.</span></footer></main>
 
   <script type="module" src="js/analytics.js"></script>
 </body>

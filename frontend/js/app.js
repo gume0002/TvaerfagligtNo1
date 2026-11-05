@@ -54,6 +54,7 @@ function clearFieldErrors() {
   }
   for (const element of form.querySelectorAll("[aria-invalid]")) {
     element.removeAttribute("aria-invalid");
+    element.removeAttribute("aria-describedby");
   }
 }
 
@@ -62,6 +63,8 @@ function showFieldErrors(fieldErrors) {
     const target = form.querySelector(`[data-error-for="${CSS.escape(field)}"]`);
     if (target) {
       target.textContent = message;
+      target.id = `error-${field}`;
+      form.elements[field]?.setAttribute("aria-describedby", target.id);
     }
     form.elements[field]?.setAttribute("aria-invalid", "true");
   }
@@ -176,6 +179,7 @@ async function submitBooking(event) {
       // The backend has answered, so a new attempt is a new request.
       pendingCreate = null;
       showFieldErrors(error.fieldErrors);
+      form.querySelector('[aria-invalid="true"]')?.focus();
     }
     showError(error);
   } finally {

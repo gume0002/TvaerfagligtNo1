@@ -14,7 +14,7 @@ Dokumentation skrives på dansk. Kode, endpoints, JSON-felter og databasenavne s
 
 ## Arkitektur og verifikation
 
-Følg [hotel-architecture-review](project-skills/hotel-architecture-review/SKILL.md) ved arkitektur- og acceptgennemgang. En booking skal følge browser → REST/JSON API → forretningslogik → dataadgang → MySQL. SQL hører til i dataadgangen; domæneregler og officielle nøgletal hører til i logiklaget. Tableau bruger API’et.
+Følg [hotel-architecture-review](project-skills/hotel-architecture-review/SKILL.md) ved arkitektur- og acceptgennemgang. En booking skal følge browser → REST/JSON API → forretningslogik → dataadgang → PostgreSQL. SQL hører til i dataadgangen; domæneregler og officielle nøgletal hører til i logiklaget. Tableau bruger API’et.
 
 Kontrollér dokumentationsændringer med `git diff --check` og kontrollér berørte links. Kør alle tests med én kommando. Den kræver kun Docker:
 
@@ -47,6 +47,10 @@ docker compose --profile test run --rm -e PYTHONPATH=/workspace/backend test pyt
 Prøven bruger Chromium i testcontaineren og `host.docker.internal:8080/8081` til demoen på Docker Desktop. `DEMO_URL` og `SWAGGER_URL` kan overskrives med `-e`, hvis værten er en anden. Den opretter en navngivet prøvebooking og et salg, kontrollerer analysernes ændringer og Swagger UI, og aflyser sine egne poster i `finally`. De bevares i historikken; der slettes ingen eksisterende data eller volumes. Kør den uden samtidige demoændringer, da den sammenligner totaler før/efter.
 
 Læs [Milepæl 3-kontrollen](specs/004-hotelsystem/milestone-3.md) som en afgrænset historisk kontrol af backendændringerne. Den dækker ikke senere Tableau-arbejde eller den samlede aflevering. Aktuel status for Tableau, resterende prøver og Converge står i [README](README.md) og [tasklisten](specs/004-hotelsystem/tasks.md).
+
+## Ændringer i brugerfladen
+
+Følg [US16-forløbet](specs/006-enkel-brugerflade/spec.md) ved den visuelle forenkling. Kontrollér alle tre sider på computer og mobil, tastaturnavigation, synligt fokus, fejl uden tab af indtastninger samt reduceret bevægelse. Bevar alle API-forløb og analyseværdier. Den automatiske browserkontrol erstatter ikke testpersonens bookingprøve T063.
 
 ## Ejerskab
 
