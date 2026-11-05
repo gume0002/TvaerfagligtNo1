@@ -6,6 +6,8 @@
 
 **Statusopdatering 5. november 2026:** Gruppen har bekræftet, at alle 60 SC-003-refresh-runder og den manuelle bookingprøve er gennemført. Kontrolarket gengiver detaljer for 12 runder. Bookingprøvens varighed/resultat samt resultaterne for de øvrige 48 runder skal føres ind, før SC-001 og SC-003 kan markeres fuldt opfyldt i denne Converge.
 
+**Status før fremlæggelsen, 5. november 2026:** Systemet kører nu på PostgreSQL og viser analyserne i browseren. Se [Converge for tillægsopgaven](../005-tillaeg-uge-2/converge.md). T069–T071 er vurderet som ikke nødvendige, fordi logikken er dækket af automatiske tests, og refresh i Tableau er afprøvet i T054, T055 og T093. De konkrete valg i Tableau er ikke prøvet, så de tilhørende krav står fortsat som delvist opfyldt. Før fremlæggelsen er kun T067 og T068 tilbage her. Vurderingen er foreslået af Mathilde, og gruppen godkender den i pull requesten.
+
 Denne gennemgang er udarbejdet med AI og beskriver det, der faktisk er kørt eller observeret. Den er ikke en godkendelse fra gruppen eller underviseren.
 
 **Status betyder:**
@@ -105,7 +107,7 @@ Testfilerne ligger i `backend/tests/integration/` og `tests/browser/`.
 | SC-003 Refresh-prøver | Gruppen bekræfter 60 gennemførte runder. Kontrolarket viser detaljer for 12; resultaterne for 48 runder mangler i dokumentationen. | Delvist |
 | SC-004 Sidste enhed | 20 gentagelser mod MySQL, og testen fejler uden låsen | Opfyldt |
 | SC-005 Frisk start | Frisk kopi og genstart. Tableau er dokumenteret særskilt | Opfyldt |
-| SC-006 Ens tal | API og Tableau er sammenlignet. Frontenden viser ikke analyser, så delen kan ikke gælde dér | Delvist |
+| SC-006 Ens tal | API og Tableau er sammenlignet. Frontenden viste ikke analyser ved denne gennemgang. Det gør den nu, og API, browser og Tableau er sammenlignet for to filtervalg i [tillægsopgavens Converge](../005-tillaeg-uge-2/converge.md) | Delvist |
 | SC-007 Visninger og dokumentation | Alle visninger, `README.md`, `CONTRIBUTE.md` og Swagger UI findes, men er ikke fremvist for gruppen | Delvist |
 
 ## Opgavens krav
@@ -151,12 +153,12 @@ Testfilerne ligger i `backend/tests/integration/` og `tests/browser/`.
 | Dashboardet er ikke låst mod ændringer | Et klik på ✕ fjerner et dropdown-felt, og **Save** kan ændre filen | Dokumenteret i `tableau/README.md`. Brug **Don't Save** |
 | Parametrenes liste er fast i filen | Et nyt år eller land kan først vælges, når filen bygges igen. Filen har 2025 og 2026, mens T055-datasættet også havde bookinger i 2027 | Dokumenteret |
 | Port 8080 kan være optaget af andre programmer | `localhost:8080` kan ramme et andet program | Dokumenteret. Tableau bruger `127.0.0.1` |
-| Ingen formelle godkendelser på de fleste PR'er | Constitution kræver godkendelse fra et andet gruppemedlem | Se T067. Kun PR #12 har reviews på GitHub |
+| Ingen formelle godkendelser på de fleste PR'er | Constitution kræver godkendelse fra et andet gruppemedlem | Se T067. Kun PR #12 og #15 har reviews på GitHub |
 | Ingen adgangskontrol | Største svaghed før produktion | Bevidst valgt, se constitution |
 
 ## Nye tasks
 
-Disse er tilføjet i `tasks.md`:
+Disse er tilføjet i `tasks.md` og er vurderet som ikke nødvendige 5. november 2026, se status øverst:
 
 - **T069:** Afprøv dropdown for medarbejder, andre år, kombinerede hotelfiltre og salg uden data i Tableau (US7.4, US9.2, US9.3).
 - **T070:** Afprøv, at en afvist ændring ikke ændrer tallene efter refresh i Tableau (US10.2).
