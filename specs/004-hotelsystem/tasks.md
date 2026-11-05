@@ -152,9 +152,9 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 - [x] T066 Kontrollér `README.md`, `CONTRIBUTE.md`, OpenAPI/Swagger, arkitekturdiagram, filhenvisninger og `git diff --check`; beskriv kun faktisk udført arbejde og tilskriv ikke gruppemedlemmers bidrag til hinanden.
 - [ ] T067 Sørg for, at ændringer leveres gennem branches og pull requests med et andet gruppemedlems review, og at hvert gruppemedlems faktiske bidrag kan dokumenteres med egne commits; fordel ikke arbejde eller tilskriv bidrag uden aftale.
 - [ ] T068 Forbered og øv den 10-minutters projektpræsentation samt 10 minutters spørgsmål/feedback inden gruppens fremlæggelse fredag 6. november; brug fungerende demo og Converge-resultater som bevis, og aftal taleroller samt eventuel notetagning/feedbackrolle.
-- [ ] T069 Afprøv dropdown for medarbejder, andre år, kombinerede hotelfiltre og salg uden data i Tableau (US7.4, US9.2, US9.3).
-- [ ] T070 Afprøv i Tableau, at en afvist ændring ikke ændrer tallene efter refresh (US10.2).
-- [ ] T071 Åbn `tableau/hotel-and-bar.twbx` på et andet gruppemedlems maskine, og gennemfør refresh.
+- [ ] T069 Afprøv dropdown for medarbejder, andre år, kombinerede hotelfiltre og salg uden data i Tableau (US7.4, US9.2, US9.3). **Vurderet som ikke nødvendig 5. november 2026:** Filtre og salg uden data er dækket af automatiske tests af API og feed, og refresh i Tableau er afprøvet i T054, T055 og T093. Selve valgene er ikke prøvet i Tableau.
+- [ ] T070 Afprøv i Tableau, at en afvist ændring ikke ændrer tallene efter refresh (US10.2). **Vurderet som ikke nødvendig 5. november 2026:** En afvist ændring er testet i API'et, og refresh i Tableau er afprøvet i T054, T055 og T093. Kombinationen er ikke prøvet i Tableau.
+- [ ] T071 Åbn `tableau/hotel-and-bar.twbx` på et andet gruppemedlems maskine, og gennemfør refresh. **Vurderet som ikke nødvendig 5. november 2026:** Refresh er afprøvet i T054, T055 og T093, men ikke registreret på en anden computer. Tableau skal dog virke på den computer, der bruges til fremlæggelsen.
 
 ## Afhængigheder og leveringsrækkefølge
 

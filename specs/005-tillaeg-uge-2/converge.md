@@ -1,6 +1,6 @@
 # Converge: Tillægsopgave uge 2
 
-**Dato:** 2. november 2026. **Branch:** `tillaegsopgave-uge-2`. **Status:** Kontrollerne er kørt af Claude på Mathildes computer. Gruppen har ikke gennemgået det endnu, og intet er pushet eller merget.
+**Dato:** 2. november 2026. **Branch:** `tillaegsopgave-uge-2`. **Status:** Kontrollerne er kørt af Claude på Mathildes computer. Branchen er merget til `main` gennem PR #15, som gume0002 har godkendt, og magn7729 har kommenteret.
 
 ## Resultat
 
@@ -33,7 +33,7 @@ Prøverne med frisk kopi brugte `docker compose up --build -d`, så kommandoen k
 | Krav | Status | Bevis |
 |---|---|---|
 | US12.1 | Opfyldt | Frisk kopi af tagget, se ovenfor |
-| US12.2 | Delvist | Arbejdet ligger på en branch. Pull request er ikke oprettet |
+| US12.2 | Opfyldt | Arbejdet kom på `main` gennem den godkendte PR #15 |
 | US13.1–3 | Opfyldt | Felterne dækker alle krævede tal, og kontrakten er uændret i forhold til tagget. Kontrakttests består |
 | US14.1–4 | Opfyldt | `tests/browser/test_analytics_page.py`, herunder 400 DKK, 60/40 % og 75/25 %. En test ændrer API-svaret og viser, at siden viser API'ets tal |
 | US14.5 | Opfyldt | Browsertests af oprettet, rettet og aflyst booking samt oprettet, rettet og aflyst salg |
@@ -66,5 +66,5 @@ Prøverne med frisk kopi brugte `docker compose up --build -d`, så kommandoen k
 
 ## Tilbage
 
-- T074, T075: Gruppen godkender constitution, spec og plan i pull requesten.
-- T096: Præsentationen opdateres, når beslutningen om den er taget.
+- T074, T075: PR #15 er godkendt og merget. Krydses af, når gruppen har bekræftet, at constitution, spec og plan er gennemgået.
+- T096: Indgår i fremlæggelsen. Se T068 i [hotelsystemets tasks](../004-hotelsystem/tasks.md).
