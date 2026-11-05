@@ -26,10 +26,14 @@ Analyser hentes af `frontend/js/analytics.js` gennem `api.js` fra `/api/analytic
 
 ## Begrænsninger
 
-Dette dokument verificerer UI-ændringen og regressionspakken. Det erklærer ikke hele afleveringen færdig. Testpersonens to-minutters bookingprøve T063, gruppereview og tidligere åbne Tableau-punkter er fortsat åbne. Safari og Firefox er ikke afprøvet. Ingen andre gruppemedlemmers arbejde tilskrives denne ændring.
+Dette dokument verificerer UI-ændringen og regressionspakken. Det erklærer ikke hele afleveringen færdig. Gruppen har bekræftet bookingprøven T063; varighed og resultat mangler fortsat i den samlede Converge. Gruppereview og dokumentationsbehov for Tableau følger den seneste status på main. Safari og Firefox er ikke afprøvet. Ingen andre gruppemedlemmers arbejde tilskrives denne ændring.
 
 ## Opfølgning: fugl i velkomstfeltet
 
 Efter brugerens ønske erstatter en lokal SVG-fugl de oprindelige buer i `frontend/index.html`, `sales.html` og `analytics.html`. `bird-arrive` varer 2,4 sekunder én gang; vingen slår fem gange og falder derefter til ro. Illustrationen er fortsat dekorativ og skjult for skærmlæsere.
 
 Demoen er genbygget. Målrettet Playwright-kontrol består på alle tre sider: fuglen ender synligt på sin endelige position, animationen gentages ikke, fugl og vinge har ingen animation ved reduceret bevægelse, ingen vandret sidescroll ved 390 px og ingen JavaScript-fejl. Slutillustrationen er visuelt kontrolleret i `/private/tmp/hotel-design-evidence/bird-welcome.png`. `git diff --check` består. Den tidligere kørsel med 366 tests er ikke gentaget for denne dekorative ændring; API, business, dataadgang, PostgreSQL og OpenAPI er uændrede.
+
+## Klargøring til pull request
+
+Seneste main (`f8b5d48`) er flettet ind uden konflikter. Den indeholder gruppens statusopdateringer; disse er bevaret og er ikke en del af designbidraget. PR-differencen indeholder kun brugerfladen og dens dokumentation. Ingen kodeændringer fulgte af sammenfletningen.

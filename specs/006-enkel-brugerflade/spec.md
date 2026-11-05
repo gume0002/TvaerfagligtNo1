@@ -12,4 +12,4 @@ Som receptionist ønsker jeg en enkel og indbydende brugerflade, så jeg hurtigt
 4. Mobilvisningen ved 390 px har ingen vandret sidescroll; brede tabeller ruller i deres egen beholder. Alle felter og handlinger kan bruges med tastatur og har synligt fokus.
 5. En diskret fugl, der flyver ind og lander på en gren i velkomstfeltet, og animeret succesmarkering giver feedback. Ved reduceret bevægelse slås animationerne fra. Fejl er tydelige, og indtastninger bevares ved afvisning.
 
-En visuel forbedring erstatter ikke den åbne brugerprøve T063. Ingen nye forretningsregler, endpoints eller nøgletal indføres.
+En visuel forbedring erstatter ikke brugerprøven T063 og dokumentationen af dens resultat. Ingen nye forretningsregler, endpoints eller nøgletal indføres.
