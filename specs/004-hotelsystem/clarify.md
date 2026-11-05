@@ -121,9 +121,7 @@ Brugeren har godkendt konkurrenceplacering for både værelsestyper og lande: om
 
 ## Gruppens beslutning 2. november 2026: stikprøve af SC-003
 
-Den 2. november valgte brugeren på gruppens vegne at køre 12 runder i stedet for de 60, som SC-003 kræver: to oprettelser, to rettelser og to aflysninger af både bookinger og barsalg, hver fulgt af refresh i Tableau. Begrundelsen var, at Tableau Public ikke har en samlet refresh, så den fulde prøve kræver omkring 210 refresh-klik, og at prioriteten var Converge, testperson og præsentation. Alle ændringstyper var allerede afprøvet i T054. Beslutningen var ikke afstemt med underviseren.
-
-**Status opdateret 5. november 2026:** Gruppen har efterfølgende bekræftet, at alle 60 runder er gennemført. Kontrolarket dokumenterer fortsat kun de 12 oprindelige runder i detaljer; se `tableau/sc003-kontrolark.md` og den aktuelle SC-003-status i Converge.
+Den 2. november valgte brugeren på gruppens vegne at køre 12 runder i stedet for de 60, som SC-003 kræver: to oprettelser, to rettelser og to aflysninger af både bookinger og barsalg, hver fulgt af refresh i Tableau. Begrundelsen var, at Tableau Public ikke har en samlet refresh, så den fulde prøve kræver omkring 210 refresh-klik, og at prioriteten var Converge, testperson og præsentation. Alle ændringstyper var allerede afprøvet i T054. **SC-003 er derfor kun delvist opfyldt**, og det skal fremgå af Converge. Beslutningen er ikke afstemt med underviseren.
 
 ## Gruppens beslutning 2. november 2026: ingen afstemning med underviseren
 

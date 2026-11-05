@@ -2,7 +2,7 @@
 
 **Bemærk:** Prøverne i dette dokument er kørt mod MySQL-versionen, bortset fra afsnittet [Refresh mod PostgreSQL (T093)](#refresh-mod-postgresql-t093).
 
-**Status:** Dashboardet virker med demodata. Tallene for hotellet er sammenlignet med API'et for flere filtervalg, og tallene for baren for standardvalget. Refresh mod det rigtige system er afprøvet for bookinger og barsalg, også når API'et er nede (T054). Gruppen har bekræftet, at alle 60 runder med 1.000 bookinger og 1.000 salg i T055 er udført. [Kontrolarket](sc003-kontrolark.md) indeholder detaljer for 12 runder; de øvrige 48 målinger står ikke enkeltvis i dokumentet.
+**Status:** Dashboardet virker med demodata. Tallene for hotellet er sammenlignet med API'et for flere filtervalg, og tallene for baren for standardvalget. Refresh mod det rigtige system er afprøvet for bookinger og barsalg, også når API'et er nede (T054). En stikprøve på 12 runder med 1.000 bookinger og 1.000 salg er også udført og stemmer, se [kontrolarket](sc003-kontrolark.md) (T055).
 
 ## Åbn dashboardet
 
