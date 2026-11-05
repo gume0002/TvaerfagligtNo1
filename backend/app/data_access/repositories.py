@@ -1,4 +1,4 @@
-"""Reads and writes MySQL and returns plain domain objects."""
+"""Reads and writes PostgreSQL and returns plain domain objects."""
 
 from datetime import date, datetime
 
@@ -162,7 +162,7 @@ class SqlBookingRepository:
     def search(self, search: BookingSearch) -> tuple[list[Booking], int]:
         conditions = []
         if search.name:
-            conditions.append(BookingRow.guest_name.contains(search.name, autoescape=True))
+            conditions.append(BookingRow.guest_name.icontains(search.name, autoescape=True))
         if search.arrival_from is not None and search.departure_to is not None:
             conditions.append(BookingRow.arrival < search.departure_to)
             conditions.append(BookingRow.departure > search.arrival_from)

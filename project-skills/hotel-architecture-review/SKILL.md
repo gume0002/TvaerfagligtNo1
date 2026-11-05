@@ -20,7 +20,7 @@ Brug denne vejledning, når du gennemgår en funktion, projektets struktur eller
 
 - Backend skal have tre tydelige lag: præsentation/API, forretningslogik og dataadgang.
 - REST API'et skal bruge JSON. OpenAPI-kontrakten skal passe til løsningen, og Swagger UI skal være tilgængelig i Docker.
-- Brug MySQL, og sørg for at hele prototypen kan startes med én `docker compose up`-kommando.
+- Brug PostgreSQL, og sørg for at hele prototypen kan startes med én `docker compose up`-kommando.
 - Brugerfladen i browseren skal oprette, redigere og slette bookinger gennem API'et.
 - Aktuelle data skal kunne ændres gennem API'et. CSV-filer må ikke være eneste datakilde.
 - Dashboardet skal vise gæsternes lande, hotellets omsætning fordelt på værelsestype, sæson og land, de bedst indtjenende værelsestyper og lande, årets samlede omsætning og mindst ét ekstra nøgletal.
@@ -32,7 +32,7 @@ Brug denne vejledning, når du gennemgår en funktion, projektets struktur eller
 ## Sådan gennemføres en gennemgang
 
 1. Find ud af, hvad der er ændret, og hvilken brugerhistorie eller opgave ændringen løser.
-2. Følg en typisk anmodning gennem browseren, API-/præsentationslaget, forretningslogikken, dataadgangen og MySQL, hvor det er relevant.
+2. Følg en typisk anmodning gennem browseren, API-/præsentationslaget, forretningslogikken, dataadgangen og PostgreSQL, hvor det er relevant.
 3. Kontrollér, at hvert lag har det rigtige ansvar, og at OpenAPI beskriver API'ets faktiske opførsel.
 4. Find ud af, hvor nøgletallene beregnes, og om Tableau kan hente de aktuelle data gennem API'et.
 5. Sammenhold ændringen med acceptkriterierne og kravene til Docker, README og bidragsvejledning.

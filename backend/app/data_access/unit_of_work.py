@@ -1,6 +1,6 @@
-"""One database transaction, and translation of MySQL errors to domain errors."""
+"""One database transaction, and translation of PostgreSQL errors to domain errors."""
 
-from sqlalchemy.exc import DBAPIError, InterfaceError
+from sqlalchemy.exc import DBAPIError, InterfaceError, OperationalError
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.business.models import RetryableTransactionError, TemporarilyUnavailable
@@ -13,19 +13,21 @@ from app.data_access.repositories import (
     SqlSaleRepository,
 )
 
-MYSQL_LOCK_WAIT_TIMEOUT = 1205
-MYSQL_DEADLOCK = 1213
-# Too many connections, server shutting down, cannot connect, server gone, lost connection.
-MYSQL_UNAVAILABLE = {1040, 1053, 2002, 2003, 2006, 2013, 2055}
+# Deadlock, lock timeout and serialization failure. The transaction may be tried again.
+POSTGRES_RETRYABLE = {"40P01", "55P03", "40001"}
+# Too many connections, shutting down, starting up.
+POSTGRES_UNAVAILABLE = {"53300", "57P01", "57P02", "57P03"}
 UNAVAILABLE_MESSAGE = "Systemet er midlertidigt utilgængeligt. Prøv igen."
 
 
 def _domain_error(error: DBAPIError) -> Exception | None:
     """Translate temporary problems only. A violated constraint is a real bug and must not look temporary."""
-    code = error.orig.args[0] if error.orig is not None and error.orig.args else None
-    if code in (MYSQL_LOCK_WAIT_TIMEOUT, MYSQL_DEADLOCK):
+    code = getattr(error.orig, "sqlstate", None)
+    if code in POSTGRES_RETRYABLE:
         return RetryableTransactionError()
-    if code in MYSQL_UNAVAILABLE or error.connection_invalidated or isinstance(error, InterfaceError):
+    # Connection failures have no SQL state, or one in class 08.
+    connection_failed = isinstance(error, OperationalError) and (code is None or code.startswith("08"))
+    if code in POSTGRES_UNAVAILABLE or connection_failed or error.connection_invalidated or isinstance(error, InterfaceError):
         return TemporarilyUnavailable(UNAVAILABLE_MESSAGE)
     return None
 
@@ -50,7 +52,7 @@ class SqlUnitOfWork:
             self._session.close()
         except DBAPIError:
             # The original error says more. Without one, the connection is
-            # already gone and the transaction has been rolled back by MySQL.
+            # already gone and the transaction has been rolled back by PostgreSQL.
             pass
         if isinstance(exc, DBAPIError):
             translated = _domain_error(exc)
@@ -59,9 +61,9 @@ class SqlUnitOfWork:
 
     def begin_snapshot(self) -> None:
         # This must be the first operation in an analysis transaction. The
-        # explicit snapshot also covers later catalog and relationship reads.
+        # snapshot starts at the first read and covers later catalog and relationship reads.
         connection = self._session.connection(execution_options={"isolation_level": "REPEATABLE READ"})
-        connection.exec_driver_sql("START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY")
+        connection.exec_driver_sql("SET TRANSACTION READ ONLY")
 
     def commit(self) -> None:
         self._session.commit()

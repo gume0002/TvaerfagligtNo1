@@ -23,8 +23,8 @@ CASES = [
      'booking.nightly_rate * booking.guest_count for booking, nights in selected',
      'backend/tests/integration/test_analytics_api.py::test_us7_3_guests_and_revenue'),
     ('no_consistent_snapshot', 'backend/app/data_access/unit_of_work.py',
-     'connection.exec_driver_sql("START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY")',
-     'connection.exec_driver_sql("SET TRANSACTION ISOLATION LEVEL READ COMMITTED")',
+     'execution_options={"isolation_level": "REPEATABLE READ"}',
+     'execution_options={"isolation_level": "READ COMMITTED"}',
      'backend/tests/integration/test_analytics_snapshot.py::test_both_analyses_read_rows_from_their_catalog_snapshot'),
 ]
 

@@ -1,4 +1,4 @@
-"""US1-US4 in a real browser against frontend, Nginx, backend and MySQL."""
+"""US1-US4 in a real browser against frontend, Nginx, backend and PostgreSQL."""
 
 import os
 

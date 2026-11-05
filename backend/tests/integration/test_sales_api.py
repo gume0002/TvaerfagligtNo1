@@ -1,4 +1,4 @@
-"""T034/T036/T040: HTTP sale behaviour and contract against MySQL."""
+"""T034/T036/T040: HTTP sale behaviour and contract against PostgreSQL."""
 from uuid import uuid4
 
 import pytest

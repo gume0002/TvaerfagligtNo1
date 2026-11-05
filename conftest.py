@@ -67,11 +67,9 @@ def uow_factory(session_factory):
 
 
 def _truncate_all(engine):
+    tables = ", ".join(table.name for table in Base.metadata.sorted_tables)
     with engine.begin() as connection:
-        connection.execute(text("SET FOREIGN_KEY_CHECKS = 0"))
-        for table in Base.metadata.sorted_tables:
-            connection.execute(text(f"TRUNCATE TABLE {table.name}"))
-        connection.execute(text("SET FOREIGN_KEY_CHECKS = 1"))
+        connection.execute(text(f"TRUNCATE TABLE {tables} RESTART IDENTITY CASCADE"))
 
 
 @pytest.fixture()

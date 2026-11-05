@@ -1,4 +1,4 @@
-"""SQLAlchemy mapping of the MySQL schema. Used only inside data access."""
+"""SQLAlchemy mapping of the PostgreSQL schema. Used only inside data access."""
 
 from datetime import date, datetime
 from decimal import Decimal
@@ -6,20 +6,13 @@ from decimal import Decimal
 from sqlalchemy import JSON, CheckConstraint, Date, DateTime, ForeignKey, Index, Numeric, String, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-TABLE_OPTIONS = {
-    "mysql_engine": "InnoDB",
-    "mysql_charset": "utf8mb4",
-    "mysql_collate": "utf8mb4_0900_ai_ci",
-}
-
-
 class Base(DeclarativeBase):
     pass
 
 
 class CountryRow(Base):
     __tablename__ = "countries"
-    __table_args__ = (UniqueConstraint("code", name="uq_countries_code"), TABLE_OPTIONS)
+    __table_args__ = (UniqueConstraint("code", name="uq_countries_code"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     code: Mapped[str] = mapped_column(String(2))
@@ -32,7 +25,6 @@ class RoomTypeRow(Base):
         UniqueConstraint("code", name="uq_room_types_code"),
         CheckConstraint("room_count >= 0", name="ck_room_types_room_count"),
         CheckConstraint("max_guests BETWEEN 1 AND 4", name="ck_room_types_max_guests"),
-        TABLE_OPTIONS,
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -50,7 +42,6 @@ class RoomTypePriceRow(Base):
         UniqueConstraint("room_type_id", "season", name="uq_room_type_prices_type_season"),
         CheckConstraint("season IN ('low', 'mid', 'high')", name="ck_room_type_prices_season"),
         CheckConstraint("suggested_nightly_rate > 0", name="ck_room_type_prices_rate"),
-        TABLE_OPTIONS,
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -67,7 +58,6 @@ class BookingRow(Base):
         CheckConstraint("nightly_rate > 0", name="ck_bookings_nightly_rate"),
         CheckConstraint("status IN ('active', 'cancelled')", name="ck_bookings_status"),
         Index("ix_bookings_type_status_dates", "room_type_id", "status", "arrival", "departure"),
-        TABLE_OPTIONS,
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -93,7 +83,6 @@ class DrinkRow(Base):
         UniqueConstraint("name", name="uq_drinks_name"),
         CheckConstraint("category IN ('cocktail', 'coffee')", name="ck_drinks_category"),
         CheckConstraint("suggested_unit_price > 0", name="ck_drinks_price"),
-        TABLE_OPTIONS,
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -104,7 +93,7 @@ class DrinkRow(Base):
 
 class EmployeeRow(Base):
     __tablename__ = "employees"
-    __table_args__ = (UniqueConstraint("code", name="uq_employees_code"), TABLE_OPTIONS)
+    __table_args__ = (UniqueConstraint("code", name="uq_employees_code"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     code: Mapped[str] = mapped_column(String(50))
@@ -118,7 +107,6 @@ class BarSaleRow(Base):
         CheckConstraint("unit_price > 0", name="ck_bar_sales_unit_price"),
         CheckConstraint("status IN ('active', 'cancelled')", name="ck_bar_sales_status"),
         Index("ix_bar_sales_employee_status_date", "employee_id", "status", "sale_date"),
-        TABLE_OPTIONS,
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -138,7 +126,6 @@ class IdempotencyRequestRow(Base):
     __tablename__ = "idempotency_requests"
     __table_args__ = (
         UniqueConstraint("http_method", "path", "idempotency_key", name="uq_idempotency_requests_key"),
-        TABLE_OPTIONS,
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -153,7 +140,7 @@ class IdempotencyRequestRow(Base):
 
 class SeedRunRow(Base):
     __tablename__ = "seed_runs"
-    __table_args__ = (UniqueConstraint("version", name="uq_seed_runs_version"), TABLE_OPTIONS)
+    __table_args__ = (UniqueConstraint("version", name="uq_seed_runs_version"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     version: Mapped[str] = mapped_column(String(50))
@@ -165,7 +152,6 @@ class SeedRunRow(Base):
 
 class ImportReportRow(Base):
     __tablename__ = "import_reports"
-    __table_args__ = (TABLE_OPTIONS,)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     source: Mapped[str] = mapped_column(String(100))
@@ -180,7 +166,6 @@ class HistoricalReferenceRecordRow(Base):
     __tablename__ = "historical_reference_records"
     __table_args__ = (
         UniqueConstraint("source", "row_number", name="uq_historical_reference_records_row"),
-        TABLE_OPTIONS,
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)

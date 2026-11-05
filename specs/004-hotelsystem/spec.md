@@ -1,5 +1,7 @@
 # Specifikation: Hotelsystem
 
+> **Tillægsopgaven i uge 2 ændrer dele af dette dokument**, herunder databasen. Se [specifikationen for tillægsopgaven](../005-tillaeg-uge-2/spec.md). Tagget `v1-mysql-tableau` indeholder løsningen, som dette dokument beskriver.
+
 **Specifikationsmappe:** `specs/004-hotelsystem/`
 **Oprettet:** 26. oktober 2026 · **Krav senest opdateret:** 29. oktober 2026
 **Status:** Dette dokument er kravgrundlaget, ikke en statusrapport. Funktionerne er siden implementeret i forskelligt omfang; se [tasklisten](tasks.md) og [Milepæl 3-kontrollen](milestone-3.md). Tableau-dashboardet er bygget, men de åbne refresh-prøver, underviserafklaringer og den samlede Converge mangler stadig.

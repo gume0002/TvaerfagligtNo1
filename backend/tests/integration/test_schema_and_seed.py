@@ -59,18 +59,10 @@ class TestSchema:
             differences = compare_metadata(MigrationContext.configure(connection), Base.metadata)
         assert differences == []
 
-    def test_tables_use_innodb_and_utf8mb4(self, engine):
+    def test_database_is_postgresql_with_utf8(self, engine):
         with engine.connect() as connection:
-            for table in Base.metadata.sorted_tables:
-                row = connection.execute(
-                    text(
-                        "SELECT ENGINE, TABLE_COLLATION FROM information_schema.TABLES "
-                        "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name"
-                    ),
-                    {"name": table.name},
-                ).one()
-                assert row.ENGINE == "InnoDB"
-                assert row.TABLE_COLLATION.startswith("utf8mb4")
+            assert connection.scalar(text("SELECT version()")).startswith("PostgreSQL 17")
+            assert connection.scalar(text("SHOW server_encoding")) == "UTF8"
 
     def test_planned_constraints_exist(self, engine):
         checks = {item["name"] for item in inspect(engine).get_check_constraints("bookings")}
@@ -81,13 +73,12 @@ class TestSchema:
     def test_database_rejects_values_that_bypass_the_logic(self, catalog, engine):
         from sqlalchemy.exc import DBAPIError
 
-        # PyMySQL reports a violated CHECK constraint (MySQL error 3819) as OperationalError.
         with pytest.raises(DBAPIError, match="ck_bookings_dates"), engine.begin() as connection:
             connection.execute(
                 text(
                     "INSERT INTO bookings (guest_name, country_id, room_type_id, arrival, departure, guest_count, "
                     "nightly_rate, status, demo_data, created_at, updated_at) VALUES "
-                    "('x', :country, :room, '2026-01-02', '2026-01-01', 1, 1, 'active', 0, NOW(), NOW())"
+                    "('x', :country, :room, '2026-01-02', '2026-01-01', 1, 1, 'active', false, NOW(), NOW())"
                 ),
                 {"country": catalog.sweden, "room": catalog.tiny},
             )
@@ -202,10 +193,8 @@ class TestDemoData:
         seed(self.TODAY)
         first = demo_snapshot(engine)
         with engine.begin() as connection:
-            connection.execute(text("SET FOREIGN_KEY_CHECKS = 0"))
-            for table in Base.metadata.sorted_tables:
-                connection.execute(text(f"TRUNCATE TABLE {table.name}"))
-            connection.execute(text("SET FOREIGN_KEY_CHECKS = 1"))
+            tables = ", ".join(table.name for table in Base.metadata.sorted_tables)
+            connection.execute(text(f"TRUNCATE TABLE {tables} RESTART IDENTITY CASCADE"))
         seed(self.TODAY)
         assert demo_snapshot(engine) == first
 

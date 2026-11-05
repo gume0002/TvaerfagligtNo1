@@ -2,8 +2,7 @@ fastapi
 uvicorn
 pydantic
 sqlalchemy
-pymysql
-cryptography
+psycopg[binary]
 alembic
 openpyxl
 tzdata

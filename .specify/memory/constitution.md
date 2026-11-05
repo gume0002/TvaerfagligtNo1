@@ -1,6 +1,6 @@
 # Constitution for Hotel Kong Arthur
 
-Denne constitution fastlægger de principper og rammer, der gælder for hele projektet. Den bygger på opgaveformuleringen (`opgavebeskrivelse/E26 Tværfaglig Opgave Hotel Kong Arthur.pdf`), SWA-tillægsspørgsmålene (`opgavebeskrivelse/Tillægsspørgsmål_swa.pdf`) og gruppens beslutninger.
+Denne constitution fastlægger de principper og rammer, der gælder for hele projektet. Den bygger på opgaveformuleringen (`opgavebeskrivelse/E26 Tværfaglig Opgave Hotel Kong Arthur.pdf`), SWA-tillægsspørgsmålene (`opgavebeskrivelse/Tillægsspørgsmål_swa.pdf`), tillægsopgaven (`opgavebeskrivelse/Tillægsopgave_uge_2.pdf`) og gruppens beslutninger.
 
 Constitution indeholder kun principper og faste rammer. Konkrete domænedefinitioner afgøres i Specify og Clarify, fx hvilket niveau af "live" vi vælger, hvornår sæsonerne er, og hvordan belægningsgraden beregnes. Teknologivalg som programmeringssprog og framework afgøres i Plan.
 
@@ -20,7 +20,7 @@ Backenden består af tre lag med hvert sit ansvar:
 
 1. **Præsentationslag (REST API):** Modtager HTTP-forespørgsler, oversætter mellem JSON og domæneobjekter og returnerer statuskoder. Indeholder ingen forretningsregler og ingen databasekode.
 2. **Forretningslogik:** Indeholder forretningsregler, validering og beregning af nøgletal.
-3. **Dataadgang:** Læser og skriver data i MySQL. SQL og databasespecifik kode findes kun her.
+3. **Dataadgang:** Læser og skriver data i PostgreSQL. SQL og databasespecifik kode findes kun her.
 
 Hvert lag må kun kalde laget lige under sig. Der er ingen genveje, heller ikke ved simple opslag. Hvis databasen skiftes ud, skal kun dataadgangslaget ændres. Hvis frontenden skiftes ud med hotellets eget bookingsystem, skal backenden ikke ændres.
 
@@ -39,9 +39,9 @@ De officielle nøgletal beregnes i forretningslogikken og leveres via API'et. De
 - Swagger UI kører i Docker og viser den gældende kontrakt.
 - Hvis koden og kontrakten ikke stemmer overens, er det en fejl, der skal rettes.
 
-### V. MySQL er den eneste sandhed
+### V. PostgreSQL er den eneste sandhed
 
-- Alle driftsdata, både for hotellet og baren, ligger i MySQL.
+- Alle driftsdata, både for hotellet og baren, ligger i PostgreSQL.
 - CSV/Excel-filerne bruges kun som startdata, der indlæses automatisk, når databasen er tom. De genindlæses ikke senere.
 - Alle ændringer sker via REST API'et. Ingen klient må skrive direkte til databasen.
 - Data bevares på tværs af genstarter via en navngivet Docker-volume. Data nulstilles kun bevidst, fx med `docker compose down -v`.
@@ -61,7 +61,7 @@ De officielle nøgletal beregnes i forretningslogikken og leveres via API'et. De
 
 - Hele systemet starter fra en frisk `git clone` med kun `docker compose up`.
 - Der må ikke kræves andre lokale installationer end Docker og ingen manuelle trin.
-- Startdata indlæses automatisk, og backenden venter på, at MySQL er klar.
+- Startdata indlæses automatisk, og backenden venter på, at PostgreSQL er klar.
 
 ## Systemets grænser
 
@@ -69,14 +69,14 @@ De officielle nøgletal beregnes i forretningslogikken og leveres via API'et. De
 
 Følgende tjenester kører i Docker og starter med `docker compose up`:
 
-- MySQL
+- PostgreSQL
 - Backend (REST API med tre lag)
 - Swagger UI
 - Bookingfrontend i browseren, hvor bookinger kan oprettes, redigeres og slettes
 
 ### Eksterne klienter
 
-- **Tableau** kører uden for Docker. Tableau er en ekstern klient, der kun henter data via REST API'et og aldrig direkte fra MySQL.
+- **Tableau** kører uden for Docker. Tableau er en ekstern klient, der kun henter data via REST API'et og aldrig direkte fra databasen.
 - **Hotellets eget bookingsystem** skal på sigt kunne skrive til API'et med POST, PUT og DELETE på samme måde som bookingfrontenden.
 
 ### Erkendte begrænsninger
@@ -91,12 +91,13 @@ Følgende krav kommer fra opgaveformuleringen og er ikke til forhandling.
 
 - Backend med 3-lagsarkitektur og REST API med JSON.
 - API-kontrakten leveres som OpenAPI-specifikation og vises i Swagger UI.
-- Databasen er MySQL.
+- Databasen må ikke være MySQL (tillægsopgaven, uge 2). Gruppen har valgt PostgreSQL.
 - Alt kører i Docker og startes med Docker Compose.
 - Programmeringssproget er frit og vælges i Plan.
 
 ### Funktionalitet
 
+- API'et skal stille de samme beregninger til rådighed som Tableau, og frontenden skal vise dem fra API'et (tillægsopgaven, uge 2).
 - Systemet skal løbende kunne opdatere data og vise aktuelle data, ikke kun historiske CSV-data.
 - En frontend i browseren skal kunne oprette, redigere og slette bookinger via backenden.
 
@@ -164,4 +165,4 @@ Beslutninger dokumenteres i spec, plan og pull requests. Der føres ingen særsk
 - Ændringer i constitution laves som en almindelig pull request med én godkendelse. Pull requesten skal begrunde ændringen og tælle versionsnummeret op.
 - I Converge sammenholdes løsningen med constitution, spec, plan, tasks og acceptkriterier.
 
-**Version:** 1.0.0 · **Status:** PR #2 er merged, men GitHub viser ingen formel reviewgodkendelse; gruppens godkendelse er derfor ikke dokumenteret · **Senest ændret:** 26. oktober 2026
+**Version:** 1.1.0 (afventer godkendelse i PR, begrundet i tillægsopgaven) · **Status:** PR #2 er merged, men GitHub viser ingen formel reviewgodkendelse; gruppens godkendelse er derfor ikke dokumenteret · **Senest ændret:** 26. oktober 2026

@@ -1,18 +1,14 @@
 x-database-env: &database-env
-  DATABASE_NAME: ${MYSQL_DATABASE:-hotel}
-  DATABASE_USER: ${MYSQL_USER:-hotel}
-  DATABASE_PASSWORD: ${MYSQL_PASSWORD:-hotel_demo_password}
+  DATABASE_NAME: ${POSTGRES_DB:-hotel}
+  DATABASE_USER: ${POSTGRES_USER:-hotel}
+  DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-hotel_demo_password}
 
-x-mysql-image: &mysql-image mysql:8.4@sha256:a0225d1ea6631c8bc2385dc4c2faba17bbf1834ecf369e1659a9a382bd8d5dd7
+x-postgres-image: &postgres-image postgres:17@sha256:3b0cda93be7c8dba2ed484d19393d93845dc3dafb88973e248ba8e6d99d784e1
 
-x-mysql-command: &mysql-command
-  - --character-set-server=utf8mb4
-  - --collation-server=utf8mb4_0900_ai_ci
-
-x-mysql-healthcheck: &mysql-healthcheck
-  # TCP only succeeds on the real server, not on the temporary one MySQL uses
-  # while it initializes the data directory.
-  test: ["CMD-SHELL", "mysqladmin ping --host=127.0.0.1 --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --silent"]
+x-postgres-healthcheck: &postgres-healthcheck
+  # TCP only succeeds on the real server, not on the temporary one PostgreSQL
+  # uses while it initializes the data directory.
+  test: ["CMD-SHELL", "pg_isready --host=127.0.0.1 --username=$$POSTGRES_USER --dbname=$$POSTGRES_DB"]
   interval: 3s
   timeout: 5s
   retries: 40
@@ -23,16 +19,14 @@ x-backend-build: &backend-build
 
 services:
   db:
-    image: *mysql-image
-    command: *mysql-command
+    image: *postgres-image
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-hotel}
-      MYSQL_USER: ${MYSQL_USER:-hotel}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-hotel_demo_password}
-      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      POSTGRES_DB: ${POSTGRES_DB:-hotel}
+      POSTGRES_USER: ${POSTGRES_USER:-hotel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hotel_demo_password}
     volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck: *mysql-healthcheck
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck: *postgres-healthcheck
 
   init:
     build: *backend-build
@@ -86,16 +80,14 @@ services:
 
   test-db:
     profiles: [test]
-    image: *mysql-image
-    command: *mysql-command
+    image: *postgres-image
     environment:
-      MYSQL_DATABASE: hotel_test
-      MYSQL_USER: hotel_test
-      MYSQL_PASSWORD: hotel_test_password
-      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      POSTGRES_DB: hotel_test
+      POSTGRES_USER: hotel_test
+      POSTGRES_PASSWORD: hotel_test_password
     tmpfs:
-      - /var/lib/mysql
-    healthcheck: *mysql-healthcheck
+      - /var/lib/postgresql/data
+    healthcheck: *postgres-healthcheck
     networks: [test-net]
 
   test-backend:
@@ -145,7 +137,7 @@ services:
     networks: [test-net]
 
 volumes:
-  mysql_data:
+  postgres_data:
 
 networks:
   test-net:

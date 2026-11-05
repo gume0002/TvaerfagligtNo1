@@ -11,8 +11,8 @@ APP_DIR = Path(__file__).resolve().parents[2] / "app"
 # Layer rules. data_access may use the domain objects, because the business
 # layer's interface returns those, but it never calls a service.
 FORBIDDEN_IMPORTS = {
-    "api": ("app.data_access", "sqlalchemy", "pymysql", "alembic", "openpyxl"),
-    "business": ("app.api", "app.data_access", "app.config", "app.main", "sqlalchemy", "pymysql", "alembic", "fastapi", "starlette", "pydantic", "openpyxl"),
+    "api": ("app.data_access", "sqlalchemy", "psycopg", "alembic", "openpyxl"),
+    "business": ("app.api", "app.data_access", "app.config", "app.main", "sqlalchemy", "psycopg", "alembic", "fastapi", "starlette", "pydantic", "openpyxl"),
     "data_access": ("app.api", "app.main", "fastapi", "starlette"),
 }
 ALLOWED_FROM_BUSINESS_IN_DATA_ACCESS = {"app.business.models"}

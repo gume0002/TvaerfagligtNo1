@@ -87,3 +87,21 @@ export function updateSale(id, payload) {
 export function cancelSale(id) {
   return request(`/api/bar-sales/${id}`, {method: 'DELETE'});
 }
+
+function queryString(filters) {
+  const query = new URLSearchParams();
+  for (const [name, value] of Object.entries(filters)) {
+    if (value !== "" && value !== null && value !== undefined) {
+      query.set(name, value);
+    }
+  }
+  return query;
+}
+
+export function getHotelAnalytics(filters) {
+  return request(`/api/analytics/hotel?${queryString(filters)}`);
+}
+
+export function getBarAnalytics(filters) {
+  return request(`/api/analytics/bar?${queryString(filters)}`);
+}

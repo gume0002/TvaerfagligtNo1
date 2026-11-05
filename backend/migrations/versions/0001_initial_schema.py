@@ -12,13 +12,6 @@ down_revision = None
 branch_labels = None
 depends_on = None
 
-TABLE_OPTIONS = {
-    "mysql_engine": "InnoDB",
-    "mysql_charset": "utf8mb4",
-    "mysql_collate": "utf8mb4_0900_ai_ci",
-}
-
-
 def upgrade():
     op.create_table(
         "countries",
@@ -26,7 +19,6 @@ def upgrade():
         sa.Column("code", sa.String(2), nullable=False),
         sa.Column("name", sa.String(100), nullable=False),
         sa.UniqueConstraint("code", name="uq_countries_code"),
-        **TABLE_OPTIONS,
     )
     op.create_table(
         "room_types",
@@ -39,7 +31,6 @@ def upgrade():
         sa.UniqueConstraint("code", name="uq_room_types_code"),
         sa.CheckConstraint("room_count >= 0", name="ck_room_types_room_count"),
         sa.CheckConstraint("max_guests BETWEEN 1 AND 4", name="ck_room_types_max_guests"),
-        **TABLE_OPTIONS,
     )
     op.create_table(
         "room_type_prices",
@@ -50,7 +41,6 @@ def upgrade():
         sa.UniqueConstraint("room_type_id", "season", name="uq_room_type_prices_type_season"),
         sa.CheckConstraint("season IN ('low', 'mid', 'high')", name="ck_room_type_prices_season"),
         sa.CheckConstraint("suggested_nightly_rate > 0", name="ck_room_type_prices_rate"),
-        **TABLE_OPTIONS,
     )
     op.create_table(
         "bookings",
@@ -71,7 +61,6 @@ def upgrade():
         sa.CheckConstraint("guest_count > 0", name="ck_bookings_guest_count"),
         sa.CheckConstraint("nightly_rate > 0", name="ck_bookings_nightly_rate"),
         sa.CheckConstraint("status IN ('active', 'cancelled')", name="ck_bookings_status"),
-        **TABLE_OPTIONS,
     )
     op.create_index("ix_bookings_type_status_dates", "bookings", ["room_type_id", "status", "arrival", "departure"])
     op.create_table(
@@ -83,7 +72,6 @@ def upgrade():
         sa.UniqueConstraint("name", name="uq_drinks_name"),
         sa.CheckConstraint("category IN ('cocktail', 'coffee')", name="ck_drinks_category"),
         sa.CheckConstraint("suggested_unit_price > 0", name="ck_drinks_price"),
-        **TABLE_OPTIONS,
     )
     op.create_table(
         "employees",
@@ -91,7 +79,6 @@ def upgrade():
         sa.Column("code", sa.String(50), nullable=False),
         sa.Column("name", sa.String(100), nullable=False),
         sa.UniqueConstraint("code", name="uq_employees_code"),
-        **TABLE_OPTIONS,
     )
     op.create_table(
         "bar_sales",
@@ -109,7 +96,6 @@ def upgrade():
         sa.CheckConstraint("quantity > 0", name="ck_bar_sales_quantity"),
         sa.CheckConstraint("unit_price > 0", name="ck_bar_sales_unit_price"),
         sa.CheckConstraint("status IN ('active', 'cancelled')", name="ck_bar_sales_status"),
-        **TABLE_OPTIONS,
     )
     op.create_index("ix_bar_sales_employee_status_date", "bar_sales", ["employee_id", "status", "sale_date"])
     op.create_table(
@@ -123,7 +109,6 @@ def upgrade():
         sa.Column("response_body", sa.JSON(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.UniqueConstraint("http_method", "path", "idempotency_key", name="uq_idempotency_requests_key"),
-        **TABLE_OPTIONS,
     )
     op.create_table(
         "seed_runs",
@@ -134,7 +119,6 @@ def upgrade():
         sa.Column("anchor_year", sa.Integer(), nullable=False),
         sa.Column("completed_at", sa.DateTime(), nullable=False),
         sa.UniqueConstraint("version", name="uq_seed_runs_version"),
-        **TABLE_OPTIONS,
     )
     op.create_table(
         "import_reports",
@@ -145,7 +129,6 @@ def upgrade():
         sa.Column("omitted_count", sa.Integer(), nullable=False),
         sa.Column("reasons", sa.JSON(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
-        **TABLE_OPTIONS,
     )
     op.create_table(
         "historical_reference_records",
@@ -154,7 +137,6 @@ def upgrade():
         sa.Column("row_number", sa.Integer(), nullable=False),
         sa.Column("original_values", sa.JSON(), nullable=False),
         sa.UniqueConstraint("source", "row_number", name="uq_historical_reference_records_row"),
-        **TABLE_OPTIONS,
     )
 
 

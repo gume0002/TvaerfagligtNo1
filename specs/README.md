@@ -12,6 +12,10 @@ Opgaven angiver rækkefølgen **Constitution → Specify → Clarify → Plan �
 | Implement | Applikationskode, kontrakt og Docker-tjenester | Hovedfunktionerne, OData-feedet og Tableau-dashboardet er implementeret. Resterende prøver og status pr. task står i [tasks.md](004-hotelsystem/tasks.md). |
 | Converge | [converge.md](004-hotelsystem/converge.md) | Gennemført 2. november 2026 med status og bevis pr. krav. Åbne punkter står i dokumentet og i Tasks. |
 
+## Tillægsopgave uge 2
+
+Tillægsopgaven har sit eget forløb i [`005-tillaeg-uge-2`](005-tillaeg-uge-2/spec.md): analyser i API og frontend samt skift fra MySQL til PostgreSQL. Status og bevis står i [converge.md](005-tillaeg-uge-2/converge.md). Versionen før tillægsopgaven er bevaret i tagget `v1-mysql-tableau`.
+
 ## Filernes rolle
 
 `checklists/requirements.md` er kvalitetschecklisten til Specify. Den er ikke en ekstra specifikation eller Clarify. Der oprettes ikke tomme Plan-, Tasks- eller Converge-dokumenter, som kan forveksles med udført arbejde.
