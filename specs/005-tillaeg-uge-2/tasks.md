@@ -8,7 +8,7 @@ Afkryds først en task, når leverancen findes, og kontrollen faktisk er kørt.
 
 - [x] T072 Sæt tagget `v1-mysql-tableau` på `main` og push det (US12). Tagget peger på `d38e39b`.
 - [x] T073 Hent tagget i en frisk kopi, start systemet, og kontrollér, at det er den forventede version (SC-008).
-- [ ] T074 Opdatér constitution til version 1.1.0 og projektets retningslinjer med PostgreSQL. Gruppen godkender i en PR.
+- [x] T074 Opdatér constitution til version 1.1.0 og projektets retningslinjer med PostgreSQL. Gruppen godkender i en PR.
 - [ ] T075 Gruppen gennemgår `spec.md` og `plan.md` og tager stilling til de åbne punkter.
 
 ## Fase 1 – US15: Skift database

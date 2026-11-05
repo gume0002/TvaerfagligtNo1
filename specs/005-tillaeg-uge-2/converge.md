@@ -66,5 +66,5 @@ Prøverne med frisk kopi brugte `docker compose up --build -d`, så kommandoen k
 
 ## Tilbage
 
-- T074, T075: PR #15 er godkendt og merget. Krydses af, når gruppen har bekræftet, at constitution, spec og plan er gennemgået.
+- T075: PR #15 er godkendt og merget. Krydses af, når gruppen har bekræftet, at spec og plan er gennemgået.
 - T096: Indgår i fremlæggelsen. Se T068 i [hotelsystemets tasks](../004-hotelsystem/tasks.md).
