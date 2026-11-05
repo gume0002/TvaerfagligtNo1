@@ -129,7 +129,7 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 - [x] T052 Implementér den API-læseprojektion, som T002 og den godkendte kontrakt har vist virker i Tableau Public (OData V4 hvis afprøvningen lykkes), i `backend/app/api/`; fladgør færdigberegnede resultater fra samme analytics-service uden SQL eller egne Tableau-regler.
 - [x] T053 Implementér feedmetadata, datatyper, filtre og paginering, så de følger `openapi.yaml` og den dokumenterede Tableau Public-afprøvning.
 - [x] T054 Afprøv fuld indlæsning/manuel refresh i Tableau efter oprettelse, rettelse og aflysning af booking og salg; kontrollér API-paritet for samme filtre, snapshot-tidspunkt og fejl ved utilgængeligt API. Dokumentér forløb og begrænsninger i `tableau/README.md`.
-- [ ] T055 Gennemfør og registrér SC-003-kontrolarket med 1.000 bookinger og 1.000 salg: ti oprettelser, ti rettelser og ti aflysninger for hver ressourcetype, hver fulgt af Tableau-refresh og sammenligning med API. Registrér også afbrudt API; ingen femsekundersmåling kræves. **Delvist:** Gruppen har valgt en stikprøve på 12 runder, se `clarify.md`. Alle 12 er udført og stemmer, se `tableau/sc003-kontrolark.md`. SC-003 er derfor kun delvist opfyldt.
+- [x] T055 Gennemfør og registrér SC-003-kontrolarket med 1.000 bookinger og 1.000 salg: ti oprettelser, ti rettelser og ti aflysninger for hver ressourcetype, hver fulgt af Tableau-refresh og sammenligning med API. Registrér også afbrudt API; ingen femsekundersmåling kræves. **Udført ifølge gruppens bekræftelse 5. november 2026:** Alle 60 runder er gennemført. `tableau/sc003-kontrolark.md` indeholder detaljer for de 12 oprindeligt registrerede runder; de øvrige 48 målinger er ikke gengivet enkeltvis.
 
 ## Fase 12 – US11: Start og bevar prototype (P1)
 
@@ -146,15 +146,15 @@ Fundamentet blokerer alle brugerhistorier. Parallelmærkning gælder kun, når o
 ## Fase 13 – Afsluttende kvalitet og Converge
 
 - [x] T062 Kør den samlede testkommando fra en isoleret testdatabase; kontrollér unit-, integration-, kontrakt-, arkitektur- og browsertests samt fejlretninger.
-- [ ] T063 Gennemfør den manuelle to-minutters bookingprøve for SC-001 uden Swagger eller databaseværktøjer.
+- [x] T063 Gennemfør den manuelle to-minutters bookingprøve for SC-001 uden Swagger eller databaseværktøjer. **Udført ifølge gruppens bekræftelse 5. november 2026.** Varighed og resultat skal fremgå af Converge, før SC-001 kan markeres opfyldt.
 - [x] T064 Kontrollér alle user story-acceptkriterier, FR-001–FR-012 og SC-001–SC-007 mod faktisk løsning; følg browser → API → business → dataadgang → MySQL for booking og analyse, og kontrollér Tableau/API-paritet.
 - [x] T065 Opret `specs/004-hotelsystem/converge.md` med status og konkret bevis/filsti for hvert acceptkriterium; angiv mangler som nye tasks, ikke som opfyldte krav.
 - [x] T066 Kontrollér `README.md`, `CONTRIBUTE.md`, OpenAPI/Swagger, arkitekturdiagram, filhenvisninger og `git diff --check`; beskriv kun faktisk udført arbejde og tilskriv ikke gruppemedlemmers bidrag til hinanden.
 - [ ] T067 Sørg for, at ændringer leveres gennem branches og pull requests med et andet gruppemedlems review, og at hvert gruppemedlems faktiske bidrag kan dokumenteres med egne commits; fordel ikke arbejde eller tilskriv bidrag uden aftale.
 - [ ] T068 Forbered og øv den 10-minutters projektpræsentation samt 10 minutters spørgsmål/feedback inden gruppens fremlæggelse fredag 6. november; brug fungerende demo og Converge-resultater som bevis, og aftal taleroller samt eventuel notetagning/feedbackrolle.
-- [ ] T069 Afprøv dropdown for medarbejder, andre år, kombinerede hotelfiltre og salg uden data i Tableau (US7.4, US9.2, US9.3).
-- [ ] T070 Afprøv i Tableau, at en afvist ændring ikke ændrer tallene efter refresh (US10.2).
-- [ ] T071 Åbn `tableau/hotel-and-bar.twbx` på et andet gruppemedlems maskine, og gennemfør refresh.
+- [ ] T069 Afprøv dropdown for medarbejder, andre år, kombinerede hotelfiltre og salg uden data i Tableau (US7.4, US9.2, US9.3). **Vurderet som ikke nødvendig 5. november 2026:** Filtre og salg uden data er dækket af automatiske tests af API og feed, og refresh i Tableau er afprøvet i T054, T055 og T093. Selve valgene er ikke prøvet i Tableau.
+- [ ] T070 Afprøv i Tableau, at en afvist ændring ikke ændrer tallene efter refresh (US10.2). **Vurderet som ikke nødvendig 5. november 2026:** En afvist ændring er testet i API'et, og refresh i Tableau er afprøvet i T054, T055 og T093. Kombinationen er ikke prøvet i Tableau.
+- [ ] T071 Åbn `tableau/hotel-and-bar.twbx` på et andet gruppemedlems maskine, og gennemfør refresh. **Vurderet som ikke nødvendig 5. november 2026:** Refresh er afprøvet i T054, T055 og T093, men ikke registreret på en anden computer. Tableau skal dog virke på den computer, der bruges til fremlæggelsen.
 
 ## Afhængigheder og leveringsrækkefølge
 
