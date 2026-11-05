@@ -12,6 +12,10 @@ Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem 
 
 **Mangler endnu:** Gruppen har kørt en stikprøve på 12 refresh-runder i stedet for de 60 (T055), så SC-003 kun er delvist opfyldt; se [kontrolarket](tableau/sc003-kontrolark.md). Testpersonens prøve, gruppens review og præsentationen står åbne (T063, T067, T068), og enkelte Tableau-prøver mangler (T069–T071). Status for hvert krav står i [Converge](specs/004-hotelsystem/converge.md). Se [tasklisten](specs/004-hotelsystem/tasks.md) for status.
 
+## Brugerfladen
+
+Bookinger, barsalg og analyser har fælles navigation med markering af den aktuelle side. Bookingformularen er opdelt i gæst, ophold og pris, og linket »Find en eksisterende booking« fører til søgning og historik. På mobil ruller brede tabeller i deres egen beholder. En lille fugl flyver ind og lander på en gren i velkomstfeltet. Diskrete velkomst- og succesanimationer følger systemets indstilling for reduceret bevægelse. Se [specifikation og kontrol](specs/006-enkel-brugerflade/spec.md).
+
 ## Start systemet
 
 Systemet kræver kun Docker. Kør dette fra projektmappen:

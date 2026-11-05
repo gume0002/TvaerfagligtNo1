@@ -16,6 +16,10 @@ Opgaven angiver rækkefølgen **Constitution → Specify → Clarify → Plan �
 
 Tillægsopgaven har sit eget forløb i [`005-tillaeg-uge-2`](005-tillaeg-uge-2/spec.md): analyser i API og frontend samt skift fra MySQL til PostgreSQL. Status og bevis står i [converge.md](005-tillaeg-uge-2/converge.md). Versionen før tillægsopgaven er bevaret i tagget `v1-mysql-tableau`.
 
+## Forenkling af brugerfladen
+
+[006 – Enkel brugerflade](006-enkel-brugerflade/spec.md) beskriver US16: fælles navigation, en overskuelig bookingformular og diskrete animationer med de eksisterende funktioner. Afklaringer, plan, opgaver og kontrol ligger i samme mappe.
+
 ## Filernes rolle
 
 `checklists/requirements.md` er kvalitetschecklisten til Specify. Den er ikke en ekstra specifikation eller Clarify. Der oprettes ikke tomme Plan-, Tasks- eller Converge-dokumenter, som kan forveksles med udført arbejde.
