@@ -10,7 +10,7 @@ Bookinger og barsalg kan oprettes, findes, rettes og aflyses i browseren gennem 
 
 **Åbne fortolkningsrisici:** Manglende kundetilfredshedsdata og Tableau uden for Docker er gruppens egne valg og er ikke afstemt med underviseren.
 
-**Udførte prøver:** Gruppen har bekræftet, at alle 60 refresh-runder i T055 og testpersonens bookingprøve i T063 er gennemført. Kontrolarket viser detaljer for 12 runder; de øvrige 48 resultater står ikke enkeltvis i filen. Bookingprøvens varighed og resultat er endnu ikke ført ind i Converge.
+**Udførte prøver:** Gruppen har kørt en stikprøve på 12 af de 60 refresh-runder i T055, så SC-003 kun er delvist opfyldt; se [kontrolarket](tableau/sc003-kontrolark.md). Gruppen har bekræftet testpersonens bookingprøve i T063. Bookingprøvens varighed og resultat er endnu ikke ført ind i Converge.
 
 **Mangler endnu:** Gruppens review og præsentationen står åbne (T067–T068), og tre ekstra Tableau-prøver er vurderet som ikke nødvendige, fordi logikken er testet automatisk, og refresh er afprøvet (T069–T071). Se [Converge](specs/004-hotelsystem/converge.md) og [tasklisten](specs/004-hotelsystem/tasks.md) for status og dokumentationsbehov.
 

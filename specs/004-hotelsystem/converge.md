@@ -2,11 +2,11 @@
 
 **Dato:** 2. november 2026. **Kontrolleret version:** branchen `milepael-4-converge`.
 
-**Status:** Systemet er implementeret, og alle krav kan kontrolleres mod det. Enkelte krav er kun delvist opfyldt eller ikke afprøvet endnu, og to fortolkningsrisici er åbne. T055 og T063 er udført ifølge gruppens bekræftelse 5. november 2026. Resultatet af bookingprøven og de detaljerede målinger for 48 af refresh-runderne mangler i dokumentationen. Gruppens review og præsentation står åbne.
+**Status:** Systemet er implementeret, og alle krav kan kontrolleres mod det. Enkelte krav er kun delvist opfyldt eller ikke afprøvet endnu, og to fortolkningsrisici er åbne. T055 er kørt som en stikprøve på 12 af 60 runder. T063 er udført ifølge gruppens bekræftelse 5. november 2026, men resultatet af bookingprøven mangler i dokumentationen. Gruppens review og præsentation står åbne.
 
-**Statusopdatering 5. november 2026:** Gruppen har bekræftet, at alle 60 SC-003-refresh-runder og den manuelle bookingprøve er gennemført. Kontrolarket gengiver detaljer for 12 runder. Bookingprøvens varighed/resultat samt resultaterne for de øvrige 48 runder skal føres ind, før SC-001 og SC-003 kan markeres fuldt opfyldt i denne Converge.
+**Statusopdatering 5. november 2026:** Gruppen har kørt en stikprøve på 12 af de 60 SC-003-refresh-runder, så SC-003 er delvist opfyldt. Gruppen har bekræftet den manuelle bookingprøve. Bookingprøvens varighed og resultat skal føres ind, før SC-001 kan markeres opfyldt.
 
-**Status før fremlæggelsen, 5. november 2026:** Systemet kører nu på PostgreSQL og viser analyserne i browseren. Se [Converge for tillægsopgaven](../005-tillaeg-uge-2/converge.md). T069–T071 er vurderet som ikke nødvendige, fordi logikken er dækket af automatiske tests, og refresh i Tableau er afprøvet i T054, T055 og T093. De konkrete valg i Tableau er ikke prøvet, så de tilhørende krav står fortsat som delvist opfyldt. Før fremlæggelsen er kun T067 og T068 tilbage her. Vurderingen er foreslået af Mathilde, og gruppen godkender den i pull requesten.
+**Status før fremlæggelsen, 5. november 2026:** Systemet kører nu på PostgreSQL og viser analyserne i browseren. Se [Converge for tillægsopgaven](../005-tillaeg-uge-2/converge.md). T069–T071 er vurderet som ikke nødvendige, fordi logikken er dækket af automatiske tests, og refresh i Tableau er afprøvet i T054, T055 og T093. De konkrete valg i Tableau er ikke prøvet, så de tilhørende krav står fortsat som delvist opfyldt. Før fremlæggelsen er T067 og T068 tilbage her, og T055 forbliver delvist udført. Vurderingen er foreslået af Mathilde, og gruppen godkender den i pull requesten.
 
 Denne gennemgang er udarbejdet med AI og beskriver det, der faktisk er kørt eller observeret. Den er ikke en godkendelse fra gruppen eller underviseren.
 
@@ -104,7 +104,7 @@ Testfilerne ligger i `backend/tests/integration/` og `tests/browser/`.
 |---|---|---|
 | SC-001 Testperson på to minutter | Bookingprøven er udført ifølge gruppens bekræftelse. Varighed og resultat er ikke registreret | Delvist |
 | SC-002 Kontrollerede eksempler | Automatiske tests af US1–US9 | Opfyldt |
-| SC-003 Refresh-prøver | Gruppen bekræfter 60 gennemførte runder. Kontrolarket viser detaljer for 12; resultaterne for 48 runder mangler i dokumentationen. | Delvist |
+| SC-003 Refresh-prøver | Stikprøve på 12 af 60 runder efter gruppens valg. Alle 12 gav de forventede tal, se kontrolarket. | Delvist |
 | SC-004 Sidste enhed | 20 gentagelser mod MySQL, og testen fejler uden låsen | Opfyldt |
 | SC-005 Frisk start | Frisk kopi og genstart. Tableau er dokumenteret særskilt | Opfyldt |
 | SC-006 Ens tal | API og Tableau er sammenlignet. Frontenden viste ikke analyser ved denne gennemgang. Det gør den nu, og API, browser og Tableau er sammenlignet for to filtervalg i [tillægsopgavens Converge](../005-tillaeg-uge-2/converge.md) | Delvist |
