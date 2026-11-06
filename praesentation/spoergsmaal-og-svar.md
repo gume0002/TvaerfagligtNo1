@@ -111,6 +111,11 @@ AI'en har skrevet meget af koden, og opgaven forventer, at vi bruger den. Vi har
 
 **Vis:** `.specify/memory/constitution.md:156-160`
 
+### Hvordan har I samarbejdet?
+Alle ændringer efter opstarten den 26. oktober kom ind gennem pull requests fra hver sin branch. 17 af 19 mergede pull requests blev merget af en anden end den, der lavede dem. Kun tre har en formel godkendelse på GitHub, og det vil vi gøre bedre. Vi delte opgaven i milepæle og brugte fælles AI-instruktioner i `AGENTS.md`.
+
+**Vis:** pull requests på GitHub, `AGENTS.md`
+
 ### Hvem har lavet hvad?
 **Skal svares af hver enkelt.** Vi bedømmes også på commits, og fordelingen i Git er ujævn. Sig ærligt, hvad du selv har lavet, og hvordan I har arbejdet sammen. Tilskriv ikke andres arbejde til dig selv.
 
