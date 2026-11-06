@@ -10,7 +10,7 @@ Tiderne er anslået ud fra cirka 130 ord i minuttet. De er ikke målt med ur, s�
 | 2 | Sådan arbejdede vi | 0:45 |
 | 3 | Fra brugerhistorie til bevis | 0:45 |
 | 4 | Arkitekturen | 1:00 |
-| 5 | En booking gennem systemet | 1:00 |
+| 5 | Samarbejde i gruppen | 1:00 |
 | 6 | Nøgletal i backenden | 0:45 |
 | 7 | API og drift | 1:00 |
 | 8 | Tillægsopgaven | 1:00 |
@@ -41,11 +41,15 @@ Her er et eksempel. Som receptionist vil jeg oprette en booking. Et af acceptkri
 
 Det her er hele systemet. Alt inde i den store boks kører i Docker. Browseren taler med Nginx, som viser frontenden og sender API-kald videre til backenden. Backenden har tre lag. API-laget modtager HTTP og JSON. Forretningslogikken indeholder reglerne og beregner nøgletallene. Dataadgangen er det eneste lag, der taler med PostgreSQL. Hvert lag må kun kalde laget lige under sig, og det kontrollerer en automatisk arkitekturtest. Tableau og hotellets bookingsystem ligger uden for Docker. Tableau henter kun data gennem API'et og aldrig direkte fra databasen. Bookingsystemet er en mulig fremtidig klient, som kan bruge det samme API.
 
-## Slide 5: En booking gennem systemet (1:00)
+## Slide 5: Samarbejde (1:00)
 
-**Taler:** ______
+**Taler:** Mathilde
 
-Når en medarbejder trykker gem, sender browseren JSON til POST api bookings. Nginx sender det videre til API-laget, som kontrollerer formatet. Forretningslogikken tjekker reglerne og låser værelsestypen. Det betyder, at to samtidige bookinger venter på hinanden, så vi ikke kan overbooke. Dataadgangen gemmer bookingen i PostgreSQL, og svaret kommer tilbage som 201 Created. Browseren sender også en idempotensnøgle, altså en unik nøgle for netop det forsøg. Hvis svaret går tabt, og medarbejderen trykker gem igen, kender vi nøglen og opretter ikke en dobbelt booking.
+Vi har arbejdet med branches og pull requests. Efter at projektet blev sat op den 26. oktober, er alle ændringer kommet ind på main gennem en pull request. Hver ændring blev lavet på sin egen branch, fx til booking, barsalg, Tableau eller tillægsopgaven, og så kunne vi arbejde samtidig uden at gå i vejen for hinanden.
+
+Vi har lavet 20 pull requests. 17 af de 19, der er merget, blev merget af en anden end den, der lavede dem. Vi brugte også fælles instruktioner til AI'en i AGENTS.md og overdragelsesprompts, så den næste kunne fortsætte.
+
+Det vil vi gøre bedre: kun tre pull requests har en formel godkendelse på GitHub. Næste gang skal alle godkendes, før de bliver merget.
 
 ## Slide 6: Nøgletal i backenden (0:45)
 
